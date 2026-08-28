@@ -1,0 +1,40 @@
+# Agent working directories
+.mimocode/
+.omp/
+.pi/
+.claude/
+.opencode/
+.aionrs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build output
+_site/
+dist/
+build/
+*.egg-info/
+dist/
+
+# Environment
+*.env
+*.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log

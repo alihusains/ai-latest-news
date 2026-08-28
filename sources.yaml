@@ -1,0 +1,245 @@
+sources:
+  - name: Reddit MachineLearning
+    type: reddit
+    url: https://old.reddit.com/r/MachineLearning/hot.json?limit=25
+    category_hint: research
+    active: true
+    notes: Public JSON endpoint verified 200 via curl
+
+  - name: Reddit artificial
+    type: reddit
+    url: https://old.reddit.com/r/artificial/hot.json?limit=25
+    category_hint: research
+    active: true
+    notes: Public JSON endpoint verified 200 via curl
+
+  - name: Reddit LocalLLaMA
+    type: reddit
+    url: https://old.reddit.com/r/LocalLLaMA/hot.json?limit=25
+    category_hint: open-source
+    active: true
+    notes: Public JSON endpoint verified 200 via curl
+
+  - name: Reddit hardware
+    type: reddit
+    url: https://old.reddit.com/r/hardware/hot.json?limit=25
+    category_hint: hardware
+    active: true
+    notes: Public JSON endpoint verified 200 via curl
+
+  - name: Reddit science
+    type: reddit
+    url: https://old.reddit.com/r/science/hot.json?limit=25
+    category_hint: science
+    active: true
+    notes: Public JSON endpoint verified 200 via curl
+
+  - name: TechCrunch AI
+    type: rss
+    url: https://techcrunch.com/category/artificial-intelligence/feed/
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: TechCrunch
+    type: rss
+    url: https://techcrunch.com/feed/
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: The Verge AI
+    type: rss
+    url: https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: The Verge
+    type: rss
+    url: https://www.theverge.com/rss/index.xml
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: Ars Technica
+    type: rss
+    url: https://feeds.arstechnica.com/arstechnica/technology-lab
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: MIT Technology Review
+    type: rss
+    url: https://www.technologyreview.com/feed/
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: MIT Tech Review AI
+    type: rss
+    url: https://www.technologyreview.com/topic/artificial-intelligence/feed/
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: Wired
+    type: rss
+    url: https://www.wired.com/feed/
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: ZDNet AI
+    type: rss
+    url: https://www.zdnet.com/topic/artificial-intelligence/rss.xml
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: Hacker News
+    type: rss
+    url: https://hnrss.org/frontpage
+    category_hint: community
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: Towards Data Science
+    type: rss
+    url: https://towardsdatascience.com/feed
+    category_hint: research
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: Analytics Vidhya
+    type: rss
+    url: https://www.analyticsvidhya.com/feed/
+    category_hint: research
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: AI Weekly
+    type: rss
+    url: https://aiweekly.co/feed
+    category_hint: newsletter
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: Hugging Face Blog
+    type: rss
+    url: https://huggingface.co/blog/feed.xml
+    category_hint: open-source
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: DeepMind Blog
+    type: rss
+    url: https://deepmind.google/blog/rss.xml
+    category_hint: research
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: Google AI Blog
+    type: rss
+    url: https://blog.google/technology/ai/rss/
+    category_hint: research
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: OpenAI Blog
+    type: rss
+    url: https://openai.com/blog/rss.xml
+    category_hint: research
+    active: true
+    notes: Valid RSS XML verified 200 via curl, 20 items
+
+  - name: InfoQ
+    type: rss
+    url: https://www.infoq.com/feed
+    category_hint: engineering
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: KDnuggets
+    type: rss
+    url: https://www.kdnuggets.com/feed
+    category_hint: research
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: AI News
+    type: rss
+    url: https://www.artificialintelligence-news.com/feed/
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: Unite AI
+    type: rss
+    url: https://www.unite.ai/feed/
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: Synced Review
+    type: rss
+    url: https://syncedreview.com/feed/
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: Jiqizhixin
+    type: rss
+    url: https://www.jiqizhixin.com/rss
+    category_hint: news
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: TechCrunch M&A
+    type: rss
+    url: https://techcrunch.com/tag/mergers-acquisitions/feed/
+    category_hint: acquisitions
+    active: true
+    notes: Valid RSS XML verified 200 via curl
+
+  - name: GitHub Trending
+    type: web
+    url: https://github.com/trending?since=daily
+    category_hint: open-source
+    active: true
+    notes: HTML page verified 200 via curl; use scraper or GitHub API as fallback
+
+  - name: X karpathy
+    type: x
+    url: https://nitter.net/karpathy/with_reposts
+    category_hint: research
+    active: true
+    notes: Nitter instance; fragile in 2026. Verified 200 but instances may go down without notice.
+
+  - name: X ylecun
+    type: x
+    url: https://nitter.net/ylecun/with_reposts
+    category_hint: research
+    active: true
+    notes: Nitter instance; fragile in 2026. Verified 200 but instances may go down without notice.
+
+  - name: X Andrew Ng
+    type: x
+    url: https://nitter.net/AndrewYNg/with_reposts
+    category_hint: research
+    active: true
+    notes: Nitter instance; fragile in 2026. Verified 200 but instances may go down without notice.
+
+  - name: X Jim Fan
+    type: x
+    url: https://nitter.net/JimFan/with_reposts
+    category_hint: research
+    active: true
+    notes: Nitter instance; fragile in 2026. Verified 200 but instances may go down without notice.
+
+  - name: X Demis Hassabis
+    type: x
+    url: https://nitter.net/demishassabis/with_reposts
+    category_hint: research
+    active: true
+    notes: Nitter instance; fragile in 2026. Verified 200 but instances may go down without notice.
