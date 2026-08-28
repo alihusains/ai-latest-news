@@ -3,7 +3,7 @@
   "edition": "The AI Daily",
   "platform": "SIGNAL",
   "stats": {
-    "total": 285,
+    "total": 283,
     "reading_time_min": 51
   },
   "stories": [
@@ -679,39 +679,10 @@
       "is_early_signal": false
     },
     {
-      "id": "ai-agent-has-root",
-      "headline": "AI Agent Has Root",
-      "subheadline": "Article URL: https://infernalcode.com/posts/your-ai-agent-has-root/ Comments URL: https://news.ycombinator.com/item?id=49477311 Points: 15 # Comments: 14",
-      "summary": "Article URL: https://infernalcode.com/posts/your-ai-agent-has-root/ Comments URL: https://news.ycombinator.com/item?id=49477311 Points: 15 # Comments: 14",
-      "why_it_matters": "An incremental update keeps Agents capability moving forward for existing users.",
-      "category": "agents",
-      "tags": [
-        "Agents"
-      ],
-      "industry": [],
-      "story_type": "Product Update",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "Hacker News",
-          "url": "https://infernalcode.com/posts/your-ai-agent-has-root/",
-          "published": "2026-08-28T12:03:09Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://infernalcode.com/posts/your-ai-agent-has-root/",
-      "published_at": "2026-08-28T12:03:09Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false
-    },
-    {
       "id": "terminal-bench-science--evaluating-ai-agents-on-",
       "headline": "Terminal-Bench-Science: Evaluating AI agents on scientific research workflows",
-      "subheadline": "Article URL: https://www.terminal-bench-science.ai/announcement Comments URL: https://news.ycombinator.com/item?id=49472820 Points: 101 # Comments: 30",
-      "summary": "Article URL: https://www.terminal-bench-science.ai/announcement Comments URL: https://news.ycombinator.com/item?id=49472820 Points: 101 # Comments: 30",
+      "subheadline": "Article URL: https://www.terminal-bench-science.ai/announcement Comments URL: https://news.ycombinator.com/item?id=49472820 Points: 104 # Comments: 30",
+      "summary": "Article URL: https://www.terminal-bench-science.ai/announcement Comments URL: https://news.ycombinator.com/item?id=49472820 Points: 104 # Comments: 30",
       "why_it_matters": "The work advances the Agents frontier, with downstream implications for real products.",
       "category": "agents",
       "tags": [
@@ -3478,6 +3449,41 @@
       "is_early_signal": false
     },
     {
+      "id": "anthropic-gets-its-first-court-win-over-the-pent",
+      "headline": "Anthropic gets its first court win over the Pentagon’s supply chain risk label",
+      "subheadline": "A federal judge ruled the Trump administration illegally labeled Anthropic a supply chain risk, handing the AI company",
+      "summary": "A federal judge ruled the Trump administration illegally labeled Anthropic a supply chain risk, handing the AI company a victory as its second Pentagon lawsuit continues in Washington",
+      "why_it_matters": "Regulatory movement sets the boundaries within which Models & Research can scale commercially.",
+      "category": "models",
+      "tags": [],
+      "industry": [
+        "Legal",
+        "Manufacturing"
+      ],
+      "story_type": "Policy",
+      "importance": 4,
+      "tier": "major",
+      "sources": [
+        {
+          "name": "TechCrunch AI",
+          "url": "https://techcrunch.com/2026/08/28/anthropic-gets-its-first-court-win-over-the-pentagons-supply-chain-risk-label/",
+          "published": "2026-08-28T12:46:12Z"
+        },
+        {
+          "name": "TechCrunch",
+          "url": "https://techcrunch.com/2026/08/28/anthropic-gets-its-first-court-win-over-the-pentagons-supply-chain-risk-label/",
+          "published": "2026-08-28T12:46:12Z"
+        }
+      ],
+      "source_count": 2,
+      "image": null,
+      "url": "https://techcrunch.com/2026/08/28/anthropic-gets-its-first-court-win-over-the-pentagons-supply-chain-risk-label/",
+      "published_at": "2026-08-28T12:46:12Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false
+    },
+    {
       "id": "anthropic-was-illegally-blacklisted-by-the-trump",
       "headline": "Anthropic was illegally blacklisted by the Trump administration, court rules",
       "subheadline": "On Thursday, a judge ruled that the Pentagon's blacklisting of Anthropic earlier this year was unconstitutional, delivering the",
@@ -3747,30 +3753,28 @@
       "is_early_signal": false
     },
     {
-      "id": "bill-gates-wants-to-see-a-robot-tax-and--human-r",
-      "headline": "Bill Gates wants to see a robot tax and ‘Human Reserved’ jobs to mitigate harms from AI",
-      "subheadline": "Gates is mostly in the Responsible AI camp, but there are a few ideas in here we hadn't",
-      "summary": "Gates is mostly in the Responsible AI camp, but there are a few ideas in here we hadn't heard before",
+      "id": "a16z-creates-a--1-1b--machine-age--fund-to--acce",
+      "headline": "a16z creates a $1.1B ‘Machine Age’ fund to ‘accelerate the physical buildout of AI’",
+      "subheadline": "The firm, known for its focus on software, is going to start throwing more money at the hardware",
+      "summary": "The firm, known for its focus on software, is going to start throwing more money at the hardware behind AI",
       "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
       "category": "models",
-      "tags": [
-        "Robotics"
-      ],
+      "tags": [],
       "industry": [],
       "story_type": "Product Update",
       "importance": 3,
       "tier": "standard",
       "sources": [
         {
-          "name": "TechCrunch AI",
-          "url": "https://techcrunch.com/2026/08/26/bill-gates-wants-to-see-a-robot-tax-and-human-reserved-jobs-to-mitigate-harms-from-ai/",
-          "published": "2026-08-26T14:37:01Z"
+          "name": "TechCrunch",
+          "url": "https://techcrunch.com/2026/08/28/a16z-creates-a-1-1b-machine-age-fund-to-accelerate-the-physical-buildout-of-ai/",
+          "published": "2026-08-28T13:24:43Z"
         }
       ],
       "source_count": 1,
       "image": null,
-      "url": "https://techcrunch.com/2026/08/26/bill-gates-wants-to-see-a-robot-tax-and-human-reserved-jobs-to-mitigate-harms-from-ai/",
-      "published_at": "2026-08-26T14:37:01Z",
+      "url": "https://techcrunch.com/2026/08/28/a16z-creates-a-1-1b-machine-age-fund-to-accelerate-the-physical-buildout-of-ai/",
+      "published_at": "2026-08-28T13:24:43Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false
@@ -4598,8 +4602,8 @@
     {
       "id": "pentagon-s-blacklisting-of-anthropic-was-unlawfu",
       "headline": "Pentagon's blacklisting of Anthropic was unlawful, US judge rules",
-      "subheadline": "Article URL: https://www.reuters.com/legal/government/us-judge-blocks-pentagons-anthropic-blacklisting-2026-08-28/ Comments URL: https://news.ycombinator.com/item?id=49477055 Points: 8 # Comments: 1",
-      "summary": "Article URL: https://www.reuters.com/legal/government/us-judge-blocks-pentagons-anthropic-blacklisting-2026-08-28/ Comments URL: https://news.ycombinator.com/item?id=49477055 Points: 8 # Comments: 1",
+      "subheadline": "Article URL: https://www.reuters.com/legal/government/us-judge-blocks-pentagons-anthropic-blacklisting-2026-08-28/ Comments URL: https://news.ycombinator.com/item?id=49477055 Points: 117 # Comments: 29",
+      "summary": "Article URL: https://www.reuters.com/legal/government/us-judge-blocks-pentagons-anthropic-blacklisting-2026-08-28/ Comments URL: https://news.ycombinator.com/item?id=49477055 Points: 117 # Comments: 29",
       "why_it_matters": "Regulatory movement sets the boundaries within which Models & Research can scale commercially.",
       "category": "models",
       "tags": [],
@@ -4628,8 +4632,8 @@
     {
       "id": "luanti-removed-from-google-play-due-to-baseless-",
       "headline": "Luanti removed from Google Play due to baseless AI copyright notice",
-      "subheadline": "Article URL: https://blog.luanti.org/2026/08/27/luanti-dmca-tracer-ai/ Comments URL: https://news.ycombinator.com/item?id=49475079 Points: 29 # Comments: 4",
-      "summary": "Article URL: https://blog.luanti.org/2026/08/27/luanti-dmca-tracer-ai/ Comments URL: https://news.ycombinator.com/item?id=49475079 Points: 29 # Comments: 4",
+      "subheadline": "Article URL: https://blog.luanti.org/2026/08/27/luanti-dmca-tracer-ai/ Comments URL: https://news.ycombinator.com/item?id=49475079 Points: 106 # Comments: 28",
+      "summary": "Article URL: https://blog.luanti.org/2026/08/27/luanti-dmca-tracer-ai/ Comments URL: https://news.ycombinator.com/item?id=49475079 Points: 106 # Comments: 28",
       "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
       "category": "models",
       "tags": [],
@@ -4686,39 +4690,10 @@
       "is_early_signal": false
     },
     {
-      "id": "previewing-the-model-hardware-standard",
-      "headline": "Previewing the Model Hardware Standard",
-      "subheadline": "Article URL: https://www.anthropic.com/news/model-hardware-standard-research-preview Comments URL: https://news.ycombinator.com/item?id=49468834 Points: 120 # Comments: 49",
-      "summary": "Article URL: https://www.anthropic.com/news/model-hardware-standard-research-preview Comments URL: https://news.ycombinator.com/item?id=49468834 Points: 120 # Comments: 49",
-      "why_it_matters": "The work advances the Models & Research frontier, with downstream implications for real products.",
-      "category": "models",
-      "tags": [
-        "LLMs"
-      ],
-      "industry": [],
-      "story_type": "Research",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "Hacker News",
-          "url": "https://www.anthropic.com/news/model-hardware-standard-research-preview",
-          "published": "2026-08-27T18:04:50Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://www.anthropic.com/news/model-hardware-standard-research-preview",
-      "published_at": "2026-08-27T18:04:50Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false
-    },
-    {
       "id": "gemini-3-5-transcribe",
       "headline": "Gemini-3.5-Transcribe",
-      "subheadline": "Article URL: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/ Comments URL: https://news.ycombinator.com/item?id=49468818 Points: 315 # Comments: 103",
-      "summary": "Article URL: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/ Comments URL: https://news.ycombinator.com/item?id=49468818 Points: 315 # Comments: 103",
+      "subheadline": "Article URL: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/ Comments URL: https://news.ycombinator.com/item?id=49468818 Points: 321 # Comments: 107",
+      "summary": "Article URL: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/ Comments URL: https://news.ycombinator.com/item?id=49468818 Points: 321 # Comments: 107",
       "why_it_matters": "The work advances the Models & Research frontier, with downstream implications for real products.",
       "category": "models",
       "tags": [
@@ -7030,37 +7005,6 @@
       "is_early_signal": false
     },
     {
-      "id": "australian-police-arrest-two-over-teampcp-hacks-",
-      "headline": "Australian police arrest two over TeamPCP hacks targeting Mercor, OpenAI, and others",
-      "subheadline": "The arrests come after a wave of cyberattacks earlier this year targeting tech companies that rely on high-profile",
-      "summary": "The arrests come after a wave of cyberattacks earlier this year targeting tech companies that rely on high-profile and widely used open source software",
-      "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Products & Open Source ecosystem.",
-      "category": "products",
-      "tags": [
-        "Open Source"
-      ],
-      "industry": [
-        "Security"
-      ],
-      "story_type": "Open Source",
-      "importance": 3,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "TechCrunch",
-          "url": "https://techcrunch.com/2026/08/27/australian-police-arrest-two-over-teampcp-hacks-targeting-mercor-openai-and-others/",
-          "published": "2026-08-27T14:27:52Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://techcrunch.com/2026/08/27/australian-police-arrest-two-over-teampcp-hacks-targeting-mercor-openai-and-others/",
-      "published_at": "2026-08-27T14:27:52Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false
-    },
-    {
       "id": "openai-s-executive-exodus-has-one-big-winner",
       "headline": "OpenAI’s executive exodus has one big winner",
       "subheadline": "Today on Decoder, I’m talking to Verge senior AI reporter Hayden Field about some pure Decoder bait: the",
@@ -7209,8 +7153,8 @@
     {
       "id": "openai--migrating-to-httpx2",
       "headline": "OpenAI: Migrating to HTTPX2",
-      "subheadline": "Article URL: https://github.com/openai/openai-python/blob/main/httpx2.md Comments URL: https://news.ycombinator.com/item?id=49477212 Points: 9 # Comments: 6",
-      "summary": "Article URL: https://github.com/openai/openai-python/blob/main/httpx2.md Comments URL: https://news.ycombinator.com/item?id=49477212 Points: 9 # Comments: 6",
+      "subheadline": "Article URL: https://github.com/openai/openai-python/blob/main/httpx2.md Comments URL: https://news.ycombinator.com/item?id=49477212 Points: 48 # Comments: 16",
+      "summary": "Article URL: https://github.com/openai/openai-python/blob/main/httpx2.md Comments URL: https://news.ycombinator.com/item?id=49477212 Points: 48 # Comments: 16",
       "why_it_matters": "A trending repository signals strong developer interest and rapid adoption within Products & Open Source.",
       "category": "products",
       "tags": [

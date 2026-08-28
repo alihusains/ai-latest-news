@@ -1183,33 +1183,202 @@ def _section_label(category: str) -> str:
     }.get(category, category.upper())
 
 
-def _newsletter_image(src: str, alt: str, w: int = 560) -> str:
+def _newsletter_image(src: str, alt: str, w: int = 640) -> str:
     if not src:
         return ""
     return (
         f'<img src="{_h(src)}" width="{w}" alt="{_h(alt)}" '
-        f'style="display:block;width:100%;max-width:{w}px;height:auto;border:0;border-radius:8px;">'
+        f'style="display:block;width:100%;max-width:{w}px;height:auto;border:0;border-radius:12px;">'
     )
 
 
-def _newsletter_story_block(story: dict, show_image: bool = True) -> str:
-    img = _newsletter_image(story.get("image", ""), story["headline"]) if show_image else ""
-    img_cell = (
-        f'<tr><td style="padding:20px 40px 0 40px;">{img}</td></tr>' if img else ""
-    )
+def _newsletter_caption(text: str) -> str:
+    if not text:
+        return ""
     return (
-        f"{img_cell}"
-        f'<tr><td style="padding:16px 40px 0 40px;">'
-        f'<span style="font-family:Arial,Helvetica,sans-serif;font-size:10px;letter-spacing:1px;color:#8a93a6;text-transform:uppercase;">'
-        f"{_h(_section_label(story['category']))} &middot; {_h(story.get('story_type',''))}</span></td></tr>"
-        f'<tr><td style="padding:6px 40px 0 40px;">'
-        f'<a href="{_h(story.get("url", ""))}" style="color:#1a2130;text-decoration:none;">'
-        f'<h2 style="font-family:Georgia,serif;font-size:22px;line-height:1.25;margin:0;color:#1a2130;">{_h(story["headline"])}</h2></a></td></tr>'
-        f'<tr><td style="padding:10px 40px 0 40px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4b5565;">'
-        f"{_h(story.get('summary',''))}</td></tr>"
-        f'<tr><td style="padding:8px 40px 0 40px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;color:#6b7690;">'
-        f"<strong>Why it matters:</strong> {_h(story.get('why_it_matters',''))}</td></tr>"
+        f'<tr><td style="padding:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;'
+        f'color:#6b7280;font-style:italic;line-height:1.4;">{_h(text)}</td></tr>'
     )
+
+
+def _newsletter_story_block(story: dict, show_image: bool = True, numbered: bool = False) -> str:
+    img = _newsletter_image(story.get("image", ""), story["headline"]) if show_image else ""
+    img_rows = f'<tr><td style="padding:16px 0 0 0;">{img}</td></tr>' if img else ""
+    caption = _newsletter_caption(story.get("headline", "")) if img else ""
+    number = f'{story.get("importance", 0)}. ' if numbered else ''
+    return (
+        f"{img_rows}"
+        f"{caption}"
+        f'<tr><td style="padding:12px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#111827;">'
+        f'<strong>{_h(number)}{_h(story["headline"])}</strong></td></tr>'
+        f'<tr><td style="padding:6px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#374151;">'
+        f"{_h(story.get('summary',''))}</td></tr>"
+        f'<tr><td style="padding:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;color:#6b7280;">'
+        f"<strong>Why it matters:</strong> {_h(story.get('why_it_matters',''))}</td></tr>"
+        f'<tr><td style="padding:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;">'
+        f'<a href="{_h(story.get("url", ""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">Read story →</a>'
+        f'<span style="color:#9ca3af;margin:0 6px;">·</span>'
+        f'<span style="color:#6b7280;">{_h(story.get("sources", [{}])[0].get("name", ""))}</span>'
+        f'<span style="color:#9ca3af;margin:0 6px;">·</span>'
+        f'<span style="color:#6b7280;">{_h(story.get("reading_time", ""))}</span></td></tr>'
+    )
+
+
+def _newsletter_section_label(text: str) -> str:
+    return (
+        f'<tr><td style="padding:20px 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;'
+        f'letter-spacing:1.5px;color:#008A37;font-weight:bold;text-transform:uppercase;">{_h(text)}</td></tr>'
+    )
+
+
+def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id) -> str:
+    by_id = {s["id"]: s for s in stories}
+    ordered = sorted(stories, key=_readability_key)
+    big = ordered[0] if ordered else None
+    used = {big["id"]} if big else set()
+    if tool_id:
+        used.add(tool_id)
+    if early_id:
+        used.add(early_id)
+
+    top5 = [s for s in ordered if s["id"] not in used][:5]
+
+    highlights_by_cat = {}
+    for cat in NEW_CATEGORIES:
+        cands = [s for s in ordered if s["category"] == cat and s["id"] not in used]
+        if not cands:
+            continue
+        if cat == "products" and tool_id and tool_id in by_id:
+            highlights_by_cat[cat] = by_id[tool_id]
+        else:
+            highlights_by_cat[cat] = cands[0]
+
+    early = by_id.get(early_id) if early_id else None
+    whats_next = [
+        s for s in stories
+        if _future_phrases((s.get("headline", "") + " " + s.get("summary", "")).lower())
+        and s["id"] not in used
+    ][:2]
+
+    date_str = date.strftime("%B %d, %Y")
+    lines: list[str] = []
+    a = lines.append
+
+    # Preheader
+    a('<div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">')
+    a(f'The AI Daily — {date_str}. Your daily briefing on what changed in AI.')
+    a('</div>')
+
+    # Top bar
+    a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-bottom:1px solid #e5e7eb;">')
+    a('<tr><td align="center" style="padding:12px 0;">')
+    a('<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;">')
+    a('<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#374151;">')
+    a(f'{date_str} &nbsp;&middot;&nbsp; <a href="https://ai-latest-news.vercel.app" style="color:#146DE9;text-decoration:none;">Read online</a>')
+    a('</td></tr></table></td></tr></table>')
+
+    # Main container
+    a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;padding:24px 0;">')
+    a('<tr><td align="center">')
+    a('<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;background:#ffffff;border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;">')
+
+    # Masthead
+    a('<tr><td style="padding:28px 24px 20px 24px;border-bottom:1px solid #e5e7eb;">')
+    a('<div style="font-family:Georgia,serif;font-size:28px;font-weight:bold;letter-spacing:2px;color:#111827;">THE AI DAILY</div>')
+    a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6b7280;margin-top:6px;">Know what changed in AI.</div>')
+    a('</td></tr>')
+
+    # Big story
+    if big:
+        a('<tr><td style="padding:24px 24px 0 24px;">')
+        a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;">')
+        if big.get("image"):
+            a(f'<tr><td style="padding:0;">{_newsletter_image(big.get("image",""), big["headline"], w=640)}</td></tr>')
+        a('<tr><td style="padding:20px 20px 16px 20px;">')
+        a(_newsletter_section_label("THE BIG STORY"))
+        a(f'<div style="font-family:Georgia,serif;font-size:22px;font-weight:bold;line-height:1.25;color:#111827;margin-top:8px;">{_h(big["headline"])}</div>')
+        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#374151;margin-top:10px;">{_h(big.get("summary",""))}</div>')
+        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;color:#6b7280;margin-top:10px;"><strong>Why it matters:</strong> {_h(big.get("why_it_matters",""))}</div>')
+        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;margin-top:12px;">')
+        a(f'<a href="{_h(big.get("url",""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">Read the full story →</a>')
+        a(f'<span style="color:#9ca3af;margin:0 8px;">·</span>')
+        a(f'<span style="color:#6b7280;">{_h(big.get("reading_time",""))}</span>')
+        a(f'<span style="color:#9ca3af;margin:0 8px;">·</span>')
+        a(f'<span style="color:#6b7280;">{_h(big.get("sources",[{}])[0].get("name",""))}</span>')
+        a('</div></td></tr></table></td></tr>')
+
+    # 5 THINGS
+    if top5:
+        a('<tr><td style="padding:24px 24px 0 24px;">')
+        a(_newsletter_section_label("5 THINGS YOU SHOULD KNOW"))
+        a('</td></tr>')
+        for i, s in enumerate(top5, 1):
+            a('<tr><td style="padding:0 24px;">')
+            a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;margin-bottom:12px;">')
+            a('<tr><td style="padding:16px 20px;">')
+            a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;color:#111827;margin-bottom:6px;">{i}. {_h(s["headline"])}</div>')
+            a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#374151;">{_h(s.get("summary",""))}</div>')
+            a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;margin-top:8px;">')
+            a(f'<a href="{_h(s.get("url",""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">Read story →</a>')
+            a(f'<span style="color:#9ca3af;margin:0 6px;">·</span>')
+            a(f'<span style="color:#6b7280;">{_h(s.get("reading_time",""))}</span>')
+            a('</div></td></tr></table></td></tr>')
+
+    # Category highlights
+    for cat in NEW_CATEGORIES:
+        s = highlights_by_cat.get(cat)
+        if not s:
+            continue
+        a('<tr><td style="padding:24px 24px 0 24px;">')
+        a(_newsletter_section_label(_section_label(cat)))
+        a('</td></tr>')
+        a('<tr><td style="padding:0 24px 24px 24px;">')
+        a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;">')
+        if s.get("image"):
+            a(f'<tr><td style="padding:0;">{_newsletter_image(s.get("image",""), s["headline"], w=640)}</td></tr>')
+        a('<tr><td style="padding:16px 20px;">')
+        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#111827;margin-bottom:6px;">{_h(s["headline"])}</div>')
+        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#374151;">{_h(s.get("summary",""))}</div>')
+        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;margin-top:8px;">')
+        a(f'<a href="{_h(s.get("url",""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">Read story →</a>')
+        a(f'<span style="color:#9ca3af;margin:0 6px;">·</span>')
+        a(f'<span style="color:#6b7280;">{_h(s.get("reading_time",""))}</span>')
+        a('</div></td></tr></table></td></tr>')
+
+    # Early signal
+    if early:
+        a('<tr><td style="padding:24px 24px 0 24px;">')
+        a(_newsletter_section_label("EARLY SIGNAL"))
+        a('</td></tr>')
+        a('<tr><td style="padding:0 24px 24px 24px;">')
+        a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;">')
+        a('<tr><td style="padding:16px 20px;">')
+        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#111827;margin-bottom:6px;">{_h(early["headline"])}</div>')
+        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#374151;">{_h(early.get("why_it_matters",""))}</div>')
+        a('</td></tr></table></td></tr>')
+
+    # What's next
+    if whats_next:
+        a('<tr><td style="padding:24px 24px 0 24px;">')
+        a(_newsletter_section_label("WHAT'S NEXT"))
+        a('</td></tr>')
+        for s in whats_next:
+            a('<tr><td style="padding:0 24px 24px 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111827;line-height:1.5;">')
+            a(f'&bull; <a href="{_h(s.get("url",""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">{_h(s["headline"])}</a>')
+            a('</td></tr>')
+
+    # Footer
+    a('<tr><td style="padding:24px 24px 28px 24px;border-top:1px solid #e5e7eb;margin-top:16px;">')
+    a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#6b7280;line-height:1.6;">{FOOTER_TEXT}</div>')
+    a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#9ca3af;line-height:1.6;margin-top:6px;">')
+    a(f'&copy; {date.year} SIGNAL. All rights reserved. &nbsp;|&nbsp; <a href="mailto:unsubscribe@example.com" style="color:#9ca3af;text-decoration:none;">Unsubscribe</a>')
+    a('</div></td></tr>')
+
+    a('</table>')
+    a('</td></tr>')
+    a('</table>')
+
+    return "\n".join(lines)
 
 
 def _newsletter_button(url: str, label: str = "Read story") -> str:
@@ -1240,107 +1409,6 @@ def _readability_key(s: dict):
     w = len(s.get("summary", "").split())
     band = 0 if 60 <= w <= 80 else (1 if w >= 40 else 2)
     return (band, -s.get("importance", 0), -w)
-
-
-def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id) -> str:
-    by_id = {s["id"]: s for s in stories}
-    ordered = sorted(stories, key=_readability_key)
-    big = ordered[0] if ordered else None
-    used = {big["id"]} if big else set()
-    if tool_id:
-        used.add(tool_id)
-    if early_id:
-        used.add(early_id)
-
-    # 5 THINGS: best-readable stories (still importance-weighted) after the big story.
-    top5 = [s for s in ordered if s["id"] not in used][:5]
-
-    # Category highlights: best per category not already shown.
-    highlights_by_cat = {}
-    for cat in NEW_CATEGORIES:
-        cands = [s for s in ordered if s["category"] == cat and s["id"] not in used]
-        if not cands:
-            continue
-        if cat == "products" and tool_id and tool_id in by_id:
-            highlights_by_cat[cat] = by_id[tool_id]
-        else:
-            highlights_by_cat[cat] = cands[0]
-
-    early = by_id.get(early_id) if early_id else None
-    whats_next = [
-        s for s in stories
-        if _future_phrases((s.get("headline", "") + " " + s.get("summary", "")).lower())
-        and s["id"] not in used
-    ][:2]
-
-    date_str = date.isoformat()
-    lines: list[str] = []
-    a = lines.append
-
-    a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f4f7;padding:0;">')
-    a('<tr><td align="center">')
-    a('<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:#ffffff;">')
-
-    # Masthead
-    a('<tr><td style="background:#0b1020;padding:32px 40px 26px 40px;">')
-    a('<div style="font-family:Georgia,serif;font-size:36px;font-weight:bold;letter-spacing:3px;color:#ffffff;">THE AI DAILY</div>')
-    a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#9aa6c0;margin-top:8px;">The signal from the world of artificial intelligence</div>')
-    a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#4facfe;margin-top:14px;letter-spacing:1px;">{date_str} &middot; EDITION 1</div>')
-    a('</td></tr>')
-
-    # Big story
-    if big:
-        a('<tr><td style="padding:26px 40px 6px 40px;background:#eef2ff;">')
-        a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;color:#2563eb;font-weight:bold;">THE BIG STORY</div>')
-        a('</td></tr>')
-        a(_newsletter_story_block(big, show_image=True))
-        a(_newsletter_button(big.get("url", ""), "Read the full story"))
-
-    # 5 THINGS
-    if top5:
-        a('<tr><td style="padding:28px 40px 4px 40px;border-top:1px solid #e7ebf2;">')
-        a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;letter-spacing:2px;color:#0b1020;font-weight:bold;">5 THINGS YOU SHOULD KNOW</div>')
-        a('</td></tr>')
-        for i, s in enumerate(top5, 1):
-            a(f'<tr><td style="padding:2px 40px 0 40px;"><span style="font-family:Georgia,serif;font-size:20px;color:#2563eb;">{i}.</span></td></tr>')
-            a(_newsletter_story_block(s, show_image=bool(s.get("image"))))
-
-    # Category highlights
-    for cat in NEW_CATEGORIES:
-        s = highlights_by_cat.get(cat)
-        if not s:
-            continue
-        a('<tr><td style="padding:28px 40px 4px 40px;border-top:1px solid #e7ebf2;">')
-        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:1px;color:#0b1020;font-weight:bold;">{_section_label(cat)}</div>')
-        a('</td></tr>')
-        a(_newsletter_story_block(s, show_image=bool(s.get("image"))))
-
-    # Early signal
-    if early:
-        a('<tr><td style="padding:28px 40px 4px 40px;border-top:1px solid #e7ebf2;">')
-        a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:1px;color:#b45309;font-weight:bold;">EARLY SIGNAL</div>')
-        a('</td></tr>')
-        a(_newsletter_story_block(early, show_image=False))
-
-    # What's next
-    if whats_next:
-        a('<tr><td style="padding:28px 40px 4px 40px;border-top:1px solid #e7ebf2;">')
-        a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:1px;color:#0b1020;font-weight:bold;">WHAT&rsquo;S NEXT</div>')
-        a('</td></tr>')
-        for s in whats_next:
-            a(f'<tr><td style="padding:6px 40px 0 40px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#1a2130;">')
-            a(f'&bull; <a href="{_h(s.get("url", ""))}" style="color:#1a2130;text-decoration:underline;">{_h(s["headline"])}</a></td></tr>')
-
-    # Footer
-    a('<tr><td style="padding:26px 40px 30px 40px;background:#0b1020;margin-top:24px;">')
-    a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#7b87a3;line-height:1.6;">{FOOTER_TEXT}</div>')
-    a('</td></tr>')
-
-    a('</table>')
-    a('</td></tr>')
-    a('</table>')
-
-    return "\n".join(lines)
 
 
 def write_newsletter(date: dt.date, stories: list[dict], tool_id, early_id) -> Path:
