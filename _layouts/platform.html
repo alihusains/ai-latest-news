@@ -1,0 +1,13 @@
+---
+layout: default
+---
+<link rel="stylesheet" href="{{ '/assets/css/platform.css' | relative_url }}">
+<script>
+  window.BASE_URL = '{{ '' | relative_url }}';
+</script>
+{{ content }}
+<script src="{{ '/assets/js/base-url.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/data.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/story.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/main.js' | relative_url }}"></script>

@@ -1,8 +1,6 @@
-title: AI Latest News
-description: Daily AI news digest, aggregated, deduped, classified, and summarized with citations.
+title: SIGNAL — The AI Daily
+description: Know what changed in AI. Daily editorial digest of the most significant AI developments.
 markdown: kramdown
-theme: minima
-permalink: /:categories/:title/
+permalink: pretty
 plugins:
   - jekyll-seo-tag
-  - jekyll-feed

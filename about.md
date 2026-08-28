@@ -1,43 +1,48 @@
 ---
-layout: page
+layout: platform
 title: About
 permalink: /about/
 ---
 
-This site is a daily AI news digest. Articles are aggregated from multiple sources, deduped, classified into categories, and summarized with citations.
+<div class="hero">
+  <div class="container">
+    <h1 class="hero-title">About SIGNAL</h1>
+    <p class="hero-subtitle">Know what changed in AI. A daily editorial digest of the most significant developments in artificial intelligence.</p>
+  </div>
+</div>
 
-## How it works
+<div class="container">
+  <div class="section">
+    <div class="section-header"><h2 class="section-title">How it works</h2></div>
+    <p style="font-size:var(--text-body);color:var(--color-text-secondary);line-height:1.7;max-width:720px">
+      SIGNAL aggregates stories from RSS feeds, Reddit JSON, GitHub trending, and Nitter for X accounts. A Python pipeline deduplicates, classifies, and summarizes each story with citations. The result is a clean, scannable daily brief designed to be read in under 5 minutes.
+    </p>
+  </div>
 
-### Sources
+  <div class="section">
+    <div class="section-header"><h2 class="section-title">Categories</h2></div>
+    <div class="grid grid--2">
+      <div class="card"><div class="card-body"><span class="card-category" data-cat="agents">Agents</span><p style="color:var(--color-text-secondary);margin:var(--space-sm) 0 0">Autonomous systems, tool use, and agentic workflows.</p></div></div>
+      <div class="card"><div class="card-body"><span class="card-category" data-cat="models">Models</span><p style="color:var(--color-text-secondary);margin:var(--space-sm) 0 0">New releases, research papers, and benchmark results.</p></div></div>
+      <div class="card"><div class="card-body"><span class="card-category" data-cat="products">Products</span><p style="color:var(--color-text-secondary);margin:var(--space-sm) 0 0">Apps, hardware, open-source tools, and developer platforms.</p></div></div>
+      <div class="card"><div class="card-body"><span class="card-category" data-cat="business">Business</span><p style="color:var(--color-text-secondary);margin:var(--space-sm) 0 0">Funding, policy, compute deals, and market shifts.</p></div></div>
+    </div>
+  </div>
 
-- **RSS feeds**: TechCrunch AI, The Verge, Ars Technica, MIT Technology Review, Wired, ZDNet, Hacker News, Towards Data Science, and more
-- **Reddit JSON**: Public JSON endpoints from r/MachineLearning, r/artificial, r/LocalLLaMA, r/hardware, r/science
-- **GitHub trending**: Daily trending repositories from GitHub
-- **Nitter**: X.com (Twitter) accounts via Nitter instances
+  <div class="section">
+    <div class="section-header"><h2 class="section-title">Adding Sources</h2></div>
+    <p style="font-size:var(--text-body);color:var(--color-text-secondary);line-height:1.7;max-width:720px">
+      Sources are defined in <code>sources.yaml</code> in the repository. To add a new source, edit the file and add the source name, type, URL, and category hint. The pipeline will pick it up on the next run.
+    </p>
+  </div>
 
-### Categories
-
-- IT
-- Hardware
-- Science
-- Medical
-- AI Research
-- Open Source
-- Acquisitions
-- Community
-
-### Pipeline
-
-A Python pipeline runs daily, fetching new content from all sources, deduplicating articles, classifying them into categories, and generating summaries with citations. The output is written as markdown files to `content/daily/`.
-
-### Adding Sources
-
-Sources are defined in <code>sources.yaml</code> in the repository. To add a new source:
-
-1. Edit <code>sources.yaml</code>
-2. Add the source name, type (rss, reddit, x, web), URL, and category hint
-3. Commit the change
-
-### Repository
-
-This site is open source. View the code and contribute on [GitHub](https://github.com/yourusername/ai-latest-news).
+  <div class="newsletter-box">
+    <h2>Never miss what changed in AI.</h2>
+    <p>Get The AI Daily delivered to your inbox every morning.</p>
+    <form class="newsletter-form" onsubmit="event.preventDefault(); this.querySelector('.newsletter-status').textContent='Delivery coming soon.'">
+      <input type="email" placeholder="you@example.com" required aria-label="Email address">
+      <button type="submit">Get the AI Daily</button>
+    </form>
+    <p class="newsletter-status"></p>
+  </div>
+</div>

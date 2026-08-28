@@ -249,13 +249,40 @@ def _xml_node_to_item(node, kind: str, link_tag: str, title_tag: str, desc_tag: 
     title = text(title_tag)
     desc = text(desc_tag)
     published = text("pubDate") or text("published") or text("updated")
+    # media:thumbnail / media:content / enclosure carry the image URL.
+    image = ""
+    for child in node.iter():
+        tag = child.tag
+        url = child.attrib.get("url") or child.attrib.get("href") or ""
+        if url and (tag.endswith("thumbnail") or tag.endswith("content") or tag.endswith("enclosure")):
+            image = url
+            break
     return {
         "title": title,
         "link": link.strip(),
         "summary": desc,
+        "image": image or None,
         "published": _parse_time(published),
         "date": published,
     }
+
+
+def _feedparser_image(entry) -> str | None:
+    """Pull the first usable image URL from feedparser media/enclosure fields."""
+    candidates: list[str] = []
+    for key in ("media_content", "media_thumbnail"):
+        for media in entry.get(key, []) or []:
+            url = media.get("url") or media.get("href") or ""
+            if url:
+                candidates.append(url)
+    for enc in entry.get("enclosures", []) or []:
+        url = enc.get("href") or enc.get("url") or ""
+        if url:
+            candidates.append(url)
+    explicit = entry.get("image") or entry.get("media_image", {}).get("url", "")
+    if explicit:
+        candidates.append(explicit)
+    return next((c for c in candidates if c), None)
 
 
 def _fetch_rss(url: str) -> list[dict]:
@@ -272,15 +299,15 @@ def _fetch_rss(url: str) -> list[dict]:
                 or entry.get("subtitle", "")
             )
             published = entry.get("published", "") or entry.get("updated", "")
-            items.append(
-                {
-                    "title": title,
-                    "link": link,
-                    "summary": summary,
-                    "published": _parse_time(published),
-                    "date": published,
-                }
-            )
+            item = {
+                "title": title,
+                "link": link,
+                "summary": summary,
+                "image": _feedparser_image(entry),
+                "published": _parse_time(published),
+                "date": published,
+            }
+            items.append(item)
     else:
         items = _parse_xml_items(raw)
     return items
@@ -298,11 +325,16 @@ def _fetch_reddit(url: str) -> list[dict]:
         if permalink.startswith("/r/"):
             link = "https://old.reddit.com" + permalink
         created = data.get("created_utc", 0)
+        image = ""
+        previews = data.get("preview", {}).get("images", []) if isinstance(data, dict) else []
+        if previews:
+            image = previews[0].get("source", {}).get("url", "")
         items.append(
             {
                 "title": title,
                 "link": link,
                 "summary": data.get("selftext", "") or data.get("title", ""),
+                "image": image or None,
                 "published": float(created),
                 "date": _epoch_to_date(created),
             }
@@ -617,6 +649,732 @@ def render(items: list[dict], date_str: str) -> str:
 
 
 # --------------------------------------------------------------------------- #
+# Pipeline v2: AI-only editorial engine
+# --------------------------------------------------------------------------- #
+NEW_CATEGORIES = ["agents", "models", "products", "business"]
+
+CATEGORY_LABELS = {
+    "agents": "Agents",
+    "models": "Models & Research",
+    "products": "Products & Open Source",
+    "business": "Business & Infrastructure",
+}
+
+# Deterministic taxonomy scoring: category -> list of (term, weight).
+CATEGORY_SCORES = {
+    "business": [
+        ("raises", 3), ("raised", 3), ("funding", 3), ("series ", 3),
+        ("valuation", 3), ("investment", 3), ("investor", 3), ("raised funding", 3),
+        ("acquisition", 3), ("acquire", 3), ("acquires", 3), ("acquired", 3),
+        ("merger", 3), ("m&a", 3), ("buyout", 3), ("snaps up", 3), ("to buy", 2),
+        ("buy into", 2), ("partnership", 2), ("partner", 2), ("collaborat", 2),
+        ("teams with", 2), ("joins forces", 2), ("nvidia", 2), ("chip", 2),
+        ("gpu", 2), ("tpu", 2), ("data center", 2), ("datacenter", 2),
+        ("semiconductor", 2), ("infrastructur", 2), ("enterprise", 2),
+        ("compute", 1), ("round", 1), ("deal", 1), ("cfo", 1),
+    ],
+    "agents": [
+        ("agent", 3), ("agentic", 3), ("multi-agent", 3), ("ai agents", 3),
+        ("computer use", 3), ("orchestrat", 3), ("autonomous agent", 3),
+        ("coding agent", 3), ("copilot", 2), ("mcp", 2), ("tool use", 2),
+        ("tool calling", 2), ("swarm", 2), ("workflow", 2), ("reasoning agent", 3),
+        ("auto", 2), ("automation", 2), ("autonomous", 2),
+    ],
+    "models": [
+        ("model", 3), ("llm", 3), ("gpt", 3), ("claude", 3), ("gemini", 3),
+        ("reasoning", 2), ("multimodal", 2), ("benchmark", 2), ("fine-tun", 2),
+        ("training", 2), ("inference", 2), ("alignment", 2), ("open weights", 2),
+        ("parameter", 2), ("transformer", 2), ("pytorch", 2), ("preview", 1),
+        ("research", 1), ("state-of-the-art", 2), ("ag", 1), ("diffusion", 1),
+    ],
+    "products": [
+        ("app", 2), ("sdk", 2), ("api", 2), ("product", 2), ("launch", 2),
+        ("releases", 2), ("github", 2), ("repository", 2), ("framework", 2),
+        ("dataset", 2), ("plugin", 2), ("extension", 2), ("open source", 2),
+        ("open-source", 2), ("opensource", 2), ("tool", 2), ("openai", 1),
+        ("available", 1), ("toolkit", 2), ("library", 1), ("sdks", 2),
+    ],
+}
+# Tie-break priority when two categories score equally.
+CATEGORY_PRIORITY = ["business", "agents", "models", "products"]
+
+TOPIC_TAGS = {
+    "Reasoning": ["reasoning", "chain-of-thought"],
+    "Multimodal": ["multimodal", "vision-language", "text-to-image", "vlm"],
+    "Coding": ["coding", "code generation", "code assistant", "code completion", "programming"],
+    "Inference": ["inference", "latency", "quantization", "serving", "speculative decoding"],
+    "Robotics": ["robot", "robotic", "robotics", "embodied", "humanoid"],
+    "AI Safety": ["safety", "alignment", "interpretability", "jailbreak", "red team", "guardrail"],
+    "Agents": ["agent", "agentic", "multi-agent", "computer use", "orchestration"],
+    "LLMs": ["llm", "large language model", "language model", "gpt", "model"],
+    "Training": ["training", "pretrain", "fine-tun", "distill", "synthetic data"],
+    "Open Source": ["open source", "open-source", "open weights", "github", "repo"],
+    "Speech": ["speech", "transcription", "tts", "voice", "audio", "asr"],
+    "Vision": ["vision", "image", "video generation", "computer vision", "diffusion"],
+    "Benchmarks": ["benchmark", "leaderboard", "state of the art", "state-of-the-art", "evals", "evaluation"],
+    "Edge": ["edge", "on-device", "local model", "mobile", "small model"],
+}
+TOPIC_COUNT = 3
+
+INDUSTRY_TAGS = {
+    "Healthcare": ["health", "medical", "clinical", "fda", "patient", "hospital", "drug", "biotech", "pharma"],
+    "Finance": ["finance", "financial", "bank", "trading", "insurance", "payment", "fintech"],
+    "Legal": ["legal", "law", "lawyer", "court", "judge", "litigation", "compliance"],
+    "Education": ["education", "school", "student", "teacher", "university", "classroom"],
+    "Retail": ["retail", "e-commerce", "ecommerce", "commerce", "shopping", "advertis"],
+    "Manufacturing": ["manufactur", "factory", "supply chain", "industrial", "warehouse", "logistics"],
+    "Automotive": ["autonomous driving", "electric vehicle", "self-driving", "automotive", "vehicle"],
+    "Government": ["government", "policy", "regulation", "lawmaker", "public sector", "defense"],
+    "Security": ["security", "cyber", "hack", "breach", "ransomware", "vulnerability"],
+    "Energy": ["energy", "power grid", "solar", "battery", "climate"],
+    "Media": ["media", "publishing", "journalism", "newsroom"],
+}
+INDUSTRY_COUNT = 2
+
+# Priority order matters: most specific first so e.g. "raises" -> Funding.
+STORY_TYPE_RULES = [
+    ("Acquisition", ["acquire", "acquisition", "acquired", "merger", "m&a", "buyout", "snaps up", "to buy"]),
+    ("Funding", ["raises", "raised", "series ", "funding", "valuation", "investment round", "venture round"]),
+    ("Hardware", ["chip", "gpu", "tpu", "nvidia", "silicon", "processor", "semiconductor", "data center", "compute cluster", "wafer"]),
+    ("Partnership", ["partnership", "partner", "collaborat", "teams with", "joins forces", "alliance"]),
+    ("Security", ["security", "hack", "breach", "vulnerability", "ransomware", "exploit", "jailbreak", "rogue", "malicious"]),
+    ("Policy", ["regulation", "regulator", "government", "lawsuit", "court", "ban", "executive order", "ai act", "law"]),
+    ("Breakthrough", ["breakthrough", "state-of-the-art", "state of the art", "milestone", "world's first", "solves"]),
+    ("Benchmark", ["benchmark", "leaderboard", "sota", "outperform", "beats", "top of the"]),
+    ("Research", ["research", "paper", "study", "experiment", "researchers", "preprint", "arxiv"]),
+    ("Open Source", ["open source", "open-source", "open weights", "open-sourced", "open model", "open-weights"]),
+    ("Repository", ["github", "repository", "trending", "repo"]),
+    ("Release", ["releases", "release", "released", "out now", "publicly available", "rolls out"]),
+    ("Launch", ["launch", "launches", "launched", "unveil", "debut", "introduces", "now available", "ship"]),
+    ("Product Update", ["update", "adds", "adds support", "feature", "improves", "now lets", "upgrade"]),
+]
+DEFAULT_STORY_TYPE = "Product Update"
+
+# Non-AI consumer/gaming content is always dropped, even from AI-branded feeds.
+DROP_TERMS = [
+    "coupon", "coupons", "promo", "promos", "discount", "discounts", "% off",
+    "save up to", " off right now", "labor day", "black friday", "cyber monday",
+    "price cut", "price cuts", "best deals", "savings", "deals", "promo code",
+    "discount code", "coupon code", "video game", "videogame", "gameplay",
+    "xbox", "playstation", "nintendo", "gaming", "console game",
+]
+
+# Source-name based trust levels for the AI-only gate. Feeds not in either list
+# are keyword-gated on the item text.
+TRUSTED_AI_FEEDS = {
+    "techcrunch ai", "the verge ai", "mit tech review ai", "unite ai",
+    "ai weekly", "ai news", "towards data science", "analytics vidhya",
+    "kdnuggets", "synced review", "jiqizhixin", "reddit machinelearning",
+    "reddit artificial", "reddit localllama",
+}
+OFFICIAL_BLOGS = {
+    "openai blog", "deepmind blog", "google ai blog", "hugging face blog",
+}
+_X_ACCOUNTS = {"x karpathy", "x ylecun", "x andrew ng", "x jim fan", "x demis hassabis"}
+
+# Source weight buckets for importance scoring.
+SOURCE_WEIGHTS = [
+    (["openai", "deepmind", "anthropic", "hugging face", "huggingface", "google ai", "google deepmind"], 5),
+    (["techcrunch", "the verge", "arstechnica", "ars technica", "mit technology review", "wired", "zdnet", "infoq"], 3),
+]
+
+
+def _source_weight(source_name: str) -> int:
+    name = (source_name or "").lower()
+    for prefixes, weight in SOURCE_WEIGHTS:
+        if any(p in name for p in prefixes):
+            return weight
+    return 2
+
+
+def _is_trusted_ai_feed(source_name: str, hint: str | None) -> bool:
+    name = (source_name or "").strip().lower()
+    hint = (hint or "").strip().lower()
+    if hint == "research":
+        return True
+    if name in OFFICIAL_BLOGS or name in TRUSTED_AI_FEEDS or name in _X_ACCOUNTS:
+        return True
+    return False
+
+
+def _is_droppable(text_l: str) -> bool:
+    for term in DROP_TERMS:
+        if re.search(r"\b" + re.escape(term) + r"\b", text_l):
+            return True
+    return False
+
+
+def _passes_ai_gate(item: dict, source_name: str, hint: str | None) -> bool:
+    """Absolute AI-only rule. Drop non-AI; keep AI-relevant or AI-branded feeds."""
+    text_l = (item.get("title", "") + " " + item.get("summary", "")).lower()
+    if _is_droppable(text_l):
+        return False
+    if _is_trusted_ai_feed(source_name, hint):
+        return True
+    return is_ai(item.get("title", "") + " " + item.get("summary", ""))
+
+
+def _category_score(text_l: str) -> str:
+    scores = {}
+    for cat, rules in CATEGORY_SCORES.items():
+        total = 0
+        for term, weight in rules:
+            if re.search(r"\b" + re.escape(term) + r"\b", text_l):
+                total += weight
+        scores[cat] = total
+    best = max(scores.values())
+    if best == 0:
+        return "models"  # default: an AI story is usually about models
+    for cat in CATEGORY_PRIORITY:  # priority order on ties
+        if scores[cat] == best:
+            return cat
+    return "models"
+
+
+def _extract_tags(text_l: str) -> list[str]:
+    tags = []
+    for tag, terms in TOPIC_TAGS.items():
+        if any(t in text_l for t in terms):
+            tags.append(tag)
+        if len(tags) >= TOPIC_COUNT:
+            break
+    return tags
+
+
+def _extract_industry(text_l: str) -> list[str]:
+    found = []
+    for tag, terms in INDUSTRY_TAGS.items():
+        if any(t in text_l for t in terms):
+            found.append(tag)
+        if len(found) >= INDUSTRY_COUNT:
+            break
+    return found
+
+
+def _story_type(text_l: str) -> str:
+    for stype, terms in STORY_TYPE_RULES:
+        if any(re.search(r"\b" + re.escape(t) + r"\b", text_l) for t in terms):
+            return stype
+    return DEFAULT_STORY_TYPE
+
+
+def _importance(source_weight: int, source_count: int, text_l: str) -> int:
+    score = source_weight
+    if source_count >= 3:
+        score += 2
+    elif source_count == 2:
+        score += 1
+    boosts = ["release", "launch", "raises", "acquire", "breakthrough",
+              "state-of-the-art", "state of the art"]
+    hits = sum(1 for b in boosts if b in text_l)
+    if hits >= 1:
+        score += 1
+    if hits >= 3:
+        score += 1
+    return max(1, min(5, score))
+
+
+def canonical_url(url: str) -> str:
+    link = (url or "").strip().lower().rstrip("/")
+    parsed = urllib.parse.urlparse(link)
+    return parsed._replace(query="", fragment="").geturl()
+
+
+def cluster_items(items: list[dict]) -> list[list[dict]]:
+    """Merge near-duplicate titles (across sources) into cluster groups."""
+    clusters: list[list[dict]] = []
+    labels: list[str] = []
+    idx: dict[str, set[int]] = defaultdict(set)
+    THRESHOLD = 0.78
+    for item in items:
+        nt = normalize_title(item.get("title", ""))
+        url = canonical_url(item.get("link", ""))
+        tokens = {t for t in nt.split() if len(t) >= 4}
+        candidates: set[int] = set()
+        for tok in tokens:
+            candidates |= idx.get(tok, set())
+        match = None
+        for ci in candidates:
+            if nt and difflib.SequenceMatcher(None, nt, labels[ci]).ratio() >= THRESHOLD:
+                match = ci
+                break
+        if match is None and url:
+            for ci, cluster in enumerate(clusters):
+                if any(canonical_url(c.get("link", "")) == url for c in cluster):
+                    match = ci
+                    break
+        if match is None:
+            match = len(clusters)
+            clusters.append([])
+            labels.append(nt)
+        clusters[match].append(item)
+        for tok in tokens:
+            idx[tok].add(match)
+    return clusters
+
+
+def _clean_body(item: dict) -> str:
+    return clean_text(item.get("summary", "")) or clean_text(item.get("description", "")) or ""
+
+
+def _iso_ts(epoch) -> str:
+    try:
+        epoch = float(epoch or 0)
+    except (TypeError, ValueError):
+        return ""
+    if epoch <= 0:
+        return ""
+    return dt.datetime.fromtimestamp(epoch, tz=dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _sentences(text: str) -> list[str]:
+    return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
+
+
+def _fit_words(text: str, lo: int = 60, hi: int = 80) -> str:
+    text = _WS_RE.sub(" ", text).strip().rstrip(".")
+    words = text.split()
+    if not words:
+        return ""
+    if len(words) <= hi:
+        return text
+    acc = []
+    count = 0
+    for sent in _sentences(text):
+        n = len(sent.split())
+        if count + n > hi and count >= lo:
+            break
+        acc.append(sent)
+        count += n
+    result = " ".join(acc).strip().rstrip(".")
+    wlen = len(result.split())
+    if wlen < lo or wlen > hi:  # no clean sentence boundary -> hard word cap
+        result = " ".join(words[:hi]).rstrip(".,;:")
+    return result
+
+
+def _build_summary(cluster: list[dict]) -> str:
+    pieces: list[str] = []
+    for it in cluster:
+        for field in ("summary", "description", "subtitle"):
+            body = clean_text(it.get(field, ""))
+            if body and len(body.split()) >= 5:
+                pieces.append(body)
+    if not pieces:  # rare: everything terse; use the longest available body
+        all_bodies = [clean_text(it.get(f, "")) for it in cluster for f in ("summary", "description")]
+        all_bodies = [b for b in all_bodies if b]
+        if all_bodies:
+            pieces.append(max(all_bodies, key=lambda b: len(b.split())))
+    pieces.sort(key=lambda p: len(p.split()), reverse=True)
+    kept: list[str] = []
+    for p in pieces:
+        if any(
+            difflib.SequenceMatcher(None, normalize_title(p), normalize_title(q)).ratio() > 0.92
+            for q in kept
+        ):
+            continue
+        kept.append(p)
+        if len(" ".join(kept).split()) >= 74:
+            break
+    if not kept:  # absolute fallback
+        kept.append(clean_text(cluster[0].get("title", "")))
+    return _fit_words(" ".join(kept), 60, 80)
+
+
+def _subheadline(summary: str, headline: str) -> str:
+    sents = _sentences(summary)
+    base = sents[0] if sents else headline
+    if len(base.split()) > 18:
+        base = " ".join(base.split()[:18]).rstrip(".,;:")
+    return base
+
+
+def _pick_image(cluster: list[dict]) -> str | None:
+    ordered = sorted(
+        cluster,
+        key=lambda it: _source_weight(it.get("source", "")),
+        reverse=True,
+    )
+    for it in ordered:
+        if it.get("image"):
+            return it["image"]
+    return None
+
+
+def _slugify(text: str, seen: set[str]) -> str:
+    base = normalize_title(text).replace(" ", "-").strip("-")[:48] or "story"
+    slug = base
+    n = 2
+    while slug in seen:
+        slug = f"{base}-{n}"
+        n += 1
+    seen.add(slug)
+    return slug
+
+
+def _why_it_matters(story_type: str, category: str) -> str:
+    label = CATEGORY_LABELS[category]
+    templates = {
+        "Funding": f"Fresh capital reflects sustained investor appetite for {label}, which reshapes the competitive landscape.",
+        "Acquisition": f"The deal consolidates {label} and signals how AI assets are now being valued.",
+        "Hardware": f"Compute supply and infrastructure decisions here determine which {label} products become viable.",
+        "Partnership": f"This alliance should expand where and how {label} is deployed for real users.",
+        "Security": f"This exposes live risk surfaces for AI systems, raising the stakes on governance and safety.",
+        "Policy": f"Regulatory movement sets the boundaries within which {label} can scale commercially.",
+        "Breakthrough": f"A step change like this resets expectations for what is achievable in {label}.",
+        "Benchmark": f"New results push the bar on what counts as the state of the art in {label}.",
+        "Research": f"The work advances the {label} frontier, with downstream implications for real products.",
+        "Open Source": f"An open release lowers adoption barriers and speeds iteration across the {label} ecosystem.",
+        "Repository": f"A trending repository signals strong developer interest and rapid adoption within {label}.",
+        "Release": f"A mainstream release broadens the practical reach of {label} beyond research circles.",
+        "Launch": f"This launch expands the practical surface of {label} for everyday users and teams.",
+        "Product Update": f"An incremental update keeps {label} capability moving forward for existing users.",
+    }
+    return templates.get(story_type, f"This is a signal of continued momentum in {label}.")
+
+
+def _story_from_cluster(cluster: list[dict], seen_ids: set[str]) -> dict:
+    def keyf(it):
+        return (_source_weight(it.get("source", "")), len(clean_text(it.get("title", ""))))
+
+    best = max(cluster, key=keyf)
+    text_l = " ".join(
+        clean_text(it.get("title", "")) + " " + _clean_body(it) for it in cluster
+    ).lower()
+
+    headline = clean_text(best.get("title", "")) or clean_text(cluster[-1].get("title", "")) or "Untitled story"
+    summary = _build_summary(cluster)
+    subheadline = _subheadline(summary, headline)
+    category = _category_score(text_l)
+    story_type = _story_type(text_l)
+    tags = _extract_tags(text_l)
+    industry = _extract_industry(text_l)
+    source_count = len(cluster)
+    importance = _importance(_source_weight(best.get("source", "")), source_count, text_l)
+
+    sources = [
+        {"name": it.get("source", ""), "url": it.get("link", ""), "published": _iso_ts(it.get("published", 0))}
+        for it in cluster
+        if it.get("link")
+    ] or [{"name": best.get("source", ""), "url": best.get("link", ""), "published": _iso_ts(best.get("published", 0))}]
+
+    published_epochs = [it.get("published", 0) for it in cluster]
+    published_epochs = [e for e in published_epochs if e]
+    first_epoch = min(published_epochs) if published_epochs else best.get("published", 0)
+
+    sid = _slugify(headline, seen_ids)
+    return {
+        "id": sid,
+        "headline": headline,
+        "subheadline": subheadline,
+        "summary": summary,
+        "why_it_matters": _why_it_matters(story_type, category),
+        "category": category,
+        "tags": tags,
+        "industry": industry,
+        "story_type": story_type,
+        "importance": importance,
+        "tier": "standard",
+        "sources": sources,
+        "source_count": source_count,
+        "image": _pick_image(cluster),
+        "url": best.get("link", ""),
+        "published_at": _iso_ts(first_epoch),
+        "reading_time": f"{max(1, round(len(summary.split()) / 180))} min",
+        "is_tool_of_day": False,
+        "is_early_signal": False,
+    }
+
+
+def _pick_tool_of_day(stories: list[dict]) -> str | None:
+    tool_types = {"Repository", "Open Source", "Release", "Launch", "Product Update"}
+    candidates = [
+        s for s in stories
+        if s["category"] == "products" and s["story_type"] in tool_types
+    ]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda s: s["importance"])["id"]
+
+
+def _pick_early_signal(stories: list[dict], exclude: str | None) -> str | None:
+    candidates = []
+    for s in stories:
+        if s["id"] == exclude:
+            continue
+        if s["story_type"] in {"Benchmark", "Repository"}:
+            candidates.append(s)
+        elif s["importance"] >= 4 and s["source_count"] >= 2:
+            candidates.append(s)
+    if not candidates:
+        return None
+    return max(candidates, key=lambda s: s["importance"])["id"]
+
+
+def build_stories(items: list[dict]) -> tuple[list[dict], int, str | None, str | None]:
+    """Apply the AI-only gate, cluster into stories, score + tier, pick highlights."""
+    kept: list[dict] = []
+    dropped = 0
+    for it in items:
+        if _passes_ai_gate(it, it.get("source", ""), it.get("category_hint")):
+            kept.append(it)
+        else:
+            dropped += 1
+
+    clusters = cluster_items(kept)
+    seen_ids: set[str] = set()
+    stories = [_story_from_cluster(c, seen_ids) for c in clusters if c]
+
+    # Top-3 by importance are always "top" regardless of raw score.
+    top3 = {s["id"] for s in sorted(stories, key=lambda s: s["importance"], reverse=True)[:3]}
+    for s in stories:
+        if s["importance"] >= 5 or s["id"] in top3:
+            s["tier"] = "top"
+        elif s["importance"] >= 4:
+            s["tier"] = "major"
+        else:
+            s["tier"] = "standard"
+
+    tool_id = _pick_tool_of_day(stories)
+    early_id = _pick_early_signal(stories, exclude=tool_id)
+    for s in stories:
+        s["is_tool_of_day"] = s["id"] == tool_id
+        s["is_early_signal"] = s["id"] == early_id
+
+    order = {c: i for i, c in enumerate(NEW_CATEGORIES)}
+    stories.sort(key=lambda s: (order.get(s["category"], 9), -s["importance"]))
+    return stories, dropped, tool_id, early_id
+
+
+def write_json_output(stories: list[dict], tool_id, early_id, date_str: str) -> Path:
+    total_words = sum(len((s.get("summary") or "").split()) for s in stories)
+    data = {
+        "date": date_str,
+        "edition": "The AI Daily",
+        "platform": "SIGNAL",
+        "stats": {"total": len(stories), "reading_time_min": max(1, round(total_words / 200))},
+        "stories": stories,
+        "tool_of_day": tool_id,
+        "early_signal": early_id,
+    }
+    data_dir = ROOT_DIR / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    daily_path = data_dir / f"{date_str}.json"
+    daily_path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    (data_dir / "latest.json").write_text(
+        json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    return daily_path
+
+
+FOOTER_TEXT = "made by Ali Husain Sorathiya's AI News Agent"
+
+
+def _h(text) -> str:
+    return html.escape(text or "")
+
+
+def _section_label(category: str) -> str:
+    return {
+        "agents": "AGENTS",
+        "models": "MODELS & RESEARCH",
+        "products": "PRODUCTS & OPEN SOURCE",
+        "business": "BUSINESS & INFRASTRUCTURE",
+    }.get(category, category.upper())
+
+
+def _newsletter_image(src: str, alt: str, w: int = 560) -> str:
+    if not src:
+        return ""
+    return (
+        f'<img src="{_h(src)}" width="{w}" alt="{_h(alt)}" '
+        f'style="display:block;width:100%;max-width:{w}px;height:auto;border:0;border-radius:8px;">'
+    )
+
+
+def _newsletter_story_block(story: dict, show_image: bool = True) -> str:
+    img = _newsletter_image(story.get("image", ""), story["headline"]) if show_image else ""
+    img_cell = (
+        f'<tr><td style="padding:20px 40px 0 40px;">{img}</td></tr>' if img else ""
+    )
+    return (
+        f"{img_cell}"
+        f'<tr><td style="padding:16px 40px 0 40px;">'
+        f'<span style="font-family:Arial,Helvetica,sans-serif;font-size:10px;letter-spacing:1px;color:#8a93a6;text-transform:uppercase;">'
+        f"{_h(_section_label(story['category']))} &middot; {_h(story.get('story_type',''))}</span></td></tr>"
+        f'<tr><td style="padding:6px 40px 0 40px;">'
+        f'<a href="{_h(story.get("url", ""))}" style="color:#1a2130;text-decoration:none;">'
+        f'<h2 style="font-family:Georgia,serif;font-size:22px;line-height:1.25;margin:0;color:#1a2130;">{_h(story["headline"])}</h2></a></td></tr>'
+        f'<tr><td style="padding:10px 40px 0 40px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#4b5565;">'
+        f"{_h(story.get('summary',''))}</td></tr>"
+        f'<tr><td style="padding:8px 40px 0 40px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;color:#6b7690;">'
+        f"<strong>Why it matters:</strong> {_h(story.get('why_it_matters',''))}</td></tr>"
+    )
+
+
+def _newsletter_button(url: str, label: str = "Read story") -> str:
+    return (
+        '<tr><td style="padding:14px 40px 0 40px;">'
+        f'<table role="presentation" cellspacing="0" cellpadding="0"><tr><td '
+        f'style="border-radius:6px;background:#2563eb;">'
+        f'<a href="{_h(url)}" style="display:inline-block;padding:11px 22px;color:#ffffff;'
+        f'font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;text-decoration:none;">{_h(label)}</a>'
+        f"</td></tr></table></td></tr>"
+    )
+
+
+def _future_phrases(text: str) -> bool:
+    return any(
+        p in text
+        for p in [
+            "will", "next week", "next month", "upcoming", "expected",
+            "set to", "later this", "on the horizon", "plans to", "scheduled",
+            "in the coming", "due to",
+        ]
+    )
+
+
+def _readability_key(s: dict):
+    """Rank for newsletter display: prefer stories with 60-80-word summaries
+    so featured items read well (spec: each featured item is 60-80 words)."""
+    w = len(s.get("summary", "").split())
+    band = 0 if 60 <= w <= 80 else (1 if w >= 40 else 2)
+    return (band, -s.get("importance", 0), -w)
+
+
+def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id) -> str:
+    by_id = {s["id"]: s for s in stories}
+    ordered = sorted(stories, key=_readability_key)
+    big = ordered[0] if ordered else None
+    used = {big["id"]} if big else set()
+    if tool_id:
+        used.add(tool_id)
+    if early_id:
+        used.add(early_id)
+
+    # 5 THINGS: best-readable stories (still importance-weighted) after the big story.
+    top5 = [s for s in ordered if s["id"] not in used][:5]
+
+    # Category highlights: best per category not already shown.
+    highlights_by_cat = {}
+    for cat in NEW_CATEGORIES:
+        cands = [s for s in ordered if s["category"] == cat and s["id"] not in used]
+        if not cands:
+            continue
+        if cat == "products" and tool_id and tool_id in by_id:
+            highlights_by_cat[cat] = by_id[tool_id]
+        else:
+            highlights_by_cat[cat] = cands[0]
+
+    early = by_id.get(early_id) if early_id else None
+    whats_next = [
+        s for s in stories
+        if _future_phrases((s.get("headline", "") + " " + s.get("summary", "")).lower())
+        and s["id"] not in used
+    ][:2]
+
+    date_str = date.isoformat()
+    lines: list[str] = []
+    a = lines.append
+
+    a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f4f7;padding:0;">')
+    a('<tr><td align="center">')
+    a('<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:#ffffff;">')
+
+    # Masthead
+    a('<tr><td style="background:#0b1020;padding:32px 40px 26px 40px;">')
+    a('<div style="font-family:Georgia,serif;font-size:36px;font-weight:bold;letter-spacing:3px;color:#ffffff;">THE AI DAILY</div>')
+    a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#9aa6c0;margin-top:8px;">The signal from the world of artificial intelligence</div>')
+    a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#4facfe;margin-top:14px;letter-spacing:1px;">{date_str} &middot; EDITION 1</div>')
+    a('</td></tr>')
+
+    # Big story
+    if big:
+        a('<tr><td style="padding:26px 40px 6px 40px;background:#eef2ff;">')
+        a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;color:#2563eb;font-weight:bold;">THE BIG STORY</div>')
+        a('</td></tr>')
+        a(_newsletter_story_block(big, show_image=True))
+        a(_newsletter_button(big.get("url", ""), "Read the full story"))
+
+    # 5 THINGS
+    if top5:
+        a('<tr><td style="padding:28px 40px 4px 40px;border-top:1px solid #e7ebf2;">')
+        a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;letter-spacing:2px;color:#0b1020;font-weight:bold;">5 THINGS YOU SHOULD KNOW</div>')
+        a('</td></tr>')
+        for i, s in enumerate(top5, 1):
+            a(f'<tr><td style="padding:2px 40px 0 40px;"><span style="font-family:Georgia,serif;font-size:20px;color:#2563eb;">{i}.</span></td></tr>')
+            a(_newsletter_story_block(s, show_image=bool(s.get("image"))))
+
+    # Category highlights
+    for cat in NEW_CATEGORIES:
+        s = highlights_by_cat.get(cat)
+        if not s:
+            continue
+        a('<tr><td style="padding:28px 40px 4px 40px;border-top:1px solid #e7ebf2;">')
+        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:1px;color:#0b1020;font-weight:bold;">{_section_label(cat)}</div>')
+        a('</td></tr>')
+        a(_newsletter_story_block(s, show_image=bool(s.get("image"))))
+
+    # Early signal
+    if early:
+        a('<tr><td style="padding:28px 40px 4px 40px;border-top:1px solid #e7ebf2;">')
+        a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:1px;color:#b45309;font-weight:bold;">EARLY SIGNAL</div>')
+        a('</td></tr>')
+        a(_newsletter_story_block(early, show_image=False))
+
+    # What's next
+    if whats_next:
+        a('<tr><td style="padding:28px 40px 4px 40px;border-top:1px solid #e7ebf2;">')
+        a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:1px;color:#0b1020;font-weight:bold;">WHAT&rsquo;S NEXT</div>')
+        a('</td></tr>')
+        for s in whats_next:
+            a(f'<tr><td style="padding:6px 40px 0 40px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#1a2130;">')
+            a(f'&bull; <a href="{_h(s.get("url", ""))}" style="color:#1a2130;text-decoration:underline;">{_h(s["headline"])}</a></td></tr>')
+
+    # Footer
+    a('<tr><td style="padding:26px 40px 30px 40px;background:#0b1020;margin-top:24px;">')
+    a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#7b87a3;line-height:1.6;">{FOOTER_TEXT}</div>')
+    a('</td></tr>')
+
+    a('</table>')
+    a('</td></tr>')
+    a('</table>')
+
+    return "\n".join(lines)
+
+
+def write_newsletter(date: dt.date, stories: list[dict], tool_id, early_id) -> Path:
+    html_str = build_newsletter_html(date, stories, tool_id, early_id)
+    doc = (
+        '<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">'
+        '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+        '<meta name="x-apple-disable-message-reformatting">'
+        '<title>THE AI DAILY</title></head>'
+        f'<body style="margin:0;padding:0;background:#f2f4f7;">{html_str}</body></html>'
+    )
+    news_dir = ROOT_DIR / "newsletter"
+    news_dir.mkdir(parents=True, exist_ok=True)
+    path = news_dir / f"{date.isoformat()}.html"
+    path.write_text(doc, encoding="utf-8")
+    return path
+
+
+def fetch_all(config_path: Path, per_source_limit: int | None) -> list[dict]:
+    sources = load_sources(config_path)
+    items: list[dict] = []
+    for source in sources:
+        name = source.get("name", "?")
+        sys.stderr.write(f"[fetch] {name}\n")
+        fetched = fetch_source(source)
+        if per_source_limit:
+            fetched = fetched[:per_source_limit]
+        for it in fetched:
+            it["category_hint"] = source.get("category_hint")
+            items.append(it)
+    return items
+
+
+# --------------------------------------------------------------------------- #
 # Entry point
 # --------------------------------------------------------------------------- #
 def load_sources(config_path: Path) -> list[dict]:
@@ -625,27 +1383,15 @@ def load_sources(config_path: Path) -> list[dict]:
     return [s for s in sources if s.get("active", True)]
 
 
-def run_pipeline(config_path: Path, date: dt.date, per_source_limit: int | None) -> list[dict]:
-    sources = load_sources(config_path)
-    all_items: list[dict] = []
-    for source in sources:
-        name = source.get("name", "?")
-        sys.stderr.write(f"[fetch] {name}\n")
-        items = fetch_source(source)
-        if per_source_limit:
-            items = items[:per_source_limit]
-        hint = source.get("category_hint")
-        for item in items:
-            item["category"] = classify(
-                item.get("title", ""), item.get("summary", ""), hint
-            )
-        all_items.extend(items)
-
-    all_items = dedupe(all_items)
-    for item in all_items:
-        item["category"] = normalize_category(item["category"])
+def build_legacy_digest_items(items: list[dict]) -> list[dict]:
+    """Keep the old 8-category markdown digest working during the transition."""
+    deduped = dedupe(items)
+    for item in deduped:
+        item["category"] = normalize_category(
+            classify(item.get("title", ""), item.get("summary", ""), item.get("category_hint"))
+        )
         item["summary_text"] = summarize(item)
-    return all_items
+    return deduped
 
 
 # Default cap of items taken per source so feeds with a long archive don't
@@ -702,10 +1448,31 @@ def main(argv: list[str] | None = None) -> int:
     date = dt.date.today()
     if args.date:
         date = dt.date.fromisoformat(args.date)
-    items = run_pipeline(args.config, date, args.limit)
-    path = write_digest(items, date)
-    sys.stderr.write(f"[done] wrote {path} ({len(items)} items)\n")
-    print(f"Wrote {path} with {len(items)} items.")
+
+    items = fetch_all(args.config, args.limit)
+
+    # Legacy markdown digest (keep working during transition).
+    legacy = build_legacy_digest_items(items)
+    md_path = write_digest(legacy, date)
+    sys.stderr.write(f"[done] wrote markdown {md_path} ({len(legacy)} items)\n")
+
+    # Pipeline v2: AI-only filter, clustering, ranking, JSON, newsletter.
+    stories, dropped, tool_id, early_id = build_stories(items)
+    json_path = write_json_output(stories, tool_id, early_id, date.isoformat())
+    news_path = write_newsletter(date, stories, tool_id, early_id)
+
+    counts: dict[str, int] = defaultdict(int)
+    for s in stories:
+        counts[s["category"]] += 1
+    per_cat = ", ".join(f"{c}={counts.get(c, 0)}" for c in NEW_CATEGORIES)
+    print(f"Wrote markdown {md_path} ({len(legacy)} items).")
+    print(f"Wrote JSON {json_path} (stories={len(stories)}, dropped_by_filter={dropped}).")
+    print(f"Wrote newsletter {news_path}.")
+    print(f"Category breakdown: {per_cat}")
+    sys.stderr.write(
+        f"[done] stories={len(stories)} dropped={dropped} "
+        f"tool_of_day={tool_id} early_signal={early_id}\n"
+    )
     return 0
 
 

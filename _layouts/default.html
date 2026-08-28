@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: 'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
+  {% if page.title %}<title>{{ page.title }} | SIGNAL</title>{% endif %}
+  {% seo %}
+  <link rel="stylesheet" href="{{ '/assets/css/platform.css' | relative_url }}">
+  <script>
+    window.BASE_URL = '{{ '' | relative_url }}';
+  </script>
+</head>
+<body>
+  {% include header.html %}
+  {% include search.html %}
+  {% include story-modal.html %}
+  <main id="main" class="page-content">
+    {{ content }}
+  </main>
+  {% include footer.html %}
+</body>
+</html>
