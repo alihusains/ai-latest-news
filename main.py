@@ -78,13 +78,25 @@ HINT_MAP = {
 #   exact_terms : matched with word boundaries (e.g. \bintel\b, \boss\b)
 #   prefix_stems: matched as a prefix followed by any word chars (e.g. "therap")
 OVERRIDE_RULES = [
+    # Retail deals / discount / coupon content is consumer shopping, not tech
+    # news: bucket it as Community. Checked first so a deal on a chip doesn't
+    # get re-classified as Hardware.
+    (
+        "Community",
+        [
+            "coupon", "coupons", "promo", "promos", "discount", "discounts",
+            "% off", "save up to", " off right now", "labor day",
+            "black friday", "cyber monday", "price cut", "price cuts",
+            "best deals", "savings",
+        ],
+        [],
+    ),
     (
         "Medical",
         [
             "fda", "clinical", "disease", "patient", "drug", "biotech",
             "pharma", "hospital", "medtech", "healthcare", "vaccine",
-            "cancer", "genome", "protein", "medical", "health",
-            "treatment",
+            "cancer", "genome", "protein", "medical", "treatment",
         ],
         ["therap", "diagnos", "pharmaceuti"],
     ),
@@ -92,8 +104,8 @@ OVERRIDE_RULES = [
         "Acquisitions",
         [
             "acquisition", "acquire", "acquires", "acquired", "acquiring",
-            "merger", "mergers", "m&a", "buyout", "takeover", "take over",
-            "buy into", "to buy", "snaps up",
+            "merger", "mergers", "m&a", "buyout", "buy into", "to buy",
+            "snaps up",
         ],
         [],
     ),
@@ -118,12 +130,14 @@ OVERRIDE_RULES = [
     ),
     (
         "Science",
+        # Only concrete scientific fields trigger Science; generic words like
+        # "science"/"data science"/"space" pull in AI/data articles.
         [
-            "physics", "chemistry", "biology", "quantum", "space", "astronomy",
-            "climate", "telescope", "particle", "nobel", "experiment",
-            "discovery", "science",
+            "physics", "chemistry", "biology", "quantum", "astronomy",
+            "climate", "telescope", "particle", "nobel", "ecology", "geology",
+            "neuroscience", "genetics", "astrophysics", "cosmology",
         ],
-        ["scien"],
+        [],
     ),
 ]
 
@@ -567,7 +581,7 @@ def render(items: list[dict], date_str: str) -> str:
         "---\n"
         f'title: "AI Latest News — {date_str}"\n'
         f"date: {date_str}\n"
-        "layout: page\n"
+        "layout: digest\n"
         "---\n\n"
     )
 
