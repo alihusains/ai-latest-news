@@ -16,7 +16,8 @@ The pipeline is: **fetch → dedupe → classify → clean → summarize → ren
 4. **clean** — strips HTML/boilerplate and normalizes whitespace.
 5. **summarize** — trims each item to a short 1–2 line summary with a
    source link.
-6. **render** — writes `content/daily/YYYY-MM-DD.md`.
+6. **render** — writes `content/daily/YYYY-MM-DD.md` with Jekyll front matter
+   (required for GitHub Pages rendering and the index Liquid loop).
 
 ## Supported source types
 
@@ -51,7 +52,7 @@ Useful flags:
 | Flag | Purpose |
 | --- | --- |
 | `--date 2026-08-28` | Force a specific date for the output file |
-| `--limit 5` | Cap items per source (quick local tests) |
+| `--limit 5` | Cap items per source (default 25; `0` = no cap) |
 | `--check` | Verify every source URL returns without error |
 | `--config other.yaml` | Use an alternate source config |
 

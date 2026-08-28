@@ -74,46 +74,56 @@ HINT_MAP = {
 
 # Keyword rules that override the source hint when they appear in the
 # title/summary. Order matters: first match wins.
+# Each rule is (category, exact_terms, prefix_stems).
+#   exact_terms : matched with word boundaries (e.g. \bintel\b, \boss\b)
+#   prefix_stems: matched as a prefix followed by any word chars (e.g. "therap")
 OVERRIDE_RULES = [
     (
         "Medical",
         [
-            "fda", "clinical", "disease", "patient", "drug", "therap",
-            "biotech", "pharma", "hospital", "medtech", "healthcare",
-            "treatment", "vaccine", "diagnos", "cancer", "genome",
-            "protein", "medical", "health",
+            "fda", "clinical", "disease", "patient", "drug", "biotech",
+            "pharma", "hospital", "medtech", "healthcare", "vaccine",
+            "cancer", "genome", "protein", "medical", "health",
+            "treatment",
         ],
+        ["therap", "diagnos", "pharmaceuti"],
     ),
     (
         "Acquisitions",
         [
-            "acquisi", "acquire", "merger", "m&a", " buys ", "buyout",
-            "takeover", "acquires", "to buy", "has acquired",
+            "acquisition", "acquire", "acquires", "acquired", "acquiring",
+            "merger", "mergers", "m&a", "buyout", "takeover", "take over",
+            "buy into", "to buy", "snaps up",
         ],
+        [],
     ),
     (
         "Hardware",
         [
-            "chip", "gpu", "cpu", "processor", "semiconductor", "silicon",
-            "transistor", "tpu", "nvidia", "amd", "intel", "asic", "hbm",
-            "wafer", "lithograph", "supercomputer", "hardware",
+            "chip", "chipset", "gpu", "cpu", "processor", "semiconductor",
+            "silicon", "transistor", "tpu", "nvidia", "amd", "intel", "asic",
+            "hbm", "wafer", "lithograph", "supercomputer", "hardware",
         ],
+        [],
     ),
     (
         "Open Source",
         [
-            "open source", "open-source", "github", "repository", "repo",
-            "license", "self-hosted", "self hosted", "pull request",
-            "oss", "open model", "open weights", "apache 2.0", "mit license",
+            "open source", "open-source", "github", "repository", "repositories",
+            "license", "self-hosted", "self hosted", "pull request", "oss",
+            "open model", "open weights", "open-weights", "apache 2.0",
+            "mit license",
         ],
+        [],
     ),
     (
         "Science",
         [
-            "physics", "chemistry", "biology", "quantum", "space",
-            "astronomy", "climate", "telescope", "particle", "nobel",
-            "experiment", "discovery", "scien",
+            "physics", "chemistry", "biology", "quantum", "space", "astronomy",
+            "climate", "telescope", "particle", "nobel", "experiment",
+            "discovery", "science",
         ],
+        ["scien"],
     ),
 ]
 
@@ -127,7 +137,6 @@ AI_SIGNALS = [
     "reasoning", "benchmark", "open weights",
 ]
 
-_URL_RE = re.compile(r"\b[a-z0-9.-]+\.[a-z]{2,}\b", re.I)
 _TAG_RE = re.compile(r"<[^>]+>", re.S)
 _WS_RE = re.compile(r"\s+")
 
@@ -228,30 +237,11 @@ def _xml_node_to_item(node, kind: str, link_tag: str, title_tag: str, desc_tag: 
     published = text("pubDate") or text("published") or text("updated")
     return {
         "title": title,
-        "link": _abs_url(link, _base_url(link)),
+        "link": link.strip(),
         "summary": desc,
         "published": _parse_time(published),
         "date": published,
     }
-
-
-def _base_url(link: str) -> str:
-    return link
-
-
-def _abs_url(link: str, _base: str) -> str:
-    link = link.strip()
-    if link.startswith(("http://", "https://")):
-        return link
-    if link.startswith("//"):
-        return "https:" + link
-    if link.startswith("/"):
-        return "https://" + (_host_from_link(link) or "")
-    return link
-
-
-def _host_from_link(_link: str) -> str:
-    return ""
 
 
 def _fetch_rss(url: str) -> list[dict]:
@@ -367,10 +357,40 @@ def _scrape_generic_links(text: str, base_url: str) -> list[dict]:
 
 
 def _fetch_x(url: str) -> list[dict]:
-    """Fetch a Nitter profile, extracting tweet text + status links."""
+    """Fetch a Nitter profile.
+
+    Tries the per-user RSS feed first (`/<user>/rss`, which nitter instances
+    that still support it return), then falls back to scraping the profile HTML
+    for tweet text + status links. Instances are fragile; silently empty on
+    failure is acceptable and handled by the caller.
+    """
+    items = _fetch_x_rss(url)
+    if items:
+        return items
+    items = _fetch_x_html(url)
+    return items
+
+
+def _fetch_x_rss(url: str) -> list[dict]:
+    """Try <host>/<user>/rss; nitter may return HTTP 410 (gone) on old feeds."""
+    parsed = urllib.parse.urlparse(url)
+    parts = [p for p in parsed.path.split("/") if p]
+    if not parts:
+        return []
+    user = parts[0]
+    rss_url = f"{parsed.scheme}://{parsed.netloc}/{user}/rss"
+    try:
+        raw = http_get_text(rss_url)
+    except Exception:
+        return []
+    # `_parse_xml_items` tolerates non-XML bodies and returns [] on parse error.
+    return _parse_xml_items(raw)
+
+
+def _fetch_x_html(url: str) -> list[dict]:
+    """Scrape the profile HTML for tweet content + status links."""
     text = http_get_text(url)
     items = []
-    # Tweet body text.
     tweets = re.findall(r'<div class="tweet-content"[^>]*>(.*?)</div>', text, re.S)
     statuses = re.findall(r'href="(/[^"]+/status/\d+)"', text)
     host = urllib.parse.urlparse(url).netloc
@@ -453,7 +473,10 @@ def normalize_title(title: str) -> str:
 def dedupe(items: list[dict]) -> list[dict]:
     """Remove duplicate URLs and near-duplicate titles (fuzzy match)."""
     seen_urls: set[str] = set()
-    seen_titles: list[str] = []
+    # Inverted index: token -> set of indices into the seen-title list, so
+    # fuzzy comparisons only run against titles that share a word (O(n) not O(n^2)).
+    seen: list[tuple[str, set[str]]] = []
+    index: dict[str, set[int]] = defaultdict(set)
     out: list[dict] = []
     for item in items:
         link = (item.get("link") or "").strip().lower().rstrip("/")
@@ -465,12 +488,19 @@ def dedupe(items: list[dict]) -> list[dict]:
             seen_urls.add(url_key)
         title = normalize_title(item.get("title", ""))
         if title:
+            tokens = {tok for tok in title.split() if len(tok) >= 4}
+            candidates: set[int] = set()
+            for tok in tokens:
+                candidates |= index.get(tok, set())
             if any(
-                difflib.SequenceMatcher(None, title, prev).ratio() >= 0.90
-                for prev in seen_titles
+                difflib.SequenceMatcher(None, title, seen[i][0]).ratio() >= 0.90
+                for i in candidates
             ):
                 continue
-            seen_titles.append(title)
+            pos = len(seen)
+            seen.append((title, tokens))
+            for tok in tokens:
+                index[tok].add(pos)
         out.append(item)
     return out
 
@@ -486,13 +516,23 @@ def is_ai(text: str) -> bool:
     return False
 
 
+def _rule_matches(text_l: str, exact: list[str], stems: list[str]) -> bool:
+    for kw in exact:
+        if re.search(r"\b" + re.escape(kw) + r"\b", text_l):
+            return True
+    for stem in stems:
+        if re.search(r"\b" + re.escape(stem) + r"\w*", text_l):
+            return True
+    return False
+
+
 def classify(title: str, summary: str, hint: str | None) -> str:
     text = clean_text(title) + " " + clean_text(summary)
     text_l = text.lower()
 
     # Specific topics override the source hint (first rule wins).
-    for category, keywords in OVERRIDE_RULES:
-        if any(kw in text_l for kw in keywords):
+    for category, exact, stems in OVERRIDE_RULES:
+        if _rule_matches(text_l, exact, stems):
             return category
 
     hinted = HINT_MAP.get((hint or "").strip().lower())
@@ -521,6 +561,16 @@ def summarize(item: dict, limit: int = 260) -> str:
 
 
 def render(items: list[dict], date_str: str) -> str:
+    # Jekyll/GitHub Pages front matter so the markdown renders as a page and the
+    # index.html Liquid loop (which sorts site.pages by `date`) can list it.
+    front = (
+        "---\n"
+        f'title: "AI Latest News — {date_str}"\n'
+        f"date: {date_str}\n"
+        "layout: page\n"
+        "---\n\n"
+    )
+
     groups: dict[str, list[dict]] = defaultdict(list)
     for item in items:
         groups[item.get("category", "IT")].append(item)
@@ -549,7 +599,7 @@ def render(items: list[dict], date_str: str) -> str:
                 lines.append(f"  [read ↗]({link})")
             lines.append("")
         lines.append("")
-    return "\n".join(lines).rstrip() + "\n"
+    return front + "\n".join(lines).rstrip() + "\n"
 
 
 # --------------------------------------------------------------------------- #
@@ -584,6 +634,11 @@ def run_pipeline(config_path: Path, date: dt.date, per_source_limit: int | None)
     return all_items
 
 
+# Default cap of items taken per source so feeds with a long archive don't
+# flood the digest. `--limit 0` disables the cap (fetch everything).
+DEFAULT_PER_SOURCE = 25
+
+
 def normalize_category(cat: str) -> str:
     cat = (cat or "").strip()
     # map any non-canonical hint-like value to its canonical form
@@ -608,7 +663,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="AI news aggregator pipeline")
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--date", help="override date as YYYY-MM-DD")
-    parser.add_argument("--limit", type=int, default=None, help="max items per source")
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=DEFAULT_PER_SOURCE,
+        help=f"max items per source (default {DEFAULT_PER_SOURCE}; 0 = no limit)",
+    )
     parser.add_argument("--check", action="store_true", help="verify source URLs return 200")
     args = parser.parse_args(argv)
 
