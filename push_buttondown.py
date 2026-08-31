@@ -48,7 +48,10 @@ def build_subject(prefix, date_str):
 
 
 def push_draft(api_key, subject, html):
-    payload = {"subject": subject, "body": html, "status": os.environ.get("BUTTONDOWN_STATUS", "draft").strip().lower()}
+    # Force Buttondown's "fancy" (rich HTML) editor mode so our full HTML
+    # document is used as-is instead of being treated as Markdown.
+    body = "<!-- buttondown-editor-mode: fancy -->\n" + html
+    payload = {"subject": subject, "body": body, "status": os.environ.get("BUTTONDOWN_STATUS", "draft").strip().lower()}
     if payload["status"] == "scheduled":
         send_at = os.environ.get("BUTTONDOWN_SEND_AT", "").strip()
         if send_at:
