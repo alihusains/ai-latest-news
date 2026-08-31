@@ -26,8 +26,9 @@ The pipeline commits `data/latest.json` daily with the following schema:
 - Custom `_layouts/default.html` and `_layouts/platform.html`
 - Design system: `assets/css/platform.css` (CSS custom properties, light/dark via `prefers-color-scheme` + `data-theme`)
 - Vanilla JS modules in `assets/js/`:
-  - `base-url.js` — resolves `BASE_URL` for subpath-safe fetches
-  - `data.js` — data layer with caching and helpers
+  - `data.js` — data layer with caching and helpers (`BASE_URL` is set inline in
+    `_layouts/default.html` + `platform.html` via `{{ '' | relative_url }}`, so
+    fetches are subpath-safe from any page depth)
   - `search.js` — command-palette search overlay
   - `story.js` — hash-routed story modal
   - `main.js` — theme toggle, mobile nav, active-nav highlight, edition date, scroll reveal, back-to-top, boot
