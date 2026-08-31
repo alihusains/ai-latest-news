@@ -33,7 +33,7 @@ title: Tools
 
     const stories = Data.getByCategory('products')
       .filter(s => !s.is_tool_of_day)
-      .sort((a, b) => b.importance - a.importance);
+      .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
     if (!stories.length) { if (!duoHtml) list.innerHTML = '<div class="empty-state"><h2>No tool launches yet today.</h2></div>'; return; }
     let html = '<h2 class="section-title" style="margin-top:var(--space-2xl)">More tools &amp; launches</h2><div class="list">';
     stories.forEach(s => {

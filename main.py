@@ -46,6 +46,11 @@ DAILY_DIR = ROOT_DIR / "content" / "daily"
 
 USER_AGENT = "AI-News-Aggregator/1.0 (+https://github.com/example/ai-latest-news)"
 
+# How many days of history to keep. RSS/API feeds return up to ~2 weeks of
+# items; without a window the daily edition shows stale news (e.g. a 31st
+# edition listing 26-Aug stories). Items with no parseable date are kept.
+LOOKBACK_DAYS = 3
+
 # Canonical output categories.
 CATEGORIES = [
     "IT",
@@ -480,7 +485,11 @@ def _scrape_github_trending(text: str):
                 "title": f"{repo}",
                 "link": f"https://github.com/{repo}",
                 "summary": desc,
-                "published": 0,
+                # GitHub Trending has no per-repo publish date; these are
+                # literally "trending today", so stamp them with the run time
+                # instead of leaving them undated (which breaks chronological
+                # sorting on the site).
+                "published": time.time(),
                 "date": "",
             }
         )
@@ -1189,7 +1198,12 @@ def build_stories(items: list[dict]) -> tuple[list[dict], int, str | None, str |
     """Apply the AI-only gate, cluster into stories, score + tier, pick highlights."""
     kept: list[dict] = []
     dropped = 0
+    cutoff = time.time() - LOOKBACK_DAYS * 86400
     for it in items:
+        pub = it.get("published", 0) or 0
+        if pub and pub < cutoff:  # dated but outside the lookback window
+            dropped += 1
+            continue
         if _passes_ai_gate(it, it.get("source", ""), it.get("category_hint")):
             kept.append(it)
         else:
@@ -1219,7 +1233,10 @@ def build_stories(items: list[dict]) -> tuple[list[dict], int, str | None, str |
         s["is_early_signal"] = s["id"] == early_id
 
     order = {c: i for i, c in enumerate(NEW_CATEGORIES)}
-    stories.sort(key=lambda s: (order.get(s["category"], 9), -s["importance"]))
+    # Canonical order: newest first, grouped by category. Two stable sorts —
+    # date desc, then category asc — keep each category block in reverse-chrono.
+    stories.sort(key=lambda s: s.get("published_at") or "", reverse=True)
+    stories.sort(key=lambda s: order.get(s["category"], 9))
     return stories, dropped, tool_id, early_id, tool_os_id, tool_fm_id
 
 

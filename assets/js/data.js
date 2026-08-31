@@ -1,3 +1,5 @@
+const byDate = (a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0);
+
 const Data = {
   cache: null,
   async fetch() {
@@ -15,17 +17,17 @@ const Data = {
   getTop() {
     const data = this.cache;
     if (!data) return [];
-    return data.stories.filter(s => s.tier === 'top').sort((a, b) => b.importance - a.importance);
+    return data.stories.filter(s => s.tier === 'top').sort(byDate);
   },
   getMajor() {
     const data = this.cache;
     if (!data) return [];
-    return data.stories.filter(s => s.tier === 'major').sort((a, b) => b.importance - a.importance);
+    return data.stories.filter(s => s.tier === 'major').sort(byDate);
   },
   getByCategory(cat) {
     const data = this.cache;
     if (!data) return [];
-    return data.stories.filter(s => s.category === cat);
+    return data.stories.filter(s => s.category === cat).sort(byDate);
   },
   getByTier(tier) {
     const data = this.cache;
@@ -49,7 +51,7 @@ const Data = {
   getNewAgents() {
     const data = this.cache;
     if (!data) return [];
-    return data.stories.filter(s => s.is_new_agent).sort((a, b) => b.importance - a.importance);
+    return data.stories.filter(s => s.is_new_agent).sort(byDate);
   },
   getWhatsNew() {
     const data = this.cache;

@@ -18,7 +18,7 @@ title: Agents
 (function() {
   Data.fetch().then(data => {
     if (!data) { document.getElementById('agents-content').innerHTML = '<div class="error-state"><h2>News could not be refreshed.</h2><p>Try again later.</p></div>'; return; }
-    const stories = Data.getByCategory('agents').sort((a, b) => b.importance - a.importance);
+    const stories = Data.getByCategory('agents').sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
     if (!stories.length) { document.getElementById('agents-content').innerHTML = '<div class="empty-state"><h2>No major AI developments yet.</h2></div>'; return; }
     let html = '<div class="list">';
     stories.forEach(s => {

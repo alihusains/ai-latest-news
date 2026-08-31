@@ -19,7 +19,7 @@ title: Top AI
   const labels = { 5: 'Essential', 4: 'Major', 3: 'Important' };
   Data.fetch().then(data => {
     if (!data) { document.getElementById('top-content').innerHTML = '<div class="error-state"><h2>News could not be refreshed.</h2><p>Try again later.</p></div>'; return; }
-    const stories = data.stories.filter(s => s.tier === 'top' || s.tier === 'major').sort((a, b) => b.importance - a.importance);
+    const stories = data.stories.filter(s => s.tier === 'top' || s.tier === 'major').sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
     if (!stories.length) { document.getElementById('top-content').innerHTML = '<div class="empty-state"><h2>No major AI developments yet.</h2></div>'; return; }
     let html = '<div class="list">';
     stories.forEach(s => {
