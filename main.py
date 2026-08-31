@@ -800,7 +800,11 @@ OFFICIAL_BLOGS = {
 
 # Source-name buckets powering the discovery sections (tool of the day,
 # new agents). Matched case-insensitively against story source names.
-NEW_AGENT_SOURCES = {"new agent repos", "hn agent stories", "reddit ai agents"}
+# "New agents" = actual launches: fresh GitHub repos, agent stories trending on
+# HN, and agent-category Launch/Release/Open-Source coverage. Reddit r/AI_Agents
+# is community discussion (questions, showcase threads), so it feeds the general
+# Agents category but is deliberately NOT a new-agent source.
+NEW_AGENT_SOURCES = {"new agent repos", "hn agent stories"}
 TOOL_OS_SOURCES = {"hf trending models", "github trending", "reddit localllama", "new agent repos"}
 TOOL_FREEMIUM_SOURCES = {"product hunt"}
 

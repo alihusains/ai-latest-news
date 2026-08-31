@@ -3,8 +3,8 @@
   "edition": "The AI Daily",
   "platform": "SIGNAL",
   "stats": {
-    "total": 509,
-    "reading_time_min": 87
+    "total": 553,
+    "reading_time_min": 103
   },
   "stories": [
     {
@@ -773,6 +773,42 @@
       "is_tool_freemium": false
     },
     {
+      "id": "uk-launches--100m-sovereign-ai-procurement-compe",
+      "headline": "UK Launches £100M Sovereign AI Procurement Competitions for Public Services",
+      "subheadline": "The UK government launched the first procurement competitions under its £100 million Sovereign AI R&D Procurement Scheme on",
+      "summary": "The UK government launched the first procurement competitions under its £100 million Sovereign AI R&D Procurement Scheme on August 31, 2026, opening four challenges that invite British AI startups to build systems for the NHS, defence, computing efficiency, and AI agent security. Chancellor John Healey MP announced the launch at the G20 Finance Ministers and Central Bank Governors meeting in North Carolina, according to a joint release from HM Treasury and the Cabinet Office. The scheme is the…",
+      "why_it_matters": "This exposes live risk surfaces for AI systems, raising the stakes on governance and safety.",
+      "category": "agents",
+      "tags": [
+        "Agents"
+      ],
+      "industry": [
+        "Finance",
+        "Government"
+      ],
+      "story_type": "Security",
+      "importance": 3,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/uk-launches-100m-sovereign-ai-procurement-competitions-for-public-services/",
+          "published": "2026-08-31T09:32:01Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/uk-launches-100m-sovereign-ai-procurement-competitions-public-services.jpg",
+      "url": "https://www.unite.ai/uk-launches-100m-sovereign-ai-procurement-competitions-for-public-services/",
+      "published_at": "2026-08-31T09:32:01Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
       "id": "agentic-ai-security-reviews-keep-slipping-our-la",
       "headline": "Agentic AI security reviews keep slipping our launch a quarter, anyone solved this?",
       "subheadline": "Every agent feature we want to ship gets stuck in a review loop that starts from scratch each",
@@ -802,7 +838,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -872,6 +908,75 @@
       "image": null,
       "url": "https://www.reddit.com/r/artificial/comments/1w33ok6/google_names_15_ai_startups_for_its_australia_and/",
       "published_at": "2026-08-31T04:50:15Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "marmel---a-multiagent-orchestration-code-agent",
+      "headline": "Marmel - A multiagent orchestration code agent",
+      "subheadline": "Hi, Around a week ago, I made a post of my orchestration framework that (outside a few hints)",
+      "summary": "Hi, Around a week ago, I made a post of my orchestration framework that (outside a few hints) autonomously built a working (although simple) x64/linux c compiler from scratch in about 6 weeks using nothing but Qwen 3.6/3.8 27b and gemma 4 12b. Some people requested the system to be open sourced, and while I don’t have any objections to that, it must be understood it is extremely tweaked to my setup/my machines and to my native language",
+      "why_it_matters": "An incremental update keeps Agents capability moving forward for existing users.",
+      "category": "agents",
+      "tags": [
+        "Agents",
+        "Open Source"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w39y4n/marmel_a_multiagent_orchestration_code_agent/",
+          "published": "2026-08-31T10:36:26Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w39y4n/marmel_a_multiagent_orchestration_code_agent/",
+      "published_at": "2026-08-31T10:36:26Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "pipecat-ai-phonellm-alpha-1--gpt-5-6-terra-perfo",
+      "headline": "pipecat-ai/phonellm-alpha-1: GPT 5.6 Terra performance on typical voice agent tasks at 1/3 the latency and 1/18 the cost",
+      "subheadline": "submitted by /u/paf1138 [link] [comments]",
+      "summary": "submitted by /u/paf1138 [link] [comments]",
+      "why_it_matters": "An incremental update keeps Agents capability moving forward for existing users.",
+      "category": "agents",
+      "tags": [
+        "Inference",
+        "Agents",
+        "LLMs"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w393ht/pipecataiphonellmalpha1_gpt_56_terra_performance/",
+          "published": "2026-08-31T09:51:53Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://external-preview.redd.it/BcXmFkCe4pc3eJHTe4U4xd4Sj9uekpFLsAhrIM56BJE.png?width=640&crop=smart&auto=webp&s=5c9d058da53862c562f4132b32b7735db021450c",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w393ht/pipecataiphonellmalpha1_gpt_56_terra_performance/",
+      "published_at": "2026-08-31T09:51:53Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
@@ -1599,6 +1704,74 @@
       "is_tool_freemium": false
     },
     {
+      "id": "didi-starts-driverless-trials-with-r2-robotaxi-i",
+      "headline": "DiDi Starts Driverless Trials With R2 Robotaxi in Beijing and Guangzhou",
+      "subheadline": "DiDi Autonomous Driving began fully driverless passenger service trials with its next-generation Robotaxi, the R2, on August 31",
+      "summary": "DiDi Autonomous Driving began fully driverless passenger service trials with its next-generation Robotaxi, the R2, on August 31, 2026, making the vehicle bookable through the DiDi App in selected demonstration areas of Beijing and Guangzhou, the company announced. The R2 is jointly developed by DiDi Autonomous Driving and GAC Aion. DiDi described the vehicle as purpose-built for Robotaxi service and designed for global deployment, with upgrades in autonomous driving performance and cabin…",
+      "why_it_matters": "An incremental update keeps Agents capability moving forward for existing users.",
+      "category": "agents",
+      "tags": [
+        "Robotics"
+      ],
+      "industry": [
+        "Automotive"
+      ],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/didi-starts-driverless-trials-with-r2-robotaxi-in-beijing-and-guangzhou/",
+          "published": "2026-08-31T07:25:01Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/didi-starts-driverless-passenger-trials-r2-robotaxi-beijing-guangzhou.jpg",
+      "url": "https://www.unite.ai/didi-starts-driverless-trials-with-r2-robotaxi-in-beijing-and-guangzhou/",
+      "published_at": "2026-08-31T07:25:01Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "what-is-agentic-ai--how-systems-plan--use-tools-",
+      "headline": "What Is Agentic AI? How Systems Plan, Use Tools, and Complete Tasks",
+      "subheadline": "Agentic AI systems do more than generate an answer: they pursue goals through a loop of planning, tool",
+      "summary": "Agentic AI systems do more than generate an answer: they pursue goals through a loop of planning, tool use, observation, and adaptation. Here is how that loop works, where agents add value, and what keeps them under control",
+      "why_it_matters": "An incremental update keeps Agents capability moving forward for existing users.",
+      "category": "agents",
+      "tags": [
+        "Agents"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/what-is-agentic-ai/",
+          "published": "2026-08-30T12:00:02Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/01-what-is-agentic-ai-1920x1080-1.jpg",
+      "url": "https://www.unite.ai/what-is-agentic-ai/",
+      "published_at": "2026-08-30T12:00:02Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
       "id": "which-agent-causes-task-failures-and-when-resear",
       "headline": "Which Agent Causes Task Failures and When?Researchers from PSU and Duke explores automated failure attribution of LLM Multi-Agent Systems",
       "subheadline": "In recent years, LLM Multi-Agent systems have garnered widespread attention for their collaborative approach to solving complex problems.",
@@ -1726,7 +1899,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -1759,7 +1932,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -1792,7 +1965,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -1828,7 +2001,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -1862,7 +2035,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -1896,7 +2069,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -1929,7 +2102,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -1997,7 +2170,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -2030,7 +2203,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -2064,7 +2237,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -2099,7 +2272,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -2133,7 +2306,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -2167,7 +2340,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -2206,6 +2379,39 @@
       "is_tool_freemium": false
     },
     {
+      "id": "maritime",
+      "headline": "Maritime",
+      "subheadline": "Dedicated computers for AI agents, starting at $1/month Discussion | Link",
+      "summary": "Dedicated computers for AI agents, starting at $1/month Discussion | Link",
+      "why_it_matters": "An incremental update keeps Agents capability moving forward for existing users.",
+      "category": "agents",
+      "tags": [
+        "Agents"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Product Hunt",
+          "url": "https://www.producthunt.com/products/maritime",
+          "published": "2026-08-28T22:04:42Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.producthunt.com/products/maritime",
+      "published_at": "2026-08-28T22:04:42Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
       "id": "omlx",
       "headline": "oMLX",
       "subheadline": "Mac LLM server that cuts agent wait times from 90s to 5s Discussion | Link",
@@ -2231,39 +2437,6 @@
       "image": null,
       "url": "https://www.producthunt.com/products/omlx",
       "published_at": "2026-08-29T20:17:05Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false,
-      "is_new_agent": false,
-      "is_whats_new": false,
-      "is_tool_opensource": false,
-      "is_tool_freemium": false
-    },
-    {
-      "id": "maritime",
-      "headline": "Maritime",
-      "subheadline": "Dedicated computers for AI agents, starting at $1/month Discussion | Link",
-      "summary": "Dedicated computers for AI agents, starting at $1/month Discussion | Link",
-      "why_it_matters": "An incremental update keeps Agents capability moving forward for existing users.",
-      "category": "agents",
-      "tags": [
-        "Agents"
-      ],
-      "industry": [],
-      "story_type": "Product Update",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "Product Hunt",
-          "url": "https://www.producthunt.com/products/maritime",
-          "published": "2026-08-28T22:04:42Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://www.producthunt.com/products/maritime",
-      "published_at": "2026-08-28T22:04:42Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
@@ -2897,7 +3070,7 @@
       "id": "nanako0129-sepia",
       "headline": "Nanako0129/sepia",
       "subheadline": "De-AI writing skill for any Agent Skills-compatible agent (77+ via the Skills CLI), with native plugins for Claude",
-      "summary": "De-AI writing skill for any Agent Skills-compatible agent (77+ via the Skills CLI), with native plugins for Claude Code, Codex, Grok Build, and Antigravity. Narrative-architecture repair for fiction, venue-matched rules for professional prose. Based on StoryScope (arXiv:2604.03136). New repo with 1116 stars in its first week",
+      "summary": "De-AI writing skill for any Agent Skills-compatible agent (77+ via the Skills CLI), with native plugins for Claude Code, Codex, Grok Build, and Antigravity. Narrative-architecture repair for fiction, venue-matched rules for professional prose. Based on StoryScope (arXiv:2604.03136). New repo with 1120 stars in its first week",
       "why_it_matters": "The work advances the Agents frontier, with downstream implications for real products.",
       "category": "agents",
       "tags": [
@@ -3349,8 +3522,8 @@
     {
       "id": "meta-security-researcher-s-ai-agent-accidentally",
       "headline": "Meta Security Researcher's AI Agent Accidentally Deleted Her Emails",
-      "subheadline": "Discussed on Hacker News: 51 points, 43 comments",
-      "summary": "Discussed on Hacker News: 51 points, 43 comments",
+      "subheadline": "Discussed on Hacker News: 52 points, 44 comments",
+      "summary": "Discussed on Hacker News: 52 points, 44 comments",
       "why_it_matters": "This exposes live risk surfaces for AI systems, raising the stakes on governance and safety.",
       "category": "agents",
       "tags": [
@@ -3384,8 +3557,8 @@
     {
       "id": "the-rise-and-fall-of-agent-civilizations",
       "headline": "The Rise and Fall of Agent Civilizations",
-      "subheadline": "Discussed on Hacker News: 242 points, 165 comments",
-      "summary": "Discussed on Hacker News: 242 points, 165 comments",
+      "subheadline": "Discussed on Hacker News: 243 points, 165 comments",
+      "summary": "Discussed on Hacker News: 243 points, 165 comments",
       "why_it_matters": "An incremental update keeps Agents capability moving forward for existing users.",
       "category": "agents",
       "tags": [
@@ -5955,6 +6128,45 @@
       "is_tool_freemium": false
     },
     {
+      "id": "deepseek-ai-deepseek-v4-flash-vision-exp---huggi",
+      "headline": "deepseek-ai/DeepSeek-V4-Flash-Vision-Exp · Hugging Face",
+      "subheadline": "Trending open model on Hugging Face: 0 downloads and 155 likes.",
+      "summary": "Trending open model on Hugging Face: 0 downloads and 155 likes. deepseek-ai/DeepSeek-V4-Flash-Vision-Exp submitted by /u/t4a8945 [link] [comments]",
+      "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Models & Research ecosystem.",
+      "category": "models",
+      "tags": [
+        "LLMs",
+        "Vision"
+      ],
+      "industry": [],
+      "story_type": "Open Source",
+      "importance": 3,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w39i6r/deepseekaideepseekv4flashvisionexp_hugging_face/",
+          "published": "2026-08-31T10:13:34Z"
+        },
+        {
+          "name": "HF Trending Models",
+          "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-Vision-Exp",
+          "published": "2026-08-31T06:16:18Z"
+        }
+      ],
+      "source_count": 2,
+      "image": "https://external-preview.redd.it/hgymq6euchEOqh8eGBTQwmmFT0FmZFsEVEXC7pdzW5M.png?width=640&crop=smart&auto=webp&s=7e099483ac03b6f1857eb42a19a36bec6b84d57f",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w39i6r/deepseekaideepseekv4flashvisionexp_hugging_face/",
+      "published_at": "2026-08-31T06:16:18Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": true,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
       "id": "the-u-s--is-building-barriers-around-drones-and-",
       "headline": "The U.S. is building barriers around drones and robots, but China has scale to get around them",
       "subheadline": "The U.S.",
@@ -7085,6 +7297,39 @@
       "is_tool_freemium": false
     },
     {
+      "id": "anthropic-brings-claude-for-teachers-to-schools-",
+      "headline": "Anthropic Brings Claude for Teachers to Schools and Districts",
+      "subheadline": "Anthropic said its Claude for Teachers product is now available to schools and districts as a free Enterprise",
+      "summary": "Anthropic said its Claude for Teachers product is now available to schools and districts as a free Enterprise offering, extending a program it launched for individual educators in July. Qualifying organizations that sign up by June 30, 2027 receive a full year of free access. The announcement, dated August 28, 2026, lets school and district leaders bring educators and staff into one centrally managed organization under a single set of K-12 terms. Anthropic introduced Claude for Teachers on July…",
+      "why_it_matters": "This launch expands the practical surface of Models & Research for everyday users and teams.",
+      "category": "models",
+      "tags": [],
+      "industry": [
+        "Education"
+      ],
+      "story_type": "Launch",
+      "importance": 3,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/anthropic-brings-claude-for-teachers-to-schools-and-districts/",
+          "published": "2026-08-28T15:11:01Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/anthropic-brings-claude-for-teachers-to-schools-and-districts.jpg",
+      "url": "https://www.unite.ai/anthropic-brings-claude-for-teachers-to-schools-and-districts/",
+      "published_at": "2026-08-28T15:11:01Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": true,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
       "id": "deepseek-v3-new-paper-is-coming--unveiling-the-s",
       "headline": "DeepSeek-V3 New Paper is coming! Unveiling the Secrets of Low-Cost Large Model Training through Hardware-Aware Co-design",
       "subheadline": "A newly released 14-page technical paper from the team behind DeepSeek-V3, with DeepSeek CEO Wenfeng Liang as a",
@@ -7265,8 +7510,8 @@
     {
       "id": "qwen-qwen3-8-flash-next-fp8",
       "headline": "Qwen/Qwen3.8-Flash-Next-FP8",
-      "subheadline": "Trending open model on Hugging Face: 158,598 downloads and 4,455 likes.",
-      "summary": "Trending open model on Hugging Face: 158,598 downloads and 4,455 likes. Qwen/Qwen3.8-Flash-Next Trending open model on Hugging Face: 84,954 downloads and 166 likes. Qwen/Qwen3.8-Flash-Next-FP8",
+      "subheadline": "Trending open model on Hugging Face: 158,598 downloads and 4,457 likes.",
+      "summary": "Trending open model on Hugging Face: 158,598 downloads and 4,457 likes. Qwen/Qwen3.8-Flash-Next Trending open model on Hugging Face: 84,954 downloads and 167 likes. Qwen/Qwen3.8-Flash-Next-FP8",
       "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Models & Research ecosystem.",
       "category": "models",
       "tags": [
@@ -7335,6 +7580,37 @@
       "is_early_signal": false,
       "is_new_agent": false,
       "is_whats_new": true,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "cold-emailing-profs-about-phd-positions--read-th",
+      "headline": "Cold emailing profs about PhD positions? Read this [D]",
+      "subheadline": "This is the time of year where the cold emails I receive about PhD positions tends to ramp",
+      "summary": "This is the time of year where the cold emails I receive about PhD positions tends to ramp up quite a bit. In many countries, this cold emailing is essentially part of the normal recruitment process, so there is nothing inherently wrong with doing this. However, there are a few things you definitely shouldn't be doing: Massive emails. The probability of me reading your email is inversely proportional to its length. Emailing everyone",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit MachineLearning",
+          "url": "https://www.reddit.com/r/MachineLearning/comments/1w3bwci/cold_emailing_profs_about_phd_positions_read_this/",
+          "published": "2026-08-31T12:09:24Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/MachineLearning/comments/1w3bwci/cold_emailing_profs_about_phd_positions_read_this/",
+      "published_at": "2026-08-31T12:09:24Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
     },
@@ -7909,44 +8185,6 @@
       "is_tool_freemium": false
     },
     {
-      "id": "a-dataset-with-52-text-to-image-model-evaluation",
-      "headline": "A dataset with 52 Text to image model evaluation [P]",
-      "subheadline": "I created a simple text to image benchmark.",
-      "summary": "I created a simple text to image benchmark. I curated 192 prompts that are difficult for T2I models in various ways: text rendering, spatial reasoning, human realism, negations, etc... I then asked a VLM to judge every output against a pre-specified binary question with the ground truth baked in. I'm publishing all the results including the images. (Most public T2I leaderboards don't publish the actual images and that's a shame IMO) There is currently 52 model tested!",
-      "why_it_matters": "New results push the bar on what counts as the state of the art in Models & Research.",
-      "category": "models",
-      "tags": [
-        "Reasoning",
-        "Multimodal",
-        "LLMs"
-      ],
-      "industry": [
-        "Legal",
-        "Media"
-      ],
-      "story_type": "Benchmark",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "Reddit MachineLearning",
-          "url": "https://www.reddit.com/r/MachineLearning/comments/1vz9x9c/a_dataset_with_52_text_to_image_model_evaluation_p/",
-          "published": "2026-08-26T21:10:25Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://www.reddit.com/r/MachineLearning/comments/1vz9x9c/a_dataset_with_52_text_to_image_model_evaluation_p/",
-      "published_at": "2026-08-26T21:10:25Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false,
-      "is_new_agent": false,
-      "is_whats_new": true,
-      "is_tool_opensource": false,
-      "is_tool_freemium": false
-    },
-    {
       "id": "how-probable-do-you-guys-find-existential-catast",
       "headline": "How probable do you guys find existential catastrophe as a result of misaligned ASI to be?",
       "subheadline": "I have been trying to think seriously about this for the last 5 months or so.",
@@ -8446,14 +8684,15 @@
       "is_tool_freemium": false
     },
     {
-      "id": "linux-vs--windows-11-productivity-speed-test-on-",
-      "headline": "Linux vs. Windows 11 Productivity Speed Test on a WildCat Lake 8GB machine",
-      "subheadline": "blurring the lines between hw and sw discussion, i think this post warrants good discussion about the future",
-      "summary": "blurring the lines between hw and sw discussion, i think this post warrants good discussion about the future of HW with the DRAM pricing nightmare as is. These tests are typical usecases automated to simulate real world usage (and not a benchmark per say). submitted by /u/DerpSenpai [link] [comments]",
+      "id": "does-anyone-have-real-experience-with-ornith-1-5",
+      "headline": "Does anyone have real experience with Ornith-1.5-9B for coding",
+      "subheadline": "I'm very happy with Qwen-3.8-27B, I run it on my work machine and switched for major part of",
+      "summary": "I'm very happy with Qwen-3.8-27B, I run it on my work machine and switched for major part of real coding tasks from cloud subscriptions to it. I use one dedicated headless RTX 3090, and get maybe 1000-1500 tps prefill, and 45-60 tps generate, with Q8_0 KV and 180224 context. It really beats all cloud options from 5-6 month ago. This model is a gift",
       "why_it_matters": "New results push the bar on what counts as the state of the art in Models & Research.",
       "category": "models",
       "tags": [
-        "Benchmarks"
+        "Coding",
+        "LLMs"
       ],
       "industry": [],
       "story_type": "Benchmark",
@@ -8461,15 +8700,15 @@
       "tier": "standard",
       "sources": [
         {
-          "name": "Reddit hardware",
-          "url": "https://www.reddit.com/r/hardware/comments/1w2z2iv/linux_vs_windows_11_productivity_speed_test_on_a/",
-          "published": "2026-08-31T01:08:47Z"
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w3bx1n/does_anyone_have_real_experience_with_ornith159b/",
+          "published": "2026-08-31T12:10:13Z"
         }
       ],
       "source_count": 1,
-      "image": "https://external-preview.redd.it/s6gUiwI3cgfd56mQQYk2TiXqArilTNOEcm7ZSiEVQa0.jpeg?width=320&crop=smart&auto=webp&s=821a27e3c78016cac3eda0b5677598297f264ee3",
-      "url": "https://www.reddit.com/r/hardware/comments/1w2z2iv/linux_vs_windows_11_productivity_speed_test_on_a/",
-      "published_at": "2026-08-31T01:08:47Z",
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w3bx1n/does_anyone_have_real_experience_with_ornith159b/",
+      "published_at": "2026-08-31T12:10:13Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
@@ -8479,28 +8718,31 @@
       "is_tool_freemium": false
     },
     {
-      "id": "why-does-a-keyboard-vary-in-the-number-of-keys-i",
-      "headline": "Why does a keyboard vary in the number of keys it can hold simultaneously?",
-      "subheadline": "https://preview.redd.it/alpxe67i8fmh1.png?width=655&format=png&auto=webp&s=8a7fed18daa2b5091c48d6d4ca9b617178182447 I think this question is related to hardware, since keyboards operate using circuits and CPU interrupts, as",
-      "summary": "https://preview.redd.it/alpxe67i8fmh1.png?width=655&format=png&auto=webp&s=8a7fed18daa2b5091c48d6d4ca9b617178182447 I think this question is related to hardware, since keyboards operate using circuits and CPU interrupts, as far as I know. I recently commissioned Claude to build a keylogger because i've noticed for some time that many fighting games don't allow me to execute special, desperation, or hidden moves, even though I've performed them correctly. I'm curious about why this happens. A sim",
+      "id": "cuda--extend-moe-fusion-to-specdec--earlier-moe-",
+      "headline": "CUDA: extend MOE fusion to specdec, earlier MOE glu fusion and topk-router fusion were restricted to 1 token by ynankani · Pull Request #27621 · ggml-org/llama.cpp",
+      "subheadline": "I haven't had a chance to test it yet, but it looks very promising.",
+      "summary": "I haven't had a chance to test it yet, but it looks very promising. It seems to speed up MTP for MoE models across different draft widths (especially greater than 1). Check the benchmarks. submitted by /u/jacek2023 [link] [comments]",
       "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
       "category": "models",
-      "tags": [],
+      "tags": [
+        "LLMs",
+        "Benchmarks"
+      ],
       "industry": [],
       "story_type": "Product Update",
       "importance": 2,
       "tier": "standard",
       "sources": [
         {
-          "name": "Reddit hardware",
-          "url": "https://www.reddit.com/r/hardware/comments/1w25gis/why_does_a_keyboard_vary_in_the_number_of_keys_it/",
-          "published": "2026-08-30T02:40:57Z"
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w3bh6f/cuda_extend_moe_fusion_to_specdec_earlier_moe_glu/",
+          "published": "2026-08-31T11:50:49Z"
         }
       ],
       "source_count": 1,
-      "image": "https://preview.redd.it/alpxe67i8fmh1.png?width=140&height=63&auto=webp&s=cc87a7f3414009557fdb9101d37dd6a325c3ed5a",
-      "url": "https://www.reddit.com/r/hardware/comments/1w25gis/why_does_a_keyboard_vary_in_the_number_of_keys_it/",
-      "published_at": "2026-08-30T02:40:57Z",
+      "image": "https://external-preview.redd.it/LTd7suZa1nR2gw0HpJCp1tR0Xneln0Lqw7OcaKWZbok.png?width=640&crop=smart&auto=webp&s=dbd73c6455225b23ce464ef61f31024bbf46ca09",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w3bh6f/cuda_extend_moe_fusion_to_specdec_earlier_moe_glu/",
+      "published_at": "2026-08-31T11:50:49Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
@@ -8510,10 +8752,10 @@
       "is_tool_freemium": false
     },
     {
-      "id": "aoostar-cuts-nex395-memory-to-64gb-and-adds-ssd-",
-      "headline": "AOOSTAR cuts NEX395 memory to 64GB and adds SSD-less Ryzen AI Max+ 395 model",
-      "subheadline": "submitted by /u/Working_Quote_3029 [link] [comments]",
-      "summary": "submitted by /u/Working_Quote_3029 [link] [comments]",
+      "id": "models-to-download-for-m5-ultra-512gb",
+      "headline": "Models to download for M5 Ultra 512GB",
+      "subheadline": "Just ordered a TB5 enclosure plus 4TB SSD to prepare for M5 Ultra 512GB.",
+      "summary": "Just ordered a TB5 enclosure plus 4TB SSD to prepare for M5 Ultra 512GB. I am planning to download the following models in advance. Would like to ask the M3 Ultra 512GB owners whether the quants are the \"best\" performing ones given the 512GB constraint. What's the max size of context length you can get for GLM-5.3 and Kimi-K3? If possible, can you post your pp and tg for them?",
       "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
       "category": "models",
       "tags": [
@@ -8525,20 +8767,661 @@
       "tier": "standard",
       "sources": [
         {
-          "name": "Reddit hardware",
-          "url": "https://www.reddit.com/r/hardware/comments/1w1l1w4/aoostar_cuts_nex395_memory_to_64gb_and_adds/",
-          "published": "2026-08-29T12:17:49Z"
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w3b0ox/models_to_download_for_m5_ultra_512gb/",
+          "published": "2026-08-31T11:29:11Z"
         }
       ],
       "source_count": 1,
-      "image": "https://external-preview.redd.it/jnaP7V2SErtTMdf8iyBtsGj9rco1f4KUCqGqAK_EUIc.jpeg?width=640&crop=smart&auto=webp&s=abfdb4884dc1d5b3d66ba3e8883a91a88b5bbc7a",
-      "url": "https://www.reddit.com/r/hardware/comments/1w1l1w4/aoostar_cuts_nex395_memory_to_64gb_and_adds/",
-      "published_at": "2026-08-29T12:17:49Z",
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w3b0ox/models_to_download_for_m5_ultra_512gb/",
+      "published_at": "2026-08-31T11:29:11Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
       "is_new_agent": false,
       "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "qwen3-8-next-flash-up-to-240t-s-on-single-rtx-60",
+      "headline": "Qwen3.8-Next-Flash up to 240t/s on single rtx 6000 pro",
+      "subheadline": "Stumbled around a post about optimizing new Qwen up to 178t/s with a patched version of sglang ",
+      "summary": "Stumbled around a post about optimizing new Qwen up to 178t/s with a patched version of sglang : https://github.com/jpezzulli/sglang-rtxpro6000 I managed to reproduce results (kudos to jpezzulli, whomever you are) and spotted a few room for additional speed up (theoretical bandwitch limit for nvfp4 of this model sits at around 280t/s) so I let fable iterate for a few days to push it further. Results: almost 240t/s decode speed on a single rtx 6000 pro maxq (300W)",
+      "why_it_matters": "A trending repository signals strong developer interest and rapid adoption within Models & Research.",
+      "category": "models",
+      "tags": [
+        "LLMs",
+        "Open Source"
+      ],
+      "industry": [],
+      "story_type": "Repository",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w39ojn/qwen38nextflash_up_to_240ts_on_single_rtx_6000_pro/",
+          "published": "2026-08-31T10:22:46Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w39ojn/qwen38nextflash_up_to_240ts_on_single_rtx_6000_pro/",
+      "published_at": "2026-08-31T10:22:46Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": true,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "local-llm-picker",
+      "headline": "Local LLM picker",
+      "subheadline": "I made a local LLM picker + aggregator llm-picker.dev Any feedback welcome.",
+      "summary": "I made a local LLM picker + aggregator llm-picker.dev Any feedback welcome. submitted by /u/norenEnmotalen [link] [comments]",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "LLMs"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w39enp/local_llm_picker/",
+          "published": "2026-08-31T10:08:16Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w39enp/local_llm_picker/",
+      "published_at": "2026-08-31T10:08:16Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "help-for-pc-build",
+      "headline": "Help for PC build",
+      "subheadline": "I am in the process of buying a new PC, the excuse is that mine is really old",
+      "summary": "I am in the process of buying a new PC, the excuse is that mine is really old now, even though in the years I changed so many bits and pieces that maybe just the psu is the same. Anyway. I use llama.cpp (open to vLLM in time) and comfyUI. What it needs to do: run comfyUI (but with distorch finally working again for me I don't envision size problems there) and llms like Qwen 3.8 Next at a decent",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "LLMs",
+        "Vision"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w39b76/help_for_pc_build/",
+          "published": "2026-08-31T10:03:07Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w39b76/help_for_pc_build/",
+      "published_at": "2026-08-31T10:03:07Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "does-it-make-sense-to-quantize-qwen-3-8-myself-w",
+      "headline": "Does it make sense to quantize Qwen 3.8 myself when UD 3.0 exists?",
+      "subheadline": "I saw https://huggingface.co/jrell/Qwen3.8-27B-i1-IQ4_XS-GGUF-Smaller posted a couple of times here, and I recreated it, but swapping the imatrix to",
+      "summary": "I saw https://huggingface.co/jrell/Qwen3.8-27B-i1-IQ4_XS-GGUF-Smaller posted a couple of times here, and I recreated it, but swapping the imatrix to the Unsloth one. Here's the result: https://huggingface.co/mkopec12/Qwen3.8-27B-i1-IQ4_XS-GGUF-Smaller But now I'm wondering if doing a simple quantization with llama-quantize even makes sense when UD 3.0 is so much better. Is there any reason to quantize myself? Haven't benchmarked my work yet, but I suspect it's not better than the UD 3.0 Q3 quant",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "Inference",
+        "Benchmarks"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w38ygo/does_it_make_sense_to_quantize_qwen_38_myself/",
+          "published": "2026-08-31T09:44:05Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w38ygo/does_it_make_sense_to_quantize_qwen_38_myself/",
+      "published_at": "2026-08-31T09:44:05Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "how-i-got-qwen-3-8-27b-running-at--75t-s-decode-",
+      "headline": "How I got Qwen 3.8 27b running at ~75t/s decode on 16GB RTX 5080",
+      "subheadline": "Hi all, I have recently been experimenting with different LLM set ups and after everyone was raving about",
+      "summary": "Hi all, I have recently been experimenting with different LLM set ups and after everyone was raving about how good Qwen 3.8 27b was, I was inspired to try and get it deploying. After some battling with settings I've managed to get it running at an average of 75t/s, sometimes seeing 100+t/s with good MTP acceptance. I've managed to do this using: Qwen3.8-27B-i1-IQ4_XS-GGUF-Smaller - jrell/Qwen3.8-27B-i1-IQ4_XS-GGUF-Smaller · Hugging Face \"A custom hybrid quantization of the Qwen3.8-27B base model",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "Inference",
+        "LLMs"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w38s2d/how_i_got_qwen_38_27b_running_at_75ts_decode_on/",
+          "published": "2026-08-31T09:34:07Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w38s2d/how_i_got_qwen_38_27b_running_at_75ts_decode_on/",
+      "published_at": "2026-08-31T09:34:07Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "tencent-contextpilot-14b-8b-e4b",
+      "headline": "tencent/ContextPilot 14B/8B/E4B",
+      "subheadline": "ContextPilot-14B is the Qwen3-14B checkpoint of ContextPilot , a proactive context-management framework for long-horizon language-model agents.",
+      "summary": "ContextPilot-14B is the Qwen3-14B checkpoint of ContextPilot , a proactive context-management framework for long-horizon language-model agents. It teaches agents to plan, maintain long-term memory, and offload less useful context while they continue reasoning and using tools. For more details, see our paper and code repository . https://huggingface.co/tencent/ContextPilot-14B https://preview.redd.it/cl5t7rg6domh1.png?width=3072&format=png&auto=webp&s=a22a3c409f366e9541c0afdcd20d59d4682f609f http",
+      "why_it_matters": "The work advances the Models & Research frontier, with downstream implications for real products.",
+      "category": "models",
+      "tags": [
+        "Reasoning",
+        "Agents",
+        "LLMs"
+      ],
+      "industry": [],
+      "story_type": "Research",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w383te/tencentcontextpilot_14b8be4b/",
+          "published": "2026-08-31T08:56:02Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://external-preview.redd.it/q3evP6JeDpAC2MdSQHWYxnCYTqbJkElIQsLFqVSdkss.png?width=140&height=81&auto=webp&s=d39c4c208d55b26179446aa55ac5f84224359090",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w383te/tencentcontextpilot_14b8be4b/",
+      "published_at": "2026-08-31T08:56:02Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "qwen3-8-flash-next-on-a-96gb-mac-studio--here-s-",
+      "headline": "Qwen3.8-Flash-Next on a 96GB Mac Studio (here's my memory math, tell me where it's wrong)",
+      "subheadline": "Mac Studio, 96GB unified memory ( M3 Ultra ).",
+      "summary": "Mac Studio, 96GB unified memory ( M3 Ultra ). I want the largest usable Qwen3.8-Flash-Next setup, and I'd rather not burn 100GB of bandwidth on the wrong download. Here's my math. Please tell me which parts are wrong. What makes this model weird 177B params total: a 125B MoE trunk + a 51B n-gram embedding table + a 4B MTP head",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "LLMs"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w37wr4/qwen38flashnext_on_a_96gb_mac_studio_heres_my/",
+          "published": "2026-08-31T08:44:27Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w37wr4/qwen38flashnext_on_a_96gb_mac_studio_heres_my/",
+      "published_at": "2026-08-31T08:44:27Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "so-got-2-6000-pro-max-q",
+      "headline": "So got 2 6000 Pro Max-Q…",
+      "subheadline": "I have a Threadripper w/128gb of system ram.",
+      "summary": "I have a Threadripper w/128gb of system ram. I want to serve a small dev team. What should I be running as a coding harness? Seems GLM, Deepseek R4, Qwen next are all with in reach, and I still could stick with 27b BF16 (current choice). I would prefer vision as it’s a useful capability. All of those mentioned need quantising in some way on two cards so how bad is it?",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "Coding",
+        "LLMs",
+        "Vision"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w378qc/so_got_2_6000_pro_maxq/",
+          "published": "2026-08-31T08:04:56Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w378qc/so_got_2_6000_pro_maxq/",
+      "published_at": "2026-08-31T08:04:56Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "has-nvidia-abandoned-gamers-in-its-quest-to-domi",
+      "headline": "Has NVIDIA abandoned gamers in its quest to dominate local AI?",
+      "subheadline": "NVIDIA GPUs are getting ridiculously expensive, yet they’re still the obvious choice for local AI.",
+      "summary": "NVIDIA GPUs are getting ridiculously expensive, yet they’re still the obvious choice for local AI. AMD may offer more VRAM for the money, but its AI performance and software ecosystem still feel miles behind NVIDIA. CUDA is everywhere, while ROCm still feels like a compromise. And now NVIDIA is reportedly acquiring Hugging Face. They already dominate AI hardware and CUDA, and now they could have an even bigger influence over the open-model ecosystem",
+      "why_it_matters": "Compute supply and infrastructure decisions here determine which Models & Research products become viable.",
+      "category": "models",
+      "tags": [
+        "LLMs",
+        "Open Source"
+      ],
+      "industry": [],
+      "story_type": "Hardware",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w374q1/has_nvidia_abandoned_gamers_in_its_quest_to/",
+          "published": "2026-08-31T07:58:59Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w374q1/has_nvidia_abandoned_gamers_in_its_quest_to/",
+      "published_at": "2026-08-31T07:58:59Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "rocm-10---llama-cpp---qwen3-8-27b-q8-k-xl-with-m",
+      "headline": "ROCm 10 + llama.cpp + Qwen3.8 27B Q8 K XL with MTP on 2xR9700",
+      "subheadline": "TL;DR - yeah it works, no wild skills or patching required.",
+      "summary": "TL;DR - yeah it works, no wild skills or patching required. 37-50 tg/s when generating text, spiking over 60tg/s when writing code and mtp hits hard. Your results can be better if you have a better motherboard than my aging x370. ---- Grabbed the docker image from here: https://hub.docker.com/r/rocm/dev-ubuntu-24.04/tags docker pull rocm/dev-ubuntu-24.04:10.0.0-full Started up the docker image, installed git and cmake on the docker image since they appeared missing. Pulled llama.cpp latest from",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "Vision"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w36uqn/rocm_10_llamacpp_qwen38_27b_q8_k_xl_with_mtp_on/",
+          "published": "2026-08-31T07:42:56Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w36uqn/rocm_10_llamacpp_qwen38_27b_q8_k_xl_with_mtp_on/",
+      "published_at": "2026-08-31T07:42:56Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "could-this-affect-m5-ultra-price-availability",
+      "headline": "Could this affect M5 Ultra price/availability?",
+      "subheadline": "submitted by /u/No_Conversation9561 [link] [comments]",
+      "summary": "submitted by /u/No_Conversation9561 [link] [comments]",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w35sc1/could_this_affect_m5_ultra_priceavailability/",
+          "published": "2026-08-31T06:43:28Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://preview.redd.it/64ral7tlpnmh1.jpeg?width=640&crop=smart&auto=webp&s=d33d0c3741d7bcfbd2fb4a3238f6ae41ba2b960c",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w35sc1/could_this_affect_m5_ultra_priceavailability/",
+      "published_at": "2026-08-31T06:43:28Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "medusa-from-training-to-inference-two-part-guide",
+      "headline": "Medusa from training to inference two-part guide",
+      "subheadline": "I wrote a two-part guide explaining Medusa from first principles: Part 1: Medusa heads, Medusa-1/2 training, shifted loss",
+      "summary": "I wrote a two-part guide explaining Medusa from first principles: Part 1: Medusa heads, Medusa-1/2 training, shifted loss, and MTP comparisons. Part 2: top-K candidate trees, tree attention, verification, rejection, and greedy versus typical acceptance. https://sudhirpol522.github.io/blog/medusa-inference-tree-verification/ https://sudhirpol522.github.io/blog/medusa-multi-token-prediction/ Feedback is appreciated, especially from anyone who has implemented or benchmarked Medusa-style decoding. s",
+      "why_it_matters": "A trending repository signals strong developer interest and rapid adoption within Models & Research.",
+      "category": "models",
+      "tags": [
+        "Coding",
+        "Inference",
+        "Training"
+      ],
+      "industry": [],
+      "story_type": "Repository",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w35d8t/medusa_from_training_to_inference_twopart_guide/",
+          "published": "2026-08-31T06:20:14Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w35d8t/medusa_from_training_to_inference_twopart_guide/",
+      "published_at": "2026-08-31T06:20:14Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": true,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "qwen3-8-flash-next-bf16-at-6-4-t-s-with-rtx-pro-",
+      "headline": "Qwen3.8-Flash-Next BF16 at 6.4 t/s with RTX PRO 6000 64GB DDR5, RTX 5090 64GB DDR5, MacBook Pro 48GB",
+      "subheadline": "Full BF16 (330 GiB, no quantization) Decode: 6.43 t/s.",
+      "summary": "Full BF16 (330 GiB, no quantization) Decode: 6.43 t/s. Prefill: 16.5 t/s (that prefill is off a 77-token prompt. I haven't run a proper length sweep yet) Setup: stock llama.cpp master (b10680) over RPC on a LAN, 4 devices across 3 boxes: 94 GiB on the RTX PRO, 40 on the Mac's Metal, 30 on the 5090, plus 5090's DDR5 as a 4th RPC device",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "Inference",
+        "Open Source"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w34pg1/qwen38flashnext_bf16_at_64_ts_with_rtx_pro_6000/",
+          "published": "2026-08-31T05:44:07Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w34pg1/qwen38flashnext_bf16_at_64_ts_with_rtx_pro_6000/",
+      "published_at": "2026-08-31T05:44:07Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "testing-the-new-qwen3-8-27b-on-groq-for-my-ai-ch",
+      "headline": "Testing the new Qwen3.8-27B on Groq for my AI chatbot (alrithm) — super fast, but found a funny glitch (pics attached)",
+      "subheadline": "Hey guys, I’ve been testing out the new Qwen3.8-27B model via Groq's API for my AI chatbot project",
+      "summary": "Hey guys, I’ve been testing out the new Qwen3.8-27B model via Groq's API for my AI chatbot project, alrithm . Included screenshots of both the chat response and my code setup showing the model call. The response speed on Groq is crazy fast, but while testing it out, I stumbled upon a classic LLM moment. As you can see in the first screenshot, I asked it what year we're in, and it confidently answered 2024 ",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "LLMs"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w33lxu/testing_the_new_qwen3827b_on_groq_for_my_ai/",
+          "published": "2026-08-31T04:46:28Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://preview.redd.it/fowkrij64nmh1.png?width=140&height=63&auto=webp&s=ff5915b3342028771e8b7be9d47eb0a7ebb55d25",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w33lxu/testing_the_new_qwen3827b_on_groq_for_my_ai/",
+      "published_at": "2026-08-31T04:46:28Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "glm-5-3--glm-5-3-flash-or-3-8-qwen-flash-for-rep",
+      "headline": "GLM 5.3, GLM 5.3 Flash or 3.8 Qwen Flash for Replacing Kimi k3 IQ2_XXS",
+      "subheadline": "Kimi seem fine at IQ2_xxs but is slow 4tks (passable) but it can drop to 2tks (well, not",
+      "summary": "Kimi seem fine at IQ2_xxs but is slow 4tks (passable) but it can drop to 2tks (well, not great) doesn't seem so viable. Would the new GLM(s), or Qwen Flash a good substitute, especially to have a better interactive experience while having high intelligence. submitted by /u/Hannibalj2ca [link] [comments]",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w33g9t/glm_53_glm_53_flash_or_38_qwen_flash_for/",
+          "published": "2026-08-31T04:38:24Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w33g9t/glm_53_glm_53_flash_or_38_qwen_flash_for/",
+      "published_at": "2026-08-31T04:38:24Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "snkii-sori-1b--audio-grounded-lm-trained-from-sc",
+      "headline": "snkii/Sori-1B: Audio-Grounded LM Trained From Scratch (No Text-Only Pretraining)",
+      "subheadline": "Sori-1B is a 1B-parameter audio-language model built by a single SNU researcher whose core claim to fame is",
+      "summary": "Sori-1B is a 1B-parameter audio-language model built by a single SNU researcher whose core claim to fame is that its decoder is trained entirely from scratch on audio-paired text — no text-only pretraining, no pretrained-LM initialization — with the idea being that a language model which has only ever seen text alongside sound will actually ground its answers in audio rather than leaning on text-only priors like typical AF3-style models do (they show AF3 retains ~74% of its above-chance MMAU",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "LLMs",
+        "Training",
+        "Speech"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w317fn/snkiisori1b_audiogrounded_lm_trained_from_scratch/",
+          "published": "2026-08-31T02:48:24Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://external-preview.redd.it/FwVt5qlWBnZqqGtYuuS27x4KEOq8LfABuve9MYxnU6A.png?width=640&crop=smart&auto=webp&s=ebe0bf2ff0db7f788e8f4e5f930638cc545bcb3c",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w317fn/snkiisori1b_audiogrounded_lm_trained_from_scratch/",
+      "published_at": "2026-08-31T02:48:24Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "optimal-1-25-bit-quantization-of-qwen3-8-flash-n",
+      "headline": "Optimal 1.25 bit quantization of Qwen3.8-Flash-Next",
+      "subheadline": "Hello!",
+      "summary": "Hello! I was looking into quantizing models and i saw how Hy4 was shrunk from 1.5 TB to 200GB with high retention in benchmarks (98% i think). I was wondering if: a) it would be worth it to attempt this method (since they had papers detailing it) for Qwen3.8-Flash-Next b) it would be worth my time trying this as a project I wanted some feedback before I started it since I often don't know the correct scale of projects and",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "Inference",
+        "LLMs",
+        "Benchmarks"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w2zice/optimal_125_bit_quantization_of_qwen38flashnext/",
+          "published": "2026-08-31T01:29:22Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w2zice/optimal_125_bit_quantization_of_qwen38flashnext/",
+      "published_at": "2026-08-31T01:29:22Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "can-we-restrict-more-post-types-until-the-hype-c",
+      "headline": "Can we restrict more post types until the hype calms down?",
+      "subheadline": "There are too many posts that fall under the following categories: Low-complexity data-driven web apps, often with straight-out-of-LLM",
+      "summary": "There are too many posts that fall under the following categories: Low-complexity data-driven web apps, often with straight-out-of-LLM design (icky pastel colors, Web 2.0 Bootstrap-style column layout and hero banners, excessive use of monospaced and serif fonts, etc etc). Sometimes with non-sequitur Silly Tavern-style fantasy world-building involved (so cringe and why?). Every tech-savvy person the planet has created something like this at some point. One/few-shot low-poly games. Most new-ish m",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "LLMs"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w2zb9l/can_we_restrict_more_post_types_until_the_hype/",
+          "published": "2026-08-31T01:20:15Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w2zb9l/can_we_restrict_more_post_types_until_the_hype/",
+      "published_at": "2026-08-31T01:20:15Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "r9v--a-designer-set-of-kernels-i-ve-been-working",
+      "headline": "R9V: A designer set of kernels I've been working on for R9700s/RDNA4. Qwen3.8-Flash-Next Unsloth IQ4_XS (w/ TP on 2 R9700s, MTP, SSD n-gram, 128k ctx, vision): TG256 of *78 tok/s* (~3x increase), PP8192 of *1510 tok/s* (~30x increase).",
+      "subheadline": "TL;DR: Ninfer/DS4 but for RDNA4 Highly custom kernels built for RDNA4, applied to vLLM-Radiance to greatly improve Qwen3.8",
+      "summary": "TL;DR: Ninfer/DS4 but for RDNA4 Highly custom kernels built for RDNA4, applied to vLLM-Radiance to greatly improve Qwen3.8 Flash Next speeds. This is mostly for dual R9700s with preferably 48GB of RAM or higher, but feel free to tinker. SOTA-Scan/DeepGit report in repo. For dense models, I have my own inference engine in the early stages. Currently, I am still wrapping up work on Muse Glimmer 30B. This one is meant for single-R9700 use",
+      "why_it_matters": "New results push the bar on what counts as the state of the art in Models & Research.",
+      "category": "models",
+      "tags": [
+        "Inference",
+        "LLMs",
+        "Open Source"
+      ],
+      "industry": [],
+      "story_type": "Benchmark",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit LocalLLaMA",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w2z5qw/r9v_a_designer_set_of_kernels_ive_been_working_on/",
+          "published": "2026-08-31T01:13:05Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1w2z5qw/r9v_a_designer_set_of_kernels_ive_been_working_on/",
+      "published_at": "2026-08-31T01:13:05Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": true,
       "is_tool_opensource": false,
       "is_tool_freemium": false
     },
@@ -8640,10 +9523,41 @@
       "is_tool_freemium": false
     },
     {
+      "id": "the-ai-native-sdlc-starts-with-your-infrastructu",
+      "headline": "The AI-Native SDLC Starts with Your Infrastructure",
+      "subheadline": "Article URL: https://metalbear.com/blog/ai-native-sdlc-infrastructure/ Comments URL: https://news.ycombinator.com/item?id=49508200 Points: 4 # Comments: 0",
+      "summary": "Article URL: https://metalbear.com/blog/ai-native-sdlc-infrastructure/ Comments URL: https://news.ycombinator.com/item?id=49508200 Points: 4 # Comments: 0",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Hacker News",
+          "url": "https://metalbear.com/blog/ai-native-sdlc-infrastructure/",
+          "published": "2026-08-31T10:57:30Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://metalbear.com/blog/ai-native-sdlc-infrastructure/",
+      "published_at": "2026-08-31T10:57:30Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
       "id": "breaking-claude-code-opus-5-auto-mode",
       "headline": "Breaking Claude Code Opus 5 Auto Mode",
-      "subheadline": "Article URL: https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/ Comments URL: https://news.ycombinator.com/item?id=49506819 Points: 109 # Comments: 27",
-      "summary": "Article URL: https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/ Comments URL: https://news.ycombinator.com/item?id=49506819 Points: 109 # Comments: 27",
+      "subheadline": "Article URL: https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/ Comments URL: https://news.ycombinator.com/item?id=49506819 Points: 118 # Comments: 30",
+      "summary": "Article URL: https://embracethered.com/blog/posts/2026/breaking-claude-code-opus-5-and-automode/ Comments URL: https://news.ycombinator.com/item?id=49506819 Points: 118 # Comments: 30",
       "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
       "category": "models",
       "tags": [],
@@ -8671,43 +9585,10 @@
       "is_tool_freemium": false
     },
     {
-      "id": "openclaw-2-0--accidentally",
-      "headline": "OpenClaw 2.0, Accidentally",
-      "subheadline": "Article URL: https://openclaw.ai/blog/openclaw-2-accidentally Comments URL: https://news.ycombinator.com/item?id=49505310 Points: 113 # Comments: 114",
-      "summary": "Article URL: https://openclaw.ai/blog/openclaw-2-accidentally Comments URL: https://news.ycombinator.com/item?id=49505310 Points: 113 # Comments: 114",
-      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
-      "category": "models",
-      "tags": [],
-      "industry": [
-        "Legal"
-      ],
-      "story_type": "Product Update",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "Hacker News",
-          "url": "https://openclaw.ai/blog/openclaw-2-accidentally",
-          "published": "2026-08-31T03:38:02Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://openclaw.ai/blog/openclaw-2-accidentally",
-      "published_at": "2026-08-31T03:38:02Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false,
-      "is_new_agent": false,
-      "is_whats_new": false,
-      "is_tool_opensource": false,
-      "is_tool_freemium": false
-    },
-    {
       "id": "how-to-build-a-diffusion-language-model",
       "headline": "How to build a diffusion language model",
-      "subheadline": "Article URL: https://kuleshov-group.github.io/blog/blog/2026/how-to-build-a-diffusion-language-model/ Comments URL: https://news.ycombinator.com/item?id=49503956 Points: 112 # Comments: 10",
-      "summary": "Article URL: https://kuleshov-group.github.io/blog/blog/2026/how-to-build-a-diffusion-language-model/ Comments URL: https://news.ycombinator.com/item?id=49503956 Points: 112 # Comments: 10",
+      "subheadline": "Article URL: https://kuleshov-group.github.io/blog/blog/2026/how-to-build-a-diffusion-language-model/ Comments URL: https://news.ycombinator.com/item?id=49503956 Points: 117 # Comments: 11",
+      "summary": "Article URL: https://kuleshov-group.github.io/blog/blog/2026/how-to-build-a-diffusion-language-model/ Comments URL: https://news.ycombinator.com/item?id=49503956 Points: 117 # Comments: 11",
       "why_it_matters": "A trending repository signals strong developer interest and rapid adoption within Models & Research.",
       "category": "models",
       "tags": [
@@ -8735,40 +9616,6 @@
       "is_early_signal": false,
       "is_new_agent": false,
       "is_whats_new": true,
-      "is_tool_opensource": false,
-      "is_tool_freemium": false
-    },
-    {
-      "id": "continuous-diffusion-language-models--cdlm-s",
-      "headline": "Continuous Diffusion Language Models (CDLM's)",
-      "subheadline": "Article URL: https://sander.ai/2026/08/24/continuous-dlms.html Comments URL: https://news.ycombinator.com/item?id=49502611 Points: 115 # Comments: 37",
-      "summary": "Article URL: https://sander.ai/2026/08/24/continuous-dlms.html Comments URL: https://news.ycombinator.com/item?id=49502611 Points: 115 # Comments: 37",
-      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
-      "category": "models",
-      "tags": [
-        "LLMs",
-        "Vision"
-      ],
-      "industry": [],
-      "story_type": "Product Update",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "Hacker News",
-          "url": "https://sander.ai/2026/08/24/continuous-dlms.html",
-          "published": "2026-08-30T20:46:53Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://sander.ai/2026/08/24/continuous-dlms.html",
-      "published_at": "2026-08-30T20:46:53Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false,
-      "is_new_agent": false,
-      "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
     },
@@ -9904,6 +10751,444 @@
       "is_tool_freemium": false
     },
     {
+      "id": "what-is-ai-inference--how-trained-models-produce",
+      "headline": "What Is AI Inference? How Trained Models Produce Answers in Production",
+      "subheadline": "AI inference is the production-time process in which a trained model receives new inputs and computes predictions, generated",
+      "summary": "AI inference is the production-time process in which a trained model receives new inputs and computes predictions, generated tokens, actions, or representations. This guide explains the mechanism, trade-offs, evaluation, and controls that matter in practice",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "Inference",
+        "LLMs",
+        "Benchmarks"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/what-is-ai-inference-how-trained-models-produce-answers-in-production/",
+          "published": "2026-08-31T12:00:00Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/57-ai-inference-1920x1080-1.jpg",
+      "url": "https://www.unite.ai/what-is-ai-inference-how-trained-models-produce-answers-in-production/",
+      "published_at": "2026-08-31T12:00:00Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "the-biggest-challenge-facing-physical-ai-may-be-",
+      "headline": "The Biggest Challenge Facing Physical AI May Be Physical, Not Artificial",
+      "subheadline": "Behind almost every headline-grabbing demo in the Physical AI industry sits the same truth: the machine is a",
+      "summary": "Behind almost every headline-grabbing demo in the Physical AI industry sits the same truth: the machine is a prototype, and prototypes are not products. Building one working robot is an engineering feat. Building the thousandth one, at a cost someone will pay, without a team of specialists standing by to nurse it through a malfunction, is a different challenge entirely, and it's one the industry is only beginning to confront. That gap, between demonstrating intelligence and manufacturing it at…",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "Robotics"
+      ],
+      "industry": [
+        "Manufacturing"
+      ],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/physical-ai-hardware-manufacturing-supply-chain-scaling/",
+          "published": "2026-08-31T11:41:09Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/2d93294c-e4b5-4ef3-9c59-d40a8e1e307c.png",
+      "url": "https://www.unite.ai/physical-ai-hardware-manufacturing-supply-chain-scaling/",
+      "published_at": "2026-08-31T11:41:09Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "nonprofits-are-losing-engagement--ai-could-help-",
+      "headline": "Nonprofits Are Losing Engagement. AI Could Help Them Rebuild It",
+      "subheadline": "At the midpoint of this year, nonprofit executives were hit with the realization that, whereas donations across the",
+      "summary": "At the midpoint of this year, nonprofit executives were hit with the realization that, whereas donations across the U.S. continue to rise, with affluent households giving an average of $33,219 as per the 2025 Bank of America Study of Philanthropy, the number of actual donors has sharply dropped. Two decades ago, nearly two-thirds of households gave annually. Today, fewer than half do",
+      "why_it_matters": "The work advances the Models & Research frontier, with downstream implications for real products.",
+      "category": "models",
+      "tags": [],
+      "industry": [
+        "Finance"
+      ],
+      "story_type": "Research",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/how-nonprofits-can-use-ai-to-rebuild-donor-engagement/",
+          "published": "2026-08-31T11:07:43Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/a8e393ad-76fe-466a-8034-a84b17ad0f40.png",
+      "url": "https://www.unite.ai/how-nonprofits-can-use-ai-to-rebuild-donor-engagement/",
+      "published_at": "2026-08-31T11:07:43Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "fsb-chair-warns-g20-that-frontier-ai-could-ampli",
+      "headline": "FSB Chair Warns G20 That Frontier AI Could Amplify Cyber Risk",
+      "subheadline": "Bank of England Governor Andrew Bailey, writing as chair of the Financial Stability Board (FSB), warned G20 finance",
+      "summary": "Bank of England Governor Andrew Bailey, writing as chair of the Financial Stability Board (FSB), warned G20 finance ministers and central bank governors on August 31, 2026 that frontier artificial intelligence models could materially alter the speed, scale and economics of cyber risk and destabilize the highly interconnected global financial system. The warning came in a letter sent ahead of the G20 Finance Ministers and Central Bank Governors meetings on August 31 and September 1, 2026 in…",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "LLMs"
+      ],
+      "industry": [
+        "Finance",
+        "Security"
+      ],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/fsb-chair-warns-g20-that-frontier-ai-could-amplify-cyber-risk/",
+          "published": "2026-08-31T09:54:02Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/fsb-chair-warns-g20-frontier-ai-cyber-risk.jpg",
+      "url": "https://www.unite.ai/fsb-chair-warns-g20-that-frontier-ai-could-amplify-cyber-risk/",
+      "published_at": "2026-08-31T09:54:02Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "sony-and-warner-chappell-sue-anthropic-over-clau",
+      "headline": "Sony and Warner Chappell Sue Anthropic Over Claude Lyric Training",
+      "subheadline": "Sony Music Publishing and Warner Chappell Music sued Anthropic and two of its co-founders on August 28, 2026",
+      "summary": "Sony Music Publishing and Warner Chappell Music sued Anthropic and two of its co-founders on August 28, 2026, alleging that tens of thousands of copyrighted musical compositions were copied to train the company's Claude AI models. The complaint, filed in the US District Court for the Northern District of California, names Chief Executive Officer Dario Amodei and co-founder Benjamin Mann as individual defendants alongside the company. The plaintiffs, a group of publishing entities filing…",
+      "why_it_matters": "Regulatory movement sets the boundaries within which Models & Research can scale commercially.",
+      "category": "models",
+      "tags": [
+        "LLMs",
+        "Training"
+      ],
+      "industry": [
+        "Legal",
+        "Media"
+      ],
+      "story_type": "Policy",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/sony-and-warner-chappell-sue-anthropic-over-claude-lyric-training/",
+          "published": "2026-08-29T16:26:07Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/sony-warner-chappell-sue-anthropic-claude-lyric-training.jpg",
+      "url": "https://www.unite.ai/sony-and-warner-chappell-sue-anthropic-over-claude-lyric-training/",
+      "published_at": "2026-08-29T16:26:07Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "when-content-is-infinite--point-of-view-becomes-",
+      "headline": "When Content Is Infinite, Point of View Becomes the Scarce Asset",
+      "subheadline": "Generative AI is making competent content easier to produce.",
+      "summary": "Generative AI is making competent content easier to produce. It can assemble a clear explanation, smooth an awkward draft, propose a structure, and imitate almost any familiar style. The floor rises, but the field also fills with work that is difficult to distinguish. Publishers then face a harder problem: giving readers a reason to choose one source over another. The answer is unlikely to be more volume. It may not even be better prose",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/when-content-is-infinite-point-of-view-becomes-the-scarce-asset/",
+          "published": "2026-08-28T20:19:00Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/Codex-Image-Aug-28-2026-05_15_03-PM.png",
+      "url": "https://www.unite.ai/when-content-is-infinite-point-of-view-becomes-the-scarce-asset/",
+      "published_at": "2026-08-28T20:19:00Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "anthropic-reports-claude-agents-mitigated-ten-al",
+      "headline": "Anthropic Reports Claude Agents Mitigated Ten Alignment Failures",
+      "subheadline": "Anthropic published research on August 28, 2026 reporting that AI agents built on its Claude models autonomously developed",
+      "summary": "Anthropic published research on August 28, 2026 reporting that AI agents built on its Claude models autonomously developed training methods that mitigated ten common alignment failures in target models, in every case improving the targeted benchmarks without degrading general capabilities. The company described the results as early evidence that automated alignment post-training could become practical in the near term. The report, Automated Researchers Can Reliably Mitigate Alignment Failures…",
+      "why_it_matters": "The work advances the Models & Research frontier, with downstream implications for real products.",
+      "category": "models",
+      "tags": [
+        "AI Safety",
+        "Agents",
+        "LLMs"
+      ],
+      "industry": [],
+      "story_type": "Research",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/anthropic-reports-claude-agents-mitigated-ten-alignment-failures/",
+          "published": "2026-08-28T20:02:01Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/anthropic-claude-agents-mitigate-ten-alignment-failures.jpg",
+      "url": "https://www.unite.ai/anthropic-reports-claude-agents-mitigated-ten-alignment-failures/",
+      "published_at": "2026-08-28T20:02:01Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "agents-are-always-day-one-hires--it-s-time-we-de",
+      "headline": "Agents Are Always Day-One Hires. It’s Time We Designed for It.",
+      "subheadline": "By 2027, 74% of companies are expected to use agents in some capacity, according to a recent Deloitte",
+      "summary": "By 2027, 74% of companies are expected to use agents in some capacity, according to a recent Deloitte study. For years, we’ve designed and built software to improve the human experience of navigating our apps, websites, operating systems, and documents. Now, the user isn’t a human at all. This has broader implications beyond shifting from dashboards and the controlled workflows we design for human tasks. We are in a moment where we need to design agents’ operating environments, while also…",
+      "why_it_matters": "The work advances the Models & Research frontier, with downstream implications for real products.",
+      "category": "models",
+      "tags": [
+        "Agents"
+      ],
+      "industry": [],
+      "story_type": "Research",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/designing-operating-environments-for-ai-agents/",
+          "published": "2026-08-28T11:58:01Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/fdc5530b-b602-4f2b-88e7-5cd906b18033.png",
+      "url": "https://www.unite.ai/designing-operating-environments-for-ai-agents/",
+      "published_at": "2026-08-28T11:58:01Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "washington-can-suspend-anthropic-s-models--but-i",
+      "headline": "Washington Can Suspend Anthropic’s Models, but It Can’t Fix Your Architecture",
+      "subheadline": "The saga around Anthropic's Fable 5 and Mythos 5 models gave the IT industry a rare, real-time case",
+      "summary": "The saga around Anthropic's Fable 5 and Mythos 5 models gave the IT industry a rare, real-time case study in AI governance under geopolitical pressure. In June, the US Department of Commerce ordered Anthropic to cut off access to both models for all foreign nationals over national security concerns. Anthropic could not verify nationality in time, so it pulled access entirely, then restored it a few weeks later",
+      "why_it_matters": "This exposes live risk surfaces for AI systems, raising the stakes on governance and safety.",
+      "category": "models",
+      "tags": [
+        "AI Safety",
+        "LLMs"
+      ],
+      "industry": [
+        "Retail",
+        "Security"
+      ],
+      "story_type": "Security",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/anthropic-suspension-ai-governance-architecture/",
+          "published": "2026-08-28T11:24:41Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/45c8530f-2900-44e8-8e39-352a4b89f079.png",
+      "url": "https://www.unite.ai/anthropic-suspension-ai-governance-architecture/",
+      "published_at": "2026-08-28T11:24:41Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "what-the-shadow-ai-numbers-are-hiding",
+      "headline": "What the Shadow AI Numbers Are Hiding",
+      "subheadline": "Employees in most organisations are already using AI tools their employer has never approved.",
+      "summary": "Employees in most organisations are already using AI tools their employer has never approved. By now, that shouldn't surprise anyone. Employees have always gravitated toward technologies that help them work more efficiently, whether or not those tools were formally introduced by IT. AI has simply accelerated that behaviour. The speed of AI adoption is only part of the story. More revealing is what it tells us about the environments where that adoption is happening. Employees choosing their own…",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/shadow-ai-endpoint-security-device-hygiene/",
+          "published": "2026-08-28T11:07:41Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/41b64050-7927-4cc7-9aff-a63a6f45c8df.png",
+      "url": "https://www.unite.ai/shadow-ai-endpoint-security-device-hygiene/",
+      "published_at": "2026-08-28T11:07:41Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "anthropic-opens-10-000-free-and-discounted-claud",
+      "headline": "Anthropic Opens 10,000 Free and Discounted Claude Seats for Scientists",
+      "subheadline": "Anthropic on Thursday, August 27, 2026, opened 10,000 free and discounted Claude Team subscription seats for scientists, announcing",
+      "summary": "Anthropic on Thursday, August 27, 2026, opened 10,000 free and discounted Claude Team subscription seats for scientists, announcing an expansion of its researcher-focused programs that also widens its AI for Science credit program beyond the biological sciences. Under the new Claude Team plan for scientists, standard seats are free and premium seats with five times the usage limits cost $15 per month, with pricing fixed for one year. Anthropic said it intends to extend the program well beyond…",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/anthropic-opens-10000-free-and-discounted-claude-seats-for-scientists/",
+          "published": "2026-08-28T07:06:02Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/anthropic-opens-10000-free-discounted-claude-seats-scientists.jpg",
+      "url": "https://www.unite.ai/anthropic-opens-10000-free-and-discounted-claude-seats-for-scientists/",
+      "published_at": "2026-08-28T07:06:02Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "fyxer-review--i-let-ai-take-over-my-entire-email",
+      "headline": "Fyxer Review: I Let AI Take Over My Entire Email Inbox",
+      "subheadline": "Every morning, I open my inbox and feel behind before I've even had my coffee.",
+      "summary": "Every morning, I open my inbox and feel behind before I've even had my coffee. Between emails and messages I keep meaning to answer, my inbox can easily feel like a second job I never applied for. Before long, unread emails can pile up into the thousands. I've tried lots of tools that promise to make handling emails easier. So when I came across Fyxer (an AI assistant that claims to organize your inbox, write replies in your voice, take",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "Speech"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/fyxer-review/",
+          "published": "2026-08-27T22:40:41Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/Unite.AI-Featured-Images.png",
+      "url": "https://www.unite.ai/fyxer-review/",
+      "published_at": "2026-08-27T22:40:41Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "canada-is-luring-ai-and-science-talent-as-trump-",
+      "headline": "Canada Is Luring AI and Science Talent as Trump Upends U.S. Research",
+      "subheadline": "For decades, the United States benefited from one of the most powerful competitive advantages in science: many of",
+      "summary": "For decades, the United States benefited from one of the most powerful competitive advantages in science: many of the world’s best researchers wanted to work there. That advantage is not disappearing overnight. The U.S. still has unmatched concentrations of research universities, federal laboratories, private capital and technology companies. But the flow of talent is becoming less one-directional, and Canada is making an unusually aggressive attempt to capitalize on the shift. The latest…",
+      "why_it_matters": "The work advances the Models & Research frontier, with downstream implications for real products.",
+      "category": "models",
+      "tags": [],
+      "industry": [],
+      "story_type": "Research",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/canada-is-luring-ai-and-science-talent-as-trump-upends-u-s-research/",
+          "published": "2026-08-27T18:28:05Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/Talent-Moving-To-Canada.png",
+      "url": "https://www.unite.ai/canada-is-luring-ai-and-science-talent-as-trump-upends-u-s-research/",
+      "published_at": "2026-08-27T18:28:05Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
       "id": "bytedance-introduces-astra--a-dual-model-archite",
       "headline": "ByteDance Introduces Astra: A Dual-Model Architecture for Autonomous Robot Navigation",
       "subheadline": "ByteDance introduces Astra, an innovative dual-model architecture revolutionizing robot navigation in complex indoor environments.",
@@ -10208,7 +11493,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -10241,7 +11526,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -10276,7 +11561,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -10309,7 +11594,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -10343,7 +11628,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -10380,7 +11665,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -10413,7 +11698,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -10441,6 +11726,70 @@
       "image": null,
       "url": "https://www.producthunt.com/products/orato-speech-coach",
       "published_at": "2026-08-29T17:02:44Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "sayscroll",
+      "headline": "Sayscroll",
+      "subheadline": "The AI Teleprompter that scrolls as you speak Discussion | Link",
+      "summary": "The AI Teleprompter that scrolls as you speak Discussion | Link",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Product Hunt",
+          "url": "https://www.producthunt.com/products/sayscroll-ai-teleprompter",
+          "published": "2026-08-19T16:49:36Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.producthunt.com/products/sayscroll-ai-teleprompter",
+      "published_at": "2026-08-19T16:49:36Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "superagent",
+      "headline": "Superagent",
+      "subheadline": "Claude Code for the rest of us Discussion | Link",
+      "summary": "Claude Code for the rest of us Discussion | Link",
+      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "category": "models",
+      "tags": [
+        "Agents"
+      ],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Product Hunt",
+          "url": "https://www.producthunt.com/products/superagent-a-home-for-your-ai-agents",
+          "published": "2026-08-29T22:27:58Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.producthunt.com/products/superagent-a-home-for-your-ai-agents",
+      "published_at": "2026-08-29T22:27:58Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
@@ -10483,59 +11832,28 @@
       "is_tool_freemium": false
     },
     {
-      "id": "sayscroll",
-      "headline": "Sayscroll",
-      "subheadline": "The AI Teleprompter that scrolls as you speak Discussion | Link",
-      "summary": "The AI Teleprompter that scrolls as you speak Discussion | Link",
-      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "id": "murfy-ai",
+      "headline": "Murfy AI",
+      "subheadline": "Write, review, and publish to arXiv 10x faster Discussion | Link",
+      "summary": "Write, review, and publish to arXiv 10x faster Discussion | Link",
+      "why_it_matters": "The work advances the Models & Research frontier, with downstream implications for real products.",
       "category": "models",
       "tags": [],
       "industry": [],
-      "story_type": "Product Update",
+      "story_type": "Research",
       "importance": 2,
       "tier": "standard",
       "sources": [
         {
           "name": "Product Hunt",
-          "url": "https://www.producthunt.com/products/sayscroll-ai-teleprompter",
-          "published": "2026-08-19T16:49:36Z"
+          "url": "https://www.producthunt.com/products/murfy",
+          "published": "2026-08-10T02:38:59Z"
         }
       ],
       "source_count": 1,
       "image": null,
-      "url": "https://www.producthunt.com/products/sayscroll-ai-teleprompter",
-      "published_at": "2026-08-19T16:49:36Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false,
-      "is_new_agent": false,
-      "is_whats_new": false,
-      "is_tool_opensource": false,
-      "is_tool_freemium": false
-    },
-    {
-      "id": "olostep",
-      "headline": "Olostep",
-      "subheadline": "Turn the Web into Clean Data for AI Discussion | Link",
-      "summary": "Turn the Web into Clean Data for AI Discussion | Link",
-      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
-      "category": "models",
-      "tags": [],
-      "industry": [],
-      "story_type": "Product Update",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "Product Hunt",
-          "url": "https://www.producthunt.com/products/olostep",
-          "published": "2026-07-17T21:04:28Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://www.producthunt.com/products/olostep",
-      "published_at": "2026-07-17T21:04:28Z",
+      "url": "https://www.producthunt.com/products/murfy",
+      "published_at": "2026-08-10T02:38:59Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
@@ -12406,8 +13724,8 @@
       "id": "act-with-intent--distilling-behavior-intent-for-",
       "headline": "Act with Intent: Distilling Behavior Intent for Vision-Language-Action Models",
       "subheadline": "Vision-Language-Action (VLA) models can turn multimodal context into robot actions, but their action decoders are still trained largely",
-      "summary": "Vision-Language-Action (VLA) models can turn multimodal context into robot actions, but their action decoders are still trained largely by behavior cloning. This supervises which motor command was demonstrated while leaving implicit the local objective served by the behavior under the instruction. Future-based supervision enriches action learning with frames, latent observations, trajectories, or motion representations, but these signals capture particular realizations of what may happen rather than the shared semantic objective of the forthcoming behavior. We propose Intention Distillation (I",
-      "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
+      "summary": "Vision-Language-Action (VLA) models can turn multimodal context into robot actions, but their action decoders are still trained largely by behavior cloning. This supervises which motor command was demonstrated while leaving implicit the local objective served by the behavior under the instruction. Future-based supervision enriches action learning with frames, latent observations, trajectories, or motion representations, but these signals capture particular realizations of what may happen rather than the shared semantic objective of the forthcoming behavior",
+      "why_it_matters": "A trending repository signals strong developer interest and rapid adoption within Models & Research.",
       "category": "models",
       "tags": [
         "Multimodal",
@@ -12415,7 +13733,7 @@
         "LLMs"
       ],
       "industry": [],
-      "story_type": "Product Update",
+      "story_type": "Repository",
       "importance": 2,
       "tier": "standard",
       "sources": [
@@ -12433,7 +13751,7 @@
       "is_tool_of_day": false,
       "is_early_signal": false,
       "is_new_agent": false,
-      "is_whats_new": false,
+      "is_whats_new": true,
       "is_tool_opensource": false,
       "is_tool_freemium": false
     },
@@ -12863,8 +14181,8 @@
     {
       "id": "zai-org-glm-5-3-flash",
       "headline": "zai-org/GLM-5.3-Flash",
-      "subheadline": "Trending open model on Hugging Face: 379,271 downloads and 1,768 likes.",
-      "summary": "Trending open model on Hugging Face: 379,271 downloads and 1,768 likes. zai-org/GLM-5.3-Flash",
+      "subheadline": "Trending open model on Hugging Face: 379,271 downloads and 1,769 likes.",
+      "summary": "Trending open model on Hugging Face: 379,271 downloads and 1,769 likes. zai-org/GLM-5.3-Flash",
       "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Models & Research ecosystem.",
       "category": "models",
       "tags": [
@@ -12896,8 +14214,8 @@
     {
       "id": "zai-org-glm-5-3",
       "headline": "zai-org/GLM-5.3",
-      "subheadline": "Trending open model on Hugging Face: 66,195 downloads and 1,379 likes.",
-      "summary": "Trending open model on Hugging Face: 66,195 downloads and 1,379 likes. zai-org/GLM-5.3",
+      "subheadline": "Trending open model on Hugging Face: 66,195 downloads and 1,380 likes.",
+      "summary": "Trending open model on Hugging Face: 66,195 downloads and 1,380 likes. zai-org/GLM-5.3",
       "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Models & Research ecosystem.",
       "category": "models",
       "tags": [
@@ -12929,8 +14247,8 @@
     {
       "id": "qwen-qwen3-8-27b",
       "headline": "Qwen/Qwen3.8-27B",
-      "subheadline": "Trending open model on Hugging Face: 4,720,763 downloads and 13,408 likes.",
-      "summary": "Trending open model on Hugging Face: 4,720,763 downloads and 13,408 likes. Qwen/Qwen3.8-27B",
+      "subheadline": "Trending open model on Hugging Face: 4,720,763 downloads and 13,410 likes.",
+      "summary": "Trending open model on Hugging Face: 4,720,763 downloads and 13,410 likes. Qwen/Qwen3.8-27B",
       "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Models & Research ecosystem.",
       "category": "models",
       "tags": [
@@ -13028,8 +14346,8 @@
     {
       "id": "lightricks-ltx-2-5",
       "headline": "Lightricks/LTX-2.5",
-      "subheadline": "Trending open model on Hugging Face: 1,182,585 downloads and 2,311 likes.",
-      "summary": "Trending open model on Hugging Face: 1,182,585 downloads and 2,311 likes. Lightricks/LTX-2.5",
+      "subheadline": "Trending open model on Hugging Face: 1,182,585 downloads and 2,316 likes.",
+      "summary": "Trending open model on Hugging Face: 1,182,585 downloads and 2,316 likes. Lightricks/LTX-2.5",
       "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Models & Research ecosystem.",
       "category": "models",
       "tags": [
@@ -13094,8 +14412,8 @@
     {
       "id": "unsloth-glm-5-3-flash-gguf",
       "headline": "unsloth/GLM-5.3-Flash-GGUF",
-      "subheadline": "Trending open model on Hugging Face: 53,350 downloads and 301 likes.",
-      "summary": "Trending open model on Hugging Face: 53,350 downloads and 301 likes. unsloth/GLM-5.3-Flash-GGUF",
+      "subheadline": "Trending open model on Hugging Face: 53,350 downloads and 302 likes.",
+      "summary": "Trending open model on Hugging Face: 53,350 downloads and 302 likes. unsloth/GLM-5.3-Flash-GGUF",
       "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Models & Research ecosystem.",
       "category": "models",
       "tags": [
@@ -13194,8 +14512,8 @@
     {
       "id": "minimaxai-minimax-h3",
       "headline": "MiniMaxAI/MiniMax-H3",
-      "subheadline": "Trending open model on Hugging Face: 5,362,365 downloads and 4,681 likes.",
-      "summary": "Trending open model on Hugging Face: 5,362,365 downloads and 4,681 likes. MiniMaxAI/MiniMax-H3",
+      "subheadline": "Trending open model on Hugging Face: 5,362,365 downloads and 4,682 likes.",
+      "summary": "Trending open model on Hugging Face: 5,362,365 downloads and 4,682 likes. MiniMaxAI/MiniMax-H3",
       "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Models & Research ecosystem.",
       "category": "models",
       "tags": [
@@ -13357,43 +14675,10 @@
       "is_tool_freemium": false
     },
     {
-      "id": "alibaba-pai-minimax-h3-acc-loras",
-      "headline": "alibaba-pai/MiniMax-H3-Acc-LoRAs",
-      "subheadline": "Trending open model on Hugging Face: 27,009 downloads and 157 likes.",
-      "summary": "Trending open model on Hugging Face: 27,009 downloads and 157 likes. alibaba-pai/MiniMax-H3-Acc-LoRAs",
-      "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Models & Research ecosystem.",
-      "category": "models",
-      "tags": [
-        "LLMs"
-      ],
-      "industry": [],
-      "story_type": "Open Source",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "HF Trending Models",
-          "url": "https://huggingface.co/alibaba-pai/MiniMax-H3-Acc-LoRAs",
-          "published": "2026-08-26T03:48:27Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://huggingface.co/alibaba-pai/MiniMax-H3-Acc-LoRAs",
-      "published_at": "2026-08-26T03:48:27Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false,
-      "is_new_agent": false,
-      "is_whats_new": true,
-      "is_tool_opensource": false,
-      "is_tool_freemium": false
-    },
-    {
       "id": "hkqr-my-free-code",
       "headline": "hkqr/my-free-code",
       "subheadline": "Open-source multi-provider AI gateway for Claude Code and other coding agents, with model routing, streaming, tools, reasoning, fallbacks",
-      "summary": "Open-source multi-provider AI gateway for Claude Code and other coding agents, with model routing, streaming, tools, reasoning, fallbacks, and local model support New repo with 476 stars in its first week",
+      "summary": "Open-source multi-provider AI gateway for Claude Code and other coding agents, with model routing, streaming, tools, reasoning, fallbacks, and local model support New repo with 481 stars in its first week",
       "why_it_matters": "An open release lowers adoption barriers and speeds iteration across the Models & Research ecosystem.",
       "category": "models",
       "tags": [
@@ -13633,8 +14918,8 @@
     {
       "id": "sovereign-tech-agency-invests--500k-in-flatpak",
       "headline": "Sovereign Tech Agency invests €500k in Flatpak",
-      "subheadline": "Discussed on Hacker News: 274 points, 138 comments",
-      "summary": "Discussed on Hacker News: 274 points, 138 comments",
+      "subheadline": "Discussed on Hacker News: 274 points, 139 comments",
+      "summary": "Discussed on Hacker News: 274 points, 139 comments",
       "why_it_matters": "An incremental update keeps Models & Research capability moving forward for existing users.",
       "category": "models",
       "tags": [],
@@ -14826,6 +16111,37 @@
       "is_tool_freemium": false
     },
     {
+      "id": "how-to-assess-if-there-is-a-strong-signal-in-you",
+      "headline": "How to assess if there is a strong signal in your dirty data [Project]",
+      "subheadline": "I'm sharing this new tabular data diagnostic tool (Entropic Scree).",
+      "summary": "I'm sharing this new tabular data diagnostic tool (Entropic Scree). It can be used to estimate these properties of your high-d, real-world, dirty dataset: The informational volume of the signal (i.e., helps you assess whether the signal is strong enough to survive the dataset's idiosyncratic volume). The overall signal-to-idiosyncratic volume ratio (SNR). The intrinsic rank. Provides an exploratory map that allows for the identification of decoupled sub-networks of variables. The linear sufficie",
+      "why_it_matters": "An incremental update keeps Products & Open Source capability moving forward for existing users.",
+      "category": "products",
+      "tags": [],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Reddit MachineLearning",
+          "url": "https://www.reddit.com/r/MachineLearning/comments/1w3br9c/how_to_assess_if_there_is_a_strong_signal_in_your/",
+          "published": "2026-08-31T12:02:54Z"
+        }
+      ],
+      "source_count": 1,
+      "image": null,
+      "url": "https://www.reddit.com/r/MachineLearning/comments/1w3br9c/how_to_assess_if_there_is_a_strong_signal_in_your/",
+      "published_at": "2026-08-31T12:02:54Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
       "id": "neurips-accepted-papers-leaked---d",
       "headline": "NeurIPS accepted papers leaked? [D]",
       "subheadline": "I found this GitHub link, and the HTML file contains ~7k papers.",
@@ -15154,6 +16470,39 @@
       "is_tool_freemium": false
     },
     {
+      "id": "ai-shopping-doesn-t-move-as-quickly-as-brands-be",
+      "headline": "AI Shopping Doesn’t Move As Quickly As Brands Believe",
+      "subheadline": "AI has quickly become part of how consumers research products.",
+      "summary": "AI has quickly become part of how consumers research products. Adobe Analytics found that traffic from generative AI tools to U.S. retail sites grew 693.4 percent during the 2025 holiday season compared with the previous year. A year earlier, Adobe found that 39 percent of surveyed U.S. consumers had already used generative AI for online shopping, with product research and recommendations among the most common uses. The technology companies behind these systems have responded by building…",
+      "why_it_matters": "The work advances the Products & Open Source frontier, with downstream implications for real products.",
+      "category": "products",
+      "tags": [],
+      "industry": [
+        "Retail"
+      ],
+      "story_type": "Research",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/measuring-ai-shopping-recommendation-share-vs-rank/",
+          "published": "2026-08-28T11:38:56Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/823f71f2-dd03-40c1-aa7d-3e1fcec6453e.png",
+      "url": "https://www.unite.ai/measuring-ai-shopping-recommendation-share-vs-rank/",
+      "published_at": "2026-08-28T11:38:56Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
       "id": "mit-researchers-unveil--seal--a-new-step-towards",
       "headline": "MIT Researchers Unveil “SEAL”: A New Step Towards Self-Improving AI",
       "subheadline": "MIT introduces SEAL, a framework enabling large language models to self-edit and update their weights via reinforcement learning.",
@@ -15214,7 +16563,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -15245,7 +16594,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -15278,7 +16627,7 @@
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
-      "is_new_agent": true,
+      "is_new_agent": false,
       "is_whats_new": false,
       "is_tool_opensource": false,
       "is_tool_freemium": false
@@ -16363,6 +17712,39 @@
       "is_tool_freemium": false
     },
     {
+      "id": "andreessen-horowitz-raises--1-1b-machine-age-fun",
+      "headline": "Andreessen Horowitz Raises $1.1B Machine Age Fund for AI Infrastructure",
+      "subheadline": "Andreessen Horowitz has raised $1.1 billion for a new vehicle called the Machine Age Fund, the firm announced",
+      "summary": "Andreessen Horowitz has raised $1.1 billion for a new vehicle called the Machine Age Fund, the firm announced on August 28, 2026, dedicating the capital to the physical infrastructure that artificial intelligence runs on. The fund was announced in a post on the firm's website authored by general partners Ben Horowitz, Martin Casado, Raghu Raghuram, David Ulevitch, and David George. The partners framed the raise as a formal move into hardware investing for a firm generally known as a software…",
+      "why_it_matters": "Fresh capital reflects sustained investor appetite for Business & Infrastructure, which reshapes the competitive landscape.",
+      "category": "business",
+      "tags": [],
+      "industry": [
+        "Automotive"
+      ],
+      "story_type": "Funding",
+      "importance": 3,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/andreessen-horowitz-raises-1-1b-machine-age-fund-for-ai-infrastructure/",
+          "published": "2026-08-28T17:29:01Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/andreessen-horowitz-raises-1-1b-machine-age-fund-ai-infrastructure.jpg",
+      "url": "https://www.unite.ai/andreessen-horowitz-raises-1-1b-machine-age-fund-for-ai-infrastructure/",
+      "published_at": "2026-08-28T17:29:01Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
       "id": "you-can-beat-sota-time-series-anomaly-detection-",
       "headline": "You can beat SOTA Time Series Anomaly Detection methods with a 100 year old algorithm [R]",
       "subheadline": "You can beat SOTA Time Series Anomaly Detection methods with a 100 year old algorithm Time Series Anomaly",
@@ -16422,37 +17804,6 @@
       "image": null,
       "url": "https://www.reddit.com/r/MachineLearning/comments/1w1itzf/phd_internship_in_smaller_lab_d/",
       "published_at": "2026-08-29T10:20:12Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false,
-      "is_new_agent": false,
-      "is_whats_new": false,
-      "is_tool_opensource": false,
-      "is_tool_freemium": false
-    },
-    {
-      "id": "eccv-2026--malmo-lund-travel-pass-not-available-",
-      "headline": "ECCV 2026- MALMO LUND TRAVEL PASS NOT AVAILABLE? [N]",
-      "subheadline": "Hey guys, sorry if this is not the appropriate forum for this question.",
-      "summary": "Hey guys, sorry if this is not the appropriate forum for this question. Is anyone going To ECCV and staying in Lund? Apparently a few days back i saw discounted travel pass available for both Malmo and Lund zone but now today I was going to buy it and the registration site says only Malmo pass. Did ECCV remove them? Because deadline to buy them is 28th august",
-      "why_it_matters": "The deal consolidates Business & Infrastructure and signals how AI assets are now being valued.",
-      "category": "business",
-      "tags": [],
-      "industry": [],
-      "story_type": "Acquisition",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "Reddit MachineLearning",
-          "url": "https://www.reddit.com/r/MachineLearning/comments/1vzu8uy/eccv_2026_malmo_lund_travel_pass_not_available_n/",
-          "published": "2026-08-27T13:38:37Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://www.reddit.com/r/MachineLearning/comments/1vzu8uy/eccv_2026_malmo_lund_travel_pass_not_available_n/",
-      "published_at": "2026-08-27T13:38:37Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
@@ -16522,68 +17873,6 @@
       "image": null,
       "url": "https://www.reddit.com/r/artificial/comments/1w28hwh/data_center_construction_hit_50b_this_year_and/",
       "published_at": "2026-08-30T05:17:13Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false,
-      "is_new_agent": false,
-      "is_whats_new": false,
-      "is_tool_opensource": false,
-      "is_tool_freemium": false
-    },
-    {
-      "id": "sk-hynix-to-start-ai-chip-output-in-indiana-in-2",
-      "headline": "SK Hynix to start AI chip output in Indiana in 2029, sees memory shortage through 2030",
-      "subheadline": "submitted by /u/sr_local [link] [comments]",
-      "summary": "submitted by /u/sr_local [link] [comments]",
-      "why_it_matters": "Compute supply and infrastructure decisions here determine which Business & Infrastructure products become viable.",
-      "category": "business",
-      "tags": [],
-      "industry": [],
-      "story_type": "Hardware",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "Reddit hardware",
-          "url": "https://www.reddit.com/r/hardware/comments/1w1g4kc/sk_hynix_to_start_ai_chip_output_in_indiana_in/",
-          "published": "2026-08-29T07:40:46Z"
-        }
-      ],
-      "source_count": 1,
-      "image": null,
-      "url": "https://www.reddit.com/r/hardware/comments/1w1g4kc/sk_hynix_to_start_ai_chip_output_in_indiana_in/",
-      "published_at": "2026-08-29T07:40:46Z",
-      "reading_time": "1 min",
-      "is_tool_of_day": false,
-      "is_early_signal": false,
-      "is_new_agent": false,
-      "is_whats_new": false,
-      "is_tool_opensource": false,
-      "is_tool_freemium": false
-    },
-    {
-      "id": "nvidia-starts-pac-as-ai-chip-maker-builds-dc-inf",
-      "headline": "Nvidia Starts PAC as AI Chip Maker Builds DC Influence Force",
-      "subheadline": "submitted by /u/imaginary_num6er [link] [comments]",
-      "summary": "submitted by /u/imaginary_num6er [link] [comments]",
-      "why_it_matters": "Compute supply and infrastructure decisions here determine which Business & Infrastructure products become viable.",
-      "category": "business",
-      "tags": [],
-      "industry": [],
-      "story_type": "Hardware",
-      "importance": 2,
-      "tier": "standard",
-      "sources": [
-        {
-          "name": "Reddit hardware",
-          "url": "https://www.reddit.com/r/hardware/comments/1w1d15f/nvidia_starts_pac_as_ai_chip_maker_builds_dc/",
-          "published": "2026-08-29T04:50:30Z"
-        }
-      ],
-      "source_count": 1,
-      "image": "https://external-preview.redd.it/sJRmmdcYyLZZOeRhj8vl0nriH5A8EEhsEGjEyV50Fgg.jpeg?width=640&crop=smart&auto=webp&s=8a524e83057533e05f28cc644ca0c8d1ea04ebfd",
-      "url": "https://www.reddit.com/r/hardware/comments/1w1d15f/nvidia_starts_pac_as_ai_chip_maker_builds_dc/",
-      "published_at": "2026-08-29T04:50:30Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
@@ -16782,6 +18071,201 @@
       "image": null,
       "url": "https://www.artificialintelligence-news.com/news/xpeng-iron-humanoid-robot-draws-record-physical-ai-funding/",
       "published_at": "2026-08-24T15:53:53Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "andreea-ple-ea--phd--coo-and-co-founder-of-druid",
+      "headline": "Andreea Pleşea, PhD, COO and Co-Founder of Druid AI – Interview Series",
+      "subheadline": "Andreea Pleşea, PhD, COO and Co-Founder of Druid AI, is a technology executive and entrepreneur with nearly two",
+      "summary": "Andreea Pleşea, PhD, COO and Co-Founder of Druid AI, is a technology executive and entrepreneur with nearly two decades of experience spanning software engineering, enterprise technology, artificial intelligence, operations, and customer success. Since co-founding Druid AI, she has held several senior leadership roles across the organization, including Chief Operating Officer, Chief Revenue Officer, and Chief Customer Success Officer, giving her experience across both the technical and…",
+      "why_it_matters": "Fresh capital reflects sustained investor appetite for Business & Infrastructure, which reshapes the competitive landscape.",
+      "category": "business",
+      "tags": [],
+      "industry": [],
+      "story_type": "Funding",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/andreea-plesea-phd-coo-and-co-founder-of-druid-ai-interview-series/",
+          "published": "2026-08-31T11:33:40Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/DRUIDAI_AndreeaPlesea_A-1.jpg",
+      "url": "https://www.unite.ai/andreea-plesea-phd-coo-and-co-founder-of-druid-ai-interview-series/",
+      "published_at": "2026-08-31T11:33:40Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "the-technology-investments-that-matter-most-in-a",
+      "headline": "The Technology Investments That Matter Most in an Uncertain Market",
+      "subheadline": "Two years ago, most conversations about AI centered on whether the investment was worth the risk.",
+      "summary": "Two years ago, most conversations about AI centered on whether the investment was worth the risk. That question has been settled. The harder one now is where the money should go, and how much of it. I see this play out constantly with mid-market leaders and private equity operators. Most of them have already run the pilot phase, trying something in nearly every function",
+      "why_it_matters": "An incremental update keeps Business & Infrastructure capability moving forward for existing users.",
+      "category": "business",
+      "tags": [],
+      "industry": [],
+      "story_type": "Product Update",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/how-leaders-can-scale-ai-and-maximize-tech-roi/",
+          "published": "2026-08-31T11:10:26Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/74e8d693-4b38-4bb8-af2d-6c41e6647f8e.png",
+      "url": "https://www.unite.ai/how-leaders-can-scale-ai-and-maximize-tech-roi/",
+      "published_at": "2026-08-31T11:10:26Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "blue-owl-funds-lead--2-4b-ai-factory-equipment-f",
+      "headline": "Blue Owl Funds Lead $2.4B AI Factory Equipment Financing for IREN",
+      "subheadline": "Blue Owl Capital announced on August 28, 2026 that funds it manages are leading a $2.4 billion compute",
+      "summary": "Blue Owl Capital announced on August 28, 2026 that funds it manages are leading a $2.4 billion compute equipment financing for IREN Limited, the vertically integrated AI Cloud platform, to fund purchases of NVIDIA Blackwell Ultra GPUs for IREN's Mackenzie data center campus in British Columbia, Canada. The financing comprises a $1.2 billion senior secured term loan and $1.2 billion of senior secured notes. Proceeds will fund IREN's purchase of air-cooled NVIDIA Accelerated Computing…",
+      "why_it_matters": "Compute supply and infrastructure decisions here determine which Business & Infrastructure products become viable.",
+      "category": "business",
+      "tags": [],
+      "industry": [
+        "Manufacturing"
+      ],
+      "story_type": "Hardware",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/blue-owl-funds-lead-2-4b-ai-factory-equipment-financing-for-iren/",
+          "published": "2026-08-28T18:43:01Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/blue-owl-funds-lead-2-4b-ai-factory-equipment-financing-for-iren.jpg",
+      "url": "https://www.unite.ai/blue-owl-funds-lead-2-4b-ai-factory-equipment-financing-for-iren/",
+      "published_at": "2026-08-28T18:43:01Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "usd-ai-secures--100m-stablecoin-debt-facility-fr",
+      "headline": "USD.AI Secures $100M Stablecoin Debt Facility From Bullish to Finance GPU-Backed Loans",
+      "subheadline": "Digital asset platform Bullish announced on August 28, 2026, a $100 million stablecoin-based debt facility to USD.AI, an",
+      "summary": "Digital asset platform Bullish announced on August 28, 2026, a $100 million stablecoin-based debt facility to USD.AI, an onchain protocol that originates non-recourse loans secured by GPU hardware, marking Bullish's entry into middle-market AI infrastructure financing. The facility will fund USD.AI's GPU financing operations, which lend capital directly against high-performance computing assets. In the announcement, Bullish described AI infrastructure financing as a capital-intensive sector…",
+      "why_it_matters": "Compute supply and infrastructure decisions here determine which Business & Infrastructure products become viable.",
+      "category": "business",
+      "tags": [],
+      "industry": [
+        "Finance"
+      ],
+      "story_type": "Hardware",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/usd-ai-secures-100m-stablecoin-debt-facility-from-bullish-to-finance-gpu-backed-loans/",
+          "published": "2026-08-28T11:16:01Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/bullish-100m-stablecoin-debt-facility-usd-ai-gpu-financing.jpg",
+      "url": "https://www.unite.ai/usd-ai-secures-100m-stablecoin-debt-facility-from-bullish-to-finance-gpu-backed-loans/",
+      "published_at": "2026-08-28T11:16:01Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "ian-leysen--ceo-and-co-founder-of-datadobi---int",
+      "headline": "Ian Leysen, CEO and Co-Founder of Datadobi – Interview Series",
+      "subheadline": "Ian Leysen, CEO and Co-Founder of Datadobi, is a technology executive with more than three decades of experience",
+      "summary": "Ian Leysen, CEO and Co-Founder of Datadobi, is a technology executive with more than three decades of experience in software engineering, quality assurance, and enterprise data management. He co-founded Datadobi in 2009 after spending eight years at EMC as Senior Manager of Quality Assurance, preceded by leadership roles at Mediagenix and Wave Research. Throughout his career, Leysen has focused heavily on building high-quality software engineering organizations, having established three quality…",
+      "why_it_matters": "Fresh capital reflects sustained investor appetite for Business & Infrastructure, which reshapes the competitive landscape.",
+      "category": "business",
+      "tags": [],
+      "industry": [
+        "Media"
+      ],
+      "story_type": "Funding",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/ian-leysen-ceo-and-co-founder-of-datadobi-interview-series/",
+          "published": "2026-08-27T17:53:49Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/Datadobi_Ian-Leysen1.jpg",
+      "url": "https://www.unite.ai/ian-leysen-ceo-and-co-founder-of-datadobi-interview-series/",
+      "published_at": "2026-08-27T17:53:49Z",
+      "reading_time": "1 min",
+      "is_tool_of_day": false,
+      "is_early_signal": false,
+      "is_new_agent": false,
+      "is_whats_new": false,
+      "is_tool_opensource": false,
+      "is_tool_freemium": false
+    },
+    {
+      "id": "adam-gross--co-founder-and-ceo-of-harmoneyes---i",
+      "headline": "Adam Gross, Co-Founder and CEO of HarmonEyes – Interview Series",
+      "subheadline": "Adam Gross, Co-Founder and CEO of HarmonEyes, is a serial entrepreneur with nearly three decades of experience building",
+      "summary": "Adam Gross, Co-Founder and CEO of HarmonEyes, is a serial entrepreneur with nearly three decades of experience building and scaling technology-driven businesses across healthcare, financial services, and data analytics. He co-founded RightEye in 2013, developing an eye-tracking technology platform used across healthcare, professional sports, and military performance applications, before co-founding HarmonEyes with Dr. Melissa Hunfalvay in 2024 to extend that expertise into AI-powered…",
+      "why_it_matters": "Fresh capital reflects sustained investor appetite for Business & Infrastructure, which reshapes the competitive landscape.",
+      "category": "business",
+      "tags": [],
+      "industry": [
+        "Healthcare",
+        "Finance"
+      ],
+      "story_type": "Funding",
+      "importance": 2,
+      "tier": "standard",
+      "sources": [
+        {
+          "name": "Unite AI",
+          "url": "https://www.unite.ai/adam-gross-co-founder-and-ceo-of-harmoneyes-interview-series/",
+          "published": "2026-08-27T15:07:33Z"
+        }
+      ],
+      "source_count": 1,
+      "image": "https://www.unite.ai/wp-content/uploads/2026/08/AdamGross.png",
+      "url": "https://www.unite.ai/adam-gross-co-founder-and-ceo-of-harmoneyes-interview-series/",
+      "published_at": "2026-08-27T15:07:33Z",
       "reading_time": "1 min",
       "is_tool_of_day": false,
       "is_early_signal": false,
