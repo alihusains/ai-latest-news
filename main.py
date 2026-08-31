@@ -1274,7 +1274,7 @@ def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id)
     a('<tr><td align="center" style="padding:12px 0;">')
     a('<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;">')
     a('<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#374151;">')
-    a(f'{date_str} &nbsp;&middot;&nbsp; <a href="https://ai-latest-news.vercel.app" style="color:#146DE9;text-decoration:none;">Read online</a>')
+    a(f'{date_str} &nbsp;&middot;&nbsp; <a href="https://alihusains.github.io/ai-latest-news/" style="color:#146DE9;text-decoration:none;">Read online</a>')
     a('</td></tr></table></td></tr></table>')
 
     # Main container
@@ -1371,7 +1371,7 @@ def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id)
     a('<tr><td style="padding:24px 24px 28px 24px;border-top:1px solid #e5e7eb;margin-top:16px;">')
     a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#6b7280;line-height:1.6;">{FOOTER_TEXT}</div>')
     a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#9ca3af;line-height:1.6;margin-top:6px;">')
-    a(f'&copy; {date.year} SIGNAL. All rights reserved. &nbsp;|&nbsp; <a href="mailto:unsubscribe@example.com" style="color:#9ca3af;text-decoration:none;">Unsubscribe</a>')
+    a(f'&copy; {date.year} SIGNAL. All rights reserved.')  # Buttondown's Portal auto-adds the real unsubscribe link
     a('</div></td></tr>')
 
     a('</table>')
