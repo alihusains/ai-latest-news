@@ -267,16 +267,16 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 [data-theme="dark"] .theme-toggle .icon-sun { display: none; }
 [data-theme="dark"] .theme-toggle .icon-moon { display: block; }
 
-@media (min-width: 1024px) {
+@media (min-width: 1140px) {
   .main-nav { display: block; }
   .nav-list { display: flex; align-items: center; gap: 2px; }
   .nav-link {
-    position: relative; display: inline-block; padding: .5rem .7rem; border-radius: var(--radius-sm);
-    font-family: var(--font-mono); font-size: .75rem; font-weight: 500; letter-spacing: .04em;
+    position: relative; display: inline-block; padding: .5rem .55rem; border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: .71875rem; font-weight: 500; letter-spacing: .02em;
     text-transform: uppercase; color: var(--color-text-secondary); transition: color .18s;
   }
   .nav-link::after {
-    content: ""; position: absolute; left: .7rem; right: .7rem; bottom: .15rem; height: 2px;
+    content: ""; position: absolute; left: .55rem; right: .55rem; bottom: .15rem; height: 2px;
     background: var(--color-accent); transform: scaleX(0); transform-origin: left; transition: transform .22s ease;
   }
   .nav-link:hover { color: var(--color-text); text-decoration: none; }
@@ -284,7 +284,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .nav-link.active { color: var(--color-text); }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1139px) {
   .nav-toggle { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
   .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--color-text); border-radius: 2px; transition: transform .22s, opacity .22s; }
   .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -431,6 +431,17 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .feature-title a:hover { color: var(--color-accent); }
 .feature-summary { position: relative; font-size: var(--text-body); color: var(--color-text-secondary); line-height: 1.6; margin: 0 0 var(--space-md); max-width: var(--measure); }
 .feature-meta { position: relative; font-family: var(--font-mono); font-size: var(--text-meta); color: var(--color-text-muted); }
+
+/* ===== AI Tool of the Day — open-source + freemium duo ===== */
+.tool-duo { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+@media (max-width: 860px) { .tool-duo { grid-template-columns: 1fr; } }
+.tool-duo .feature-card { margin: var(--space-xl) 0 0; }
+.tool-badge {
+  display: inline-block; padding: 2px 8px; margin-right: 8px; border-radius: 999px;
+  border: 1px solid currentColor; font-size: .625rem; letter-spacing: .12em; vertical-align: 1px;
+}
+.tool-card--os .tool-badge { color: var(--cat-agents); }
+.tool-card--fm .tool-badge { color: var(--color-accent); }
 
 /* ===== Grid ===== */
 .grid { display: grid; gap: var(--space-lg); }

@@ -1,38 +1,38 @@
 sources:
   - name: Reddit MachineLearning
-    type: reddit
-    url: https://old.reddit.com/r/MachineLearning/hot.json?limit=25
+    type: rss
+    url: https://www.reddit.com/r/MachineLearning/new.rss?limit=25
     category_hint: research
     active: true
-    notes: Public JSON endpoint verified 200 via curl
+    notes: Reddit .json is login-walled since 2026; RSS verified 200 (throttle ~1 req/10s handled in main.py)
 
   - name: Reddit artificial
-    type: reddit
-    url: https://old.reddit.com/r/artificial/hot.json?limit=25
+    type: rss
+    url: https://www.reddit.com/r/artificial/new.rss?limit=25
     category_hint: research
     active: true
-    notes: Public JSON endpoint verified 200 via curl
+    notes: Reddit .json is login-walled since 2026; RSS verified 200 (throttle ~1 req/10s handled in main.py)
 
   - name: Reddit LocalLLaMA
-    type: reddit
-    url: https://old.reddit.com/r/LocalLLaMA/hot.json?limit=25
+    type: rss
+    url: https://www.reddit.com/r/LocalLLaMA/new.rss?limit=25
     category_hint: open-source
     active: true
-    notes: Public JSON endpoint verified 200 via curl
+    notes: Reddit .json is login-walled since 2026; RSS verified 200 (throttle ~1 req/10s handled in main.py)
 
   - name: Reddit hardware
-    type: reddit
-    url: https://old.reddit.com/r/hardware/hot.json?limit=25
+    type: rss
+    url: https://www.reddit.com/r/hardware/new.rss?limit=25
     category_hint: hardware
     active: true
-    notes: Public JSON endpoint verified 200 via curl
+    notes: Reddit .json is login-walled since 2026; RSS verified 200 (throttle ~1 req/10s handled in main.py)
 
   - name: Reddit science
-    type: reddit
-    url: https://old.reddit.com/r/science/hot.json?limit=25
+    type: rss
+    url: https://www.reddit.com/r/science/new.rss?limit=25
     category_hint: science
     active: true
-    notes: Public JSON endpoint verified 200 via curl
+    notes: Reddit .json is login-walled since 2026; RSS verified 200 (throttle ~1 req/10s handled in main.py)
 
   - name: TechCrunch AI
     type: rss
@@ -209,37 +209,79 @@ sources:
     active: true
     notes: HTML page verified 200 via curl; use scraper or GitHub API as fallback
 
-  - name: X karpathy
-    type: x
-    url: https://nitter.net/karpathy/with_reposts
-    category_hint: research
+  - name: Reddit AI Agents
+    type: rss
+    url: https://www.reddit.com/r/AI_Agents/new.rss?limit=25
+    category_hint: engineering
     active: true
-    notes: Nitter instance; fragile in 2026. Verified 200 but instances may go down without notice.
+    notes: Agent-focused subreddit via RSS
 
-  - name: X ylecun
-    type: x
-    url: https://nitter.net/ylecun/with_reposts
-    category_hint: research
+  - name: Product Hunt
+    type: rss
+    url: https://www.producthunt.com/feed
+    category_hint: products
     active: true
-    notes: Nitter instance; fragile in 2026. Verified 200 but instances may go down without notice.
+    notes: Freemium tool launches; AI keyword gate filters non-AI launches
 
-  - name: X Andrew Ng
-    type: x
-    url: https://nitter.net/AndrewYNg/with_reposts
-    category_hint: research
+  - name: TLDR AI
+    type: rss
+    url: https://tldr.tech/api/rss/ai
+    category_hint: newsletter
     active: true
-    notes: Nitter instance; fragile in 2026. Verified 200 but instances may go down without notice.
+    notes: Daily AI digest newsletter feed
 
-  - name: X Jim Fan
-    type: x
-    url: https://nitter.net/JimFan/with_reposts
-    category_hint: research
+  - name: The Rundown AI
+    type: rss
+    url: https://www.therundown.ai/feed
+    category_hint: newsletter
     active: true
-    notes: Nitter instance; fragile in 2026. Verified 200 but instances may go down without notice.
+    notes: Daily AI news roundup feed
 
-  - name: X Demis Hassabis
-    type: x
-    url: https://nitter.net/demishassabis/with_reposts
+  - name: Latent Space
+    type: rss
+    url: https://www.latent.space/feed
+    category_hint: newsletter
+    active: true
+    notes: AI engineer newsletter; [AINews] posts proxy builder chatter
+
+  - name: Ben's Bites
+    type: rss
+    url: https://www.bensbites.com/feed
+    category_hint: newsletter
+    active: true
+    notes: Product-oriented AI newsletter
+
+  - name: MarkTechPost
+    type: rss
+    url: https://www.marktechpost.com/feed/
+    category_hint: news
+    active: true
+    notes: High-volume AI news site feed
+
+  - name: HF Daily Papers
+    type: hf_papers
+    url: https://huggingface.co/api/daily_papers
     category_hint: research
     active: true
-    notes: Nitter instance; fragile in 2026. Verified 200 but instances may go down without notice.
+    notes: Curated research trending in the community
+
+  - name: HF Trending Models
+    type: hf_models
+    url: https://huggingface.co/api/models?sort=trendingScore&direction=-1&limit=20
+    category_hint: open-source
+    active: true
+    notes: Open-source model releases; feeds open-source Tool of the Day
+
+  - name: New Agent Repos
+    type: github_search
+    url: https://api.github.com/search/repositories?q=ai+agent+in:name,description+created:%3E{since}+stars:%3E10&sort=stars&order=desc&per_page=15
+    category_hint: engineering
+    active: true
+    notes: Repos created in the last 7 days; {since} substituted at fetch time
+
+  - name: HN Agent Stories
+    type: hn_search
+    url: https://hn.algolia.com/api/v1/search_by_date?query=agent&tags=story&numericFilters=points%3E20
+    category_hint: engineering
+    active: true
+    notes: Fresh agent discussions with traction on Hacker News

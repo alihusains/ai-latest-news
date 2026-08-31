@@ -21,6 +21,7 @@ import html
 import json
 import re
 import sys
+import time
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -200,12 +201,16 @@ def fetch_source(source: dict) -> list[dict]:
     try:
         if stype == "rss":
             items = _fetch_rss(url)
-        elif stype == "reddit":
-            items = _fetch_reddit(url)
         elif stype == "web":
             items = _fetch_web(url)
-        elif stype == "x":
-            items = _fetch_x(url)
+        elif stype == "hf_papers":
+            items = _fetch_hf_papers(url)
+        elif stype == "hf_models":
+            items = _fetch_hf_models(url)
+        elif stype == "github_search":
+            items = _fetch_github_search(url)
+        elif stype == "hn_search":
+            items = _fetch_hn_search(url)
         else:
             sys.stderr.write(f"[skip] unknown type {stype!r} for {source.get('name')}\n")
             return []
@@ -248,6 +253,11 @@ def _xml_node_to_item(node, kind: str, link_tag: str, title_tag: str, desc_tag: 
                 break
     title = text(title_tag)
     desc = text(desc_tag)
+    if not desc:
+        # Atom feeds (e.g. Product Hunt) carry the blurb in <content> only.
+        raw_content = text("content")
+        if raw_content:
+            desc = clean_text(raw_content)[:500]
     published = text("pubDate") or text("published") or text("updated")
     # media:thumbnail / media:content / enclosure carry the image URL.
     image = ""
@@ -298,6 +308,8 @@ def _fetch_rss(url: str) -> list[dict]:
                 or entry.get("description", "")
                 or entry.get("subtitle", "")
             )
+            if not summary and entry.get("content"):
+                summary = entry["content"][0].get("value", "")
             published = entry.get("published", "") or entry.get("updated", "")
             item = {
                 "title": title,
@@ -313,32 +325,107 @@ def _fetch_rss(url: str) -> list[dict]:
     return items
 
 
-def _fetch_reddit(url: str) -> list[dict]:
+def _fetch_hf_papers(url: str) -> list[dict]:
+    """Hugging Face daily papers JSON API."""
     raw = json.loads(http_get_text(url))
-    children = (raw.get("data", {}).get("children", []) if isinstance(raw, dict) else [])
     items = []
-    for child in children:
-        data = child.get("data", {}) if isinstance(child, dict) else {}
-        title = data.get("title", "")
-        permalink = data.get("permalink", "")
-        link = data.get("url", "") or permalink
-        if permalink.startswith("/r/"):
-            link = "https://old.reddit.com" + permalink
-        created = data.get("created_utc", 0)
-        image = ""
-        previews = data.get("preview", {}).get("images", []) if isinstance(data, dict) else []
-        if previews:
-            image = previews[0].get("source", {}).get("url", "")
-        items.append(
-            {
-                "title": title,
-                "link": link,
-                "summary": data.get("selftext", "") or data.get("title", ""),
-                "image": image or None,
-                "published": float(created),
-                "date": _epoch_to_date(created),
-            }
+    for entry in raw if isinstance(raw, list) else []:
+        paper = entry.get("paper") or {}
+        title = re.sub(r"\s+", " ", (paper.get("title") or "")).strip()
+        pid = paper.get("id") or ""
+        if not title or not pid:
+            continue
+        summary = clean_text(paper.get("summary", ""))[:600]
+        repo = paper.get("githubRepo") or ""
+        if repo:
+            summary += f" Code: {repo}"
+        date = entry.get("publishedAt") or paper.get("publishedAt") or ""
+        items.append({
+            "title": title,
+            "link": f"https://huggingface.co/papers/{pid}",
+            "summary": summary,
+            "image": None,
+            "published": _parse_time(date),
+            "date": date,
+        })
+    return items
+
+
+def _fetch_hf_models(url: str) -> list[dict]:
+    """Hugging Face trending models API (open-source tool signal)."""
+    raw = json.loads(http_get_text(url))
+    items = []
+    for m in raw if isinstance(raw, list) else []:
+        mid = (m.get("modelId") or m.get("id") or "").strip()
+        if not mid:
+            continue
+        likes = m.get("likes", 0) or 0
+        downloads = m.get("downloads", 0) or 0
+        created = m.get("createdAt") or ""
+        summary = (
+            f"Trending open model on Hugging Face: {downloads:,} downloads and "
+            f"{likes:,} likes. {mid}"
         )
+        items.append({
+            "title": mid,
+            "link": f"https://huggingface.co/{mid}",
+            "summary": summary,
+            "image": None,
+            "published": _parse_time(created),
+            "date": created,
+        })
+    return items
+
+
+def _fetch_github_search(url: str) -> list[dict]:
+    """GitHub repository search API. `{since}` in the query is replaced with
+    the date 7 days ago so the window always covers fresh repos."""
+    since = (dt.date.today() - dt.timedelta(days=7)).isoformat()
+    url = url.replace("{since}", since)
+    raw = json.loads(http_get_text(url))
+    items = []
+    for r in raw.get("items", []) if isinstance(raw, dict) else []:
+        full = r.get("full_name") or ""
+        if not full:
+            continue
+        desc = clean_text(r.get("description") or "")
+        stars = r.get("stargazers_count", 0) or 0
+        summary = desc or f"A new AI agent repository on GitHub ({stars} stars in its first week)."
+        if desc:
+            summary += f" New repo with {stars} stars in its first week."
+        created = r.get("created_at") or ""
+        items.append({
+            "title": full,
+            "link": r.get("html_url") or f"https://github.com/{full}",
+            "summary": summary,
+            "image": None,
+            "published": _parse_time(created),
+            "date": created,
+        })
+    return items
+
+
+def _fetch_hn_search(url: str) -> list[dict]:
+    """Hacker News (Algolia) search API for agent stories."""
+    raw = json.loads(http_get_text(url))
+    items = []
+    for h in raw.get("hits", []) if isinstance(raw, dict) else []:
+        title = (h.get("title") or "").strip()
+        if not title:
+            continue
+        oid = h.get("objectID", "")
+        link = h.get("url") or f"https://news.ycombinator.com/item?id={oid}"
+        pts = h.get("points", 0) or 0
+        ncom = h.get("num_comments", 0) or 0
+        created = h.get("created_at") or ""
+        items.append({
+            "title": title,
+            "link": link,
+            "summary": f"Discussed on Hacker News: {pts} points, {ncom} comments.",
+            "image": None,
+            "published": float(h.get("created_at_i") or 0) or _parse_time(created),
+            "date": created,
+        })
     return items
 
 
@@ -402,62 +489,6 @@ def _scrape_generic_links(text: str, base_url: str) -> list[dict]:
     return items
 
 
-def _fetch_x(url: str) -> list[dict]:
-    """Fetch a Nitter profile.
-
-    Tries the per-user RSS feed first (`/<user>/rss`, which nitter instances
-    that still support it return), then falls back to scraping the profile HTML
-    for tweet text + status links. Instances are fragile; silently empty on
-    failure is acceptable and handled by the caller.
-    """
-    items = _fetch_x_rss(url)
-    if items:
-        return items
-    items = _fetch_x_html(url)
-    return items
-
-
-def _fetch_x_rss(url: str) -> list[dict]:
-    """Try <host>/<user>/rss; nitter may return HTTP 410 (gone) on old feeds."""
-    parsed = urllib.parse.urlparse(url)
-    parts = [p for p in parsed.path.split("/") if p]
-    if not parts:
-        return []
-    user = parts[0]
-    rss_url = f"{parsed.scheme}://{parsed.netloc}/{user}/rss"
-    try:
-        raw = http_get_text(rss_url)
-    except Exception:
-        return []
-    # `_parse_xml_items` tolerates non-XML bodies and returns [] on parse error.
-    return _parse_xml_items(raw)
-
-
-def _fetch_x_html(url: str) -> list[dict]:
-    """Scrape the profile HTML for tweet content + status links."""
-    text = http_get_text(url)
-    items = []
-    tweets = re.findall(r'<div class="tweet-content"[^>]*>(.*?)</div>', text, re.S)
-    statuses = re.findall(r'href="(/[^"]+/status/\d+)"', text)
-    host = urllib.parse.urlparse(url).netloc
-    for i, tweet in enumerate(tweets):
-        content = clean_text(tweet)
-        if not content:
-            continue
-        status = statuses[i] if i < len(statuses) else ""
-        link = f"https://{host}{status}" if status else url
-        items.append(
-            {
-                "title": _truncate(content, 120),
-                "link": link,
-                "summary": content,
-                "published": 0,
-                "date": "",
-            }
-        )
-    return items
-
-
 # --------------------------------------------------------------------------- #
 # Processing stages
 # --------------------------------------------------------------------------- #
@@ -485,13 +516,6 @@ def _parse_time(value: str) -> float:
         return parsed.timestamp()
     except (TypeError, ValueError):
         return 0.0
-
-
-def _epoch_to_date(epoch: float) -> str:
-    try:
-        return dt.datetime.utcfromtimestamp(epoch).strftime("%Y-%m-%d")
-    except (OverflowError, OSError, ValueError):
-        return ""
 
 
 def _truncate(text: str, limit: int) -> str:
@@ -765,12 +789,20 @@ TRUSTED_AI_FEEDS = {
     "techcrunch ai", "the verge ai", "mit tech review ai", "unite ai",
     "ai weekly", "ai news", "towards data science", "analytics vidhya",
     "kdnuggets", "synced review", "jiqizhixin", "reddit machinelearning",
-    "reddit artificial", "reddit localllama",
+    "reddit artificial", "reddit localllama", "reddit ai agents",
+    "tldr ai", "the rundown ai", "latent space", "ben's bites",
+    "hugging face daily papers", "hf trending models", "new agent repos",
+    "hn agent stories", "marktechpost",
 }
 OFFICIAL_BLOGS = {
     "openai blog", "deepmind blog", "google ai blog", "hugging face blog",
 }
-_X_ACCOUNTS = {"x karpathy", "x ylecun", "x andrew ng", "x jim fan", "x demis hassabis"}
+
+# Source-name buckets powering the discovery sections (tool of the day,
+# new agents). Matched case-insensitively against story source names.
+NEW_AGENT_SOURCES = {"new agent repos", "hn agent stories", "reddit ai agents"}
+TOOL_OS_SOURCES = {"hf trending models", "github trending", "reddit localllama", "new agent repos"}
+TOOL_FREEMIUM_SOURCES = {"product hunt"}
 
 # Source weight buckets for importance scoring.
 SOURCE_WEIGHTS = [
@@ -792,7 +824,7 @@ def _is_trusted_ai_feed(source_name: str, hint: str | None) -> bool:
     hint = (hint or "").strip().lower()
     if hint == "research":
         return True
-    if name in OFFICIAL_BLOGS or name in TRUSTED_AI_FEEDS or name in _X_ACCOUNTS:
+    if name in OFFICIAL_BLOGS or name in TRUSTED_AI_FEEDS:
         return True
     return False
 
@@ -1083,18 +1115,30 @@ def _story_from_cluster(cluster: list[dict], seen_ids: set[str]) -> dict:
         "reading_time": f"{max(1, round(len(summary.split()) / 180))} min",
         "is_tool_of_day": False,
         "is_early_signal": False,
+        "is_new_agent": (
+            (category == "agents" and story_type in {"Launch", "Release", "Repository", "Open Source"})
+            or any((x.get("name", "").lower() in NEW_AGENT_SOURCES) for x in sources)
+        ),
+        "is_whats_new": story_type in {
+            "Launch", "Release", "Open Source", "Repository",
+            "Benchmark", "Breakthrough",
+        },
     }
 
 
-def _pick_tool_of_day(stories: list[dict]) -> str | None:
+def _pick_tools_of_day(stories: list[dict]) -> tuple[str | None, str | None]:
+    """Pick the open-source and freemium 'AI Tool of the Day' stories."""
     tool_types = {"Repository", "Open Source", "Release", "Launch", "Product Update"}
-    candidates = [
-        s for s in stories
-        if s["category"] == "products" and s["story_type"] in tool_types
-    ]
-    if not candidates:
-        return None
-    return max(candidates, key=lambda s: s["importance"])["id"]
+
+    def src_in(s: dict, names: set) -> bool:
+        return any((x.get("name", "").lower() in names) for x in s["sources"])
+
+    pool = [s for s in stories if s["category"] == "products" and s["story_type"] in tool_types]
+    os_c = [s for s in pool if src_in(s, TOOL_OS_SOURCES) or s["story_type"] in {"Open Source", "Repository"}]
+    os_id = max(os_c, key=lambda s: s["importance"])["id"] if os_c else None
+    fm_c = [s for s in pool if s["id"] != os_id and (src_in(s, TOOL_FREEMIUM_SOURCES) or s["story_type"] == "Launch")]
+    fm_id = max(fm_c, key=lambda s: s["importance"])["id"] if fm_c else None
+    return os_id, fm_id
 
 
 def _pick_early_signal(stories: list[dict], exclude: str | None) -> str | None:
@@ -1135,18 +1179,21 @@ def build_stories(items: list[dict]) -> tuple[list[dict], int, str | None, str |
         else:
             s["tier"] = "standard"
 
-    tool_id = _pick_tool_of_day(stories)
+    tool_os_id, tool_fm_id = _pick_tools_of_day(stories)
+    tool_id = tool_fm_id or tool_os_id
     early_id = _pick_early_signal(stories, exclude=tool_id)
     for s in stories:
         s["is_tool_of_day"] = s["id"] == tool_id
+        s["is_tool_opensource"] = s["id"] == tool_os_id
+        s["is_tool_freemium"] = s["id"] == tool_fm_id
         s["is_early_signal"] = s["id"] == early_id
 
     order = {c: i for i, c in enumerate(NEW_CATEGORIES)}
     stories.sort(key=lambda s: (order.get(s["category"], 9), -s["importance"]))
-    return stories, dropped, tool_id, early_id
+    return stories, dropped, tool_id, early_id, tool_os_id, tool_fm_id
 
 
-def write_json_output(stories: list[dict], tool_id, early_id, date_str: str) -> Path:
+def write_json_output(stories: list[dict], tool_id, early_id, tool_os_id, tool_fm_id, date_str: str) -> Path:
     total_words = sum(len((s.get("summary") or "").split()) for s in stories)
     data = {
         "date": date_str,
@@ -1155,6 +1202,8 @@ def write_json_output(stories: list[dict], tool_id, early_id, date_str: str) -> 
         "stats": {"total": len(stories), "reading_time_min": max(1, round(total_words / 200))},
         "stories": stories,
         "tool_of_day": tool_id,
+        "tool_of_day_opensource": tool_os_id,
+        "tool_of_day_freemium": tool_fm_id,
         "early_signal": early_id,
     }
     data_dir = ROOT_DIR / "data"
@@ -1347,6 +1396,24 @@ def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id)
         a(f'<span style="color:#6b7280;">{_h(s.get("reading_time",""))}</span>')
         a('</div></td></tr></table></td></tr>')
 
+    # New AI agents
+    new_agents = [s for s in ordered if s.get("is_new_agent") and s["id"] not in used][:3]
+    if new_agents:
+        a('<tr><td style="padding:24px 24px 0 24px;">')
+        a(_newsletter_section_label("NEW AI AGENTS"))
+        a('</td></tr>')
+        for s in new_agents:
+            a('<tr><td style="padding:0 24px;">')
+            a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" '
+              'style="border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;margin-bottom:12px;">')
+            a('<tr><td style="padding:14px 20px;">')
+            a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;'
+              f'color:#111827;margin-bottom:4px;">{_h(s["headline"])}</div>')
+            a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;">'
+              f'<a href="{_h(s.get("url",""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">'
+              f'Read story →</a></div>')
+            a('</td></tr></table></td></tr>')
+
     # Early signal
     if early:
         a('<tr><td style="padding:24px 24px 0 24px;">')
@@ -1432,10 +1499,22 @@ def write_newsletter(date: dt.date, stories: list[dict], tool_id, early_id) -> P
 def fetch_all(config_path: Path, per_source_limit: int | None) -> list[dict]:
     sources = load_sources(config_path)
     items: list[dict] = []
+    last_reddit = 0.0
     for source in sources:
         name = source.get("name", "?")
         sys.stderr.write(f"[fetch] {name}\n")
+        if "reddit.com" in (source.get("url") or ""):
+            # Reddit throttles unauthenticated feeds to ~1 request / 10 s / IP.
+            wait = 20 - (time.time() - last_reddit)
+            if wait > 0:
+                time.sleep(wait)
+            last_reddit = time.time()
         fetched = fetch_source(source)
+        if not fetched and "reddit.com" in (source.get("url") or ""):
+            # One polite retry after a longer backoff (transient 429s).
+            time.sleep(30)
+            last_reddit = time.time()
+            fetched = fetch_source(source)
         if per_source_limit:
             fetched = fetched[:per_source_limit]
         for it in fetched:
@@ -1527,8 +1606,8 @@ def main(argv: list[str] | None = None) -> int:
     sys.stderr.write(f"[done] wrote markdown {md_path} ({len(legacy)} items)\n")
 
     # Pipeline v2: AI-only filter, clustering, ranking, JSON, newsletter.
-    stories, dropped, tool_id, early_id = build_stories(items)
-    json_path = write_json_output(stories, tool_id, early_id, date.isoformat())
+    stories, dropped, tool_id, early_id, tool_os_id, tool_fm_id = build_stories(items)
+    json_path = write_json_output(stories, tool_id, early_id, tool_os_id, tool_fm_id, date.isoformat())
     news_path = write_newsletter(date, stories, tool_id, early_id)
 
     counts: dict[str, int] = defaultdict(int)

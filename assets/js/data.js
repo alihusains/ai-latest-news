@@ -37,6 +37,26 @@ const Data = {
     if (!data || !data.tool_of_day) return null;
     return data.stories.find(s => s.id === data.tool_of_day) || null;
   },
+  getToolsOfDay() {
+    const data = this.cache;
+    if (!data) return { opensource: null, freemium: null };
+    const byId = id => (id ? this.getById(id) : null);
+    return {
+      opensource: byId(data.tool_of_day_opensource),
+      freemium: byId(data.tool_of_day_freemium) || byId(data.tool_of_day)
+    };
+  },
+  getNewAgents() {
+    const data = this.cache;
+    if (!data) return [];
+    return data.stories.filter(s => s.is_new_agent).sort((a, b) => b.importance - a.importance);
+  },
+  getWhatsNew() {
+    const data = this.cache;
+    if (!data) return [];
+    return data.stories.filter(s => s.is_whats_new)
+      .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+  },
   getEarlySignal() {
     const data = this.cache;
     if (!data || !data.early_signal) return null;

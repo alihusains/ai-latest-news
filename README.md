@@ -23,10 +23,12 @@ The pipeline is: **fetch → dedupe → classify → clean → summarize → ren
 
 | Type | Fetch method |
 | --- | --- |
-| `rss` | `feedparser` (stdlib XML/Atom fallback included) |
-| `reddit` | `old.reddit.com` JSON endpoint |
+| `rss` | `feedparser` (stdlib XML/Atom fallback included). Also used for Reddit via `www.reddit.com/r/<sub>/new.rss` (the `.json` endpoints are now login-walled) |
 | `web` | HTML scrape (GitHub Trending by default) |
-| `x` | Nitter profile scrape (RSS if available) |
+| `hf_papers` | Hugging Face daily-papers JSON API |
+| `hf_models` | Hugging Face trending-models JSON API (open-source tool signal) |
+| `github_search` | GitHub repo search API; `{since}` in the query is replaced with the date 7 days ago |
+| `hn_search` | Hacker News (Algolia) search API |
 
 ## Requirements
 
@@ -68,7 +70,7 @@ Edit `sources.yaml`. Each source has:
 
 ```yaml
 - name: Short Label
-  type: rss          # rss | reddit | web | x
+  type: rss          # rss | web | hf_papers | hf_models | github_search | hn_search
   url: https://example.com/feed
   category_hint: news  # research | open-source | hardware | science | community | ...
   active: true
@@ -108,6 +110,10 @@ Subscribers are collected and stored in **Buttondown**, not in this repo.
 
 - Summaries are **extractive** (cleaned + truncated), not LLM-generated — no
   API key or network model dependency is required.
-- Nitter instances used for `x`-type sources are fragile and may go down
-  without notice; a failed source is skipped and the rest of the pipeline
-  continues.
+- Reddit RSS is throttled to ~1 request / 20 s per IP; `fetch_all` spaces the
+  calls and retries once on a transient 429. A failed source is skipped and the
+  rest of the pipeline continues.
+- Discovery sections are driven by story flags written into `data/latest.json`:
+  `is_new_agent` (GitHub/HN/r/AI_Agents + agent launches), `is_whats_new`
+  (launch/release/open-source/benchmark/breakthrough), and the dual
+  `tool_of_day_opensource` / `tool_of_day_freemium` picks.

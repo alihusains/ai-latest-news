@@ -49,6 +49,14 @@ title: Home
     <div id="products-list" class="list mt-lg"></div>
   </div>
 
+  <div id="section-newagents" class="section" style="display:none">
+    <div class="section-header">
+      <h2 class="section-title">New AI Agents</h2>
+      <a href="/new-agents" class="section-link">View all →</a>
+    </div>
+    <div id="newagents-list" class="list"></div>
+  </div>
+
   <div id="section-business" class="section" style="display:none">
     <div class="section-header">
       <h2 class="section-title">Business & Infrastructure</h2>
@@ -133,7 +141,8 @@ title: Home
     const products = Data.getByCategory('products').filter(s => s.tier !== 'top').sort((a,b) => b.importance - a.importance);
     const business = Data.getByCategory('business').filter(s => s.tier !== 'top').sort((a,b) => b.importance - a.importance);
     const early = data.stories.filter(s => s.is_early_signal && s.tier !== 'top');
-    const tool = Data.getToolOfDay();
+    const tools = Data.getToolsOfDay();
+    const newAgents = Data.getNewAgents().filter(s => s.tier !== 'top').slice(0, 4);
 
     if (top.length) {
       const hero = document.getElementById('home-hero');
@@ -170,15 +179,20 @@ title: Home
 
     if (products.length) {
       document.getElementById('section-products').style.display = 'block';
-      if (tool) {
-        document.getElementById('products-feature').innerHTML = `<div class="feature-card">
-          <div class="feature-label">AI Tool of the Day</div>
-          <h3 class="feature-title"><a href="#/story/${tool.id}">${tool.headline}</a></h3>
-          <p class="feature-summary">${tool.subheadline || tool.summary.slice(0, 200) + '...'}</p>
-          <div class="feature-meta">${tool.reading_time} · ${Data.formatDate(tool.published_at)}</div>
-        </div>`;
-      }
+      const toolCard = (t, kind, label) => t ? `<div class="feature-card tool-card tool-card--${kind}">
+        <div class="feature-label"><span class="tool-badge">${label}</span> AI Tool of the Day</div>
+        <h3 class="feature-title"><a href="#/story/${t.id}">${t.headline}</a></h3>
+        <p class="feature-summary">${t.subheadline || t.summary.slice(0, 200) + '...'}</p>
+        <div class="feature-meta">${t.reading_time} · ${Data.formatDate(t.published_at)}</div>
+      </div>` : '';
+      const duo = toolCard(tools.freemium, 'fm', 'Freemium') + toolCard(tools.opensource, 'os', 'Open Source');
+      if (duo) document.getElementById('products-feature').innerHTML = `<div class="tool-duo">${duo}</div>`;
       document.getElementById('products-list').innerHTML = products.slice(0, 5).map(s => render.listItem(s)).join('');
+    }
+
+    if (newAgents.length) {
+      document.getElementById('section-newagents').style.display = 'block';
+      document.getElementById('newagents-list').innerHTML = newAgents.map(s => render.listItem(s)).join('');
     }
 
     if (business.length) {
