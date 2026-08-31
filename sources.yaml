@@ -34,20 +34,6 @@ sources:
     active: true
     notes: Reddit .json is login-walled since 2026; RSS verified 200 (throttle ~1 req/10s handled in main.py)
 
-  - name: TechCrunch AI
-    type: rss
-    url: https://techcrunch.com/category/artificial-intelligence/feed/
-    category_hint: news
-    active: true
-    notes: Valid RSS XML verified 200 via curl
-
-  - name: TechCrunch
-    type: rss
-    url: https://techcrunch.com/feed/
-    category_hint: news
-    active: true
-    notes: Valid RSS XML verified 200 via curl
-
   - name: The Verge AI
     type: rss
     url: https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
@@ -87,41 +73,6 @@ sources:
     type: rss
     url: https://www.wired.com/feed/
     category_hint: news
-    active: true
-    notes: Valid RSS XML verified 200 via curl
-
-  - name: ZDNet AI
-    type: rss
-    url: https://www.zdnet.com/topic/artificial-intelligence/rss.xml
-    category_hint: news
-    active: true
-    notes: Valid RSS XML verified 200 via curl
-
-  - name: Hacker News
-    type: rss
-    url: https://hnrss.org/frontpage
-    category_hint: community
-    active: true
-    notes: Valid RSS XML verified 200 via curl
-
-  - name: Towards Data Science
-    type: rss
-    url: https://towardsdatascience.com/feed
-    category_hint: research
-    active: true
-    notes: Valid RSS XML verified 200 via curl
-
-  - name: Analytics Vidhya
-    type: rss
-    url: https://www.analyticsvidhya.com/feed/
-    category_hint: research
-    active: true
-    notes: Valid RSS XML verified 200 via curl
-
-  - name: AI Weekly
-    type: rss
-    url: https://aiweekly.co/feed
-    category_hint: newsletter
     active: true
     notes: Valid RSS XML verified 200 via curl
 
@@ -185,20 +136,6 @@ sources:
     type: rss
     url: https://syncedreview.com/feed/
     category_hint: news
-    active: true
-    notes: Valid RSS XML verified 200 via curl
-
-  - name: Jiqizhixin
-    type: rss
-    url: https://www.jiqizhixin.com/rss
-    category_hint: news
-    active: true
-    notes: Valid RSS XML verified 200 via curl
-
-  - name: TechCrunch M&A
-    type: rss
-    url: https://techcrunch.com/tag/mergers-acquisitions/feed/
-    category_hint: acquisitions
     active: true
     notes: Valid RSS XML verified 200 via curl
 
