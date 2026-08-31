@@ -253,10 +253,12 @@ def _xml_node_to_item(node, kind: str, link_tag: str, title_tag: str, desc_tag: 
                 break
     title = text(title_tag)
     desc = text(desc_tag)
+    desc_raw = desc
     if not desc:
         # Atom feeds (e.g. Product Hunt) carry the blurb in <content> only.
         raw_content = text("content")
         if raw_content:
+            desc_raw = raw_content
             desc = clean_text(raw_content)[:500]
     published = text("pubDate") or text("published") or text("updated")
     # media:thumbnail / media:content / enclosure carry the image URL.
@@ -267,6 +269,9 @@ def _xml_node_to_item(node, kind: str, link_tag: str, title_tag: str, desc_tag: 
         if url and (tag.endswith("thumbnail") or tag.endswith("content") or tag.endswith("enclosure")):
             image = url
             break
+    if not image:
+        # WordPress feeds hide the hero <img> in <content:encoded>.
+        image = _first_inline_image(desc_raw) or _first_inline_image(text("encoded")) or ""
     return {
         "title": title,
         "link": link.strip(),
@@ -275,6 +280,22 @@ def _xml_node_to_item(node, kind: str, link_tag: str, title_tag: str, desc_tag: 
         "published": _parse_time(published),
         "date": published,
     }
+
+
+_INLINE_IMG_RE = re.compile(r'<img[^>]*\bsrc=["\'](https?:[^"\']+)', re.I)
+
+
+def _first_inline_image(markup: str) -> str | None:
+    """First absolute <img> URL inside an HTML description/content body.
+
+    Many major feeds (MIT Technology Review, MarkTechPost, ...) carry the hero
+    image inline in the article HTML rather than as media:thumbnail/enclosure,
+    so a structured-only check under-counts their images.
+    """
+    if not markup:
+        return None
+    m = _INLINE_IMG_RE.search(markup) or _INLINE_IMG_RE.search(html.unescape(markup))
+    return m.group(1) if m else None
 
 
 def _feedparser_image(entry) -> str | None:
@@ -303,19 +324,24 @@ def _fetch_rss(url: str) -> list[dict]:
         for entry in parsed.entries:
             link = entry.get("link", "")
             title = entry.get("title", "")
+            content_html = ""
+            if entry.get("content"):
+                content_html = entry["content"][0].get("value", "") or ""
             summary = (
                 entry.get("summary", "")
                 or entry.get("description", "")
                 or entry.get("subtitle", "")
+                or content_html
             )
-            if not summary and entry.get("content"):
-                summary = entry["content"][0].get("value", "")
             published = entry.get("published", "") or entry.get("updated", "")
             item = {
                 "title": title,
                 "link": link,
                 "summary": summary,
-                "image": _feedparser_image(entry),
+                # WordPress feeds (Verge, MIT Tech Review, MarkTechPost) hide the
+                # hero <img> in content:encoded, so scan the body too.
+                "image": (_feedparser_image(entry) or _first_inline_image(summary)
+                          or _first_inline_image(content_html)),
                 "published": _parse_time(published),
                 "date": published,
             }
