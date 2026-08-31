@@ -1225,9 +1225,11 @@ def _newsletter_story_block(story: dict, show_image: bool = True, numbered: bool
 
 
 def _newsletter_section_label(text: str) -> str:
+    # Must be a <div>, not a <tr><td>: every call site embeds this inside an
+    # open cell, and a <tr> inside a <td> breaks Gmail's table parser.
     return (
-        f'<tr><td style="padding:20px 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;'
-        f'letter-spacing:1.5px;color:#008A37;font-weight:bold;text-transform:uppercase;">{_h(text)}</td></tr>'
+        f'<div style="margin:0 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;'
+        f'letter-spacing:1.5px;color:#008A37;font-weight:bold;text-transform:uppercase;">{_h(text)}</div>'
     )
 
 
