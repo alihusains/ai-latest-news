@@ -1,4 +1,8 @@
 const byDate = (a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0);
+const isCommunity = s => (s.is_community != null) ? !!s.is_community
+  : ((s.sources || []).length > 0 && s.sources.every(x => /reddit/i.test(x.name || '')));
+const byNewsFirst = (a, b) => (isCommunity(a) - isCommunity(b))
+  || (new Date(b.published_at || 0) - new Date(a.published_at || 0));
 
 const Data = {
   cache: null,
@@ -27,7 +31,7 @@ const Data = {
   getByCategory(cat) {
     const data = this.cache;
     if (!data) return [];
-    return data.stories.filter(s => s.category === cat).sort(byDate);
+    return data.stories.filter(s => s.category === cat).sort(byNewsFirst);
   },
   getByTier(tier) {
     const data = this.cache;

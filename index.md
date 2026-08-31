@@ -136,10 +136,10 @@ title: Home
     if (!data) { document.getElementById('home-hero').innerHTML = '<div class="empty-state"><h2>News could not be refreshed.</h2><p>Try again later.</p></div>'; return; }
     const top = Data.getTop();
     const major = Data.getMajor();
-    const agents = Data.getByCategory('agents').filter(s => s.tier !== 'top').sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-    const models = Data.getByCategory('models').filter(s => s.tier !== 'top').sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-    const products = Data.getByCategory('products').filter(s => s.tier !== 'top').sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-    const business = Data.getByCategory('business').filter(s => s.tier !== 'top').sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+    const agents = Data.getByCategory('agents').filter(s => s.tier !== 'top').sort(byNewsFirst);
+    const models = Data.getByCategory('models').filter(s => s.tier !== 'top').sort(byNewsFirst);
+    const products = Data.getByCategory('products').filter(s => s.tier !== 'top').sort(byNewsFirst);
+    const business = Data.getByCategory('business').filter(s => s.tier !== 'top').sort(byNewsFirst);
     const early = data.stories.filter(s => s.is_early_signal && s.tier !== 'top');
     const tools = Data.getToolsOfDay();
     const newAgents = Data.getNewAgents().filter(s => s.tier !== 'top').slice(0, 4);

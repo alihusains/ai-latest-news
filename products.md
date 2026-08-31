@@ -37,7 +37,7 @@ title: Products & Open Source
   const repoTypes = new Set(['Repository', 'Open Source']);
   Data.fetch().then(data => {
     if (!data) { document.getElementById('products-content').innerHTML = '<div class="error-state"><h2>News could not be refreshed.</h2><p>Try again later.</p></div>'; return; }
-    let stories = Data.getByCategory('products').sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+    let stories = Data.getByCategory('products').sort(byNewsFirst);
     const repos = stories.filter(s => repoTypes.has(s.story_type));
     stories = stories.filter(s => !repoTypes.has(s.story_type));
     if (repos.length) {

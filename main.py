@@ -1213,6 +1213,15 @@ def build_stories(items: list[dict]) -> tuple[list[dict], int, str | None, str |
     seen_ids: set[str] = set()
     stories = [_story_from_cluster(c, seen_ids) for c in clusters if c]
 
+    # Community chatter (Reddit-only stories) is signal for discovery sections
+    # but noise at the top of the news lists; flag it so lists can demote it
+    # below real news while still ordering each group newest-first.
+    for s in stories:
+        srcs = s.get("sources") or []
+        s["is_community"] = bool(srcs) and all(
+            "reddit" in (x.get("name", "").lower()) for x in srcs
+        )
+
     # Top-3 by importance are always "top" regardless of raw score.
     top3 = {s["id"] for s in sorted(stories, key=lambda s: s["importance"], reverse=True)[:3]}
     for s in stories:
@@ -1233,10 +1242,11 @@ def build_stories(items: list[dict]) -> tuple[list[dict], int, str | None, str |
         s["is_early_signal"] = s["id"] == early_id
 
     order = {c: i for i, c in enumerate(NEW_CATEGORIES)}
-    # Canonical order: newest first, grouped by category. Two stable sorts —
-    # date desc, then category asc — keep each category block in reverse-chrono.
+    # Canonical order: within each category, real news first then community
+    # chatter, each newest-first. Two stable sorts — date desc, then
+    # (category, community) — preserve the reverse-chrono within each group.
     stories.sort(key=lambda s: s.get("published_at") or "", reverse=True)
-    stories.sort(key=lambda s: order.get(s["category"], 9))
+    stories.sort(key=lambda s: (order.get(s["category"], 9), 1 if s.get("is_community") else 0))
     return stories, dropped, tool_id, early_id, tool_os_id, tool_fm_id
 
 

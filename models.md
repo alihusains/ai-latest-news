@@ -18,7 +18,7 @@ title: Models & Research
 (function() {
   Data.fetch().then(data => {
     if (!data) { document.getElementById('models-content').innerHTML = '<div class="error-state"><h2>News could not be refreshed.</h2><p>Try again later.</p></div>'; return; }
-    const stories = Data.getByCategory('models').sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+    const stories = Data.getByCategory('models').sort(byNewsFirst);
     if (!stories.length) { document.getElementById('models-content').innerHTML = '<div class="empty-state"><h2>No major AI developments yet.</h2></div>'; return; }
     let html = '<div class="list">';
     stories.forEach(s => {
