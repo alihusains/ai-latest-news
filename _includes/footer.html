@@ -1,6 +1,41 @@
 <footer class="site-footer">
   <div class="container">
-    <p class="footer-text">made by Ali Husain Sorathiya's AI News Agent</p>
-    <p class="footer-copy">&copy; {{ 'now' | date: '%Y' }} SIGNAL. All rights reserved.</p>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="{{ '/' | relative_url }}" class="logo">
+          <span class="logo-wordmark">SIGNAL</span>
+        </a>
+        <p class="footer-blurb">A daily editorial digest of the developments that actually moved AI — aggregated, deduplicated, ranked and summarized by an autonomous pipeline.</p>
+      </div>
+      <div>
+        <p class="footer-title">Sections</p>
+        <nav class="footer-links" aria-label="Footer sections">
+          <a href="{{ '/top' | relative_url }}">Top AI</a>
+          <a href="{{ '/agents' | relative_url }}">Agents</a>
+          <a href="{{ '/models' | relative_url }}">Models &amp; Research</a>
+          <a href="{{ '/products' | relative_url }}">Products &amp; Open Source</a>
+          <a href="{{ '/business' | relative_url }}">Business &amp; Infrastructure</a>
+        </nav>
+      </div>
+      <div>
+        <p class="footer-title">The Newsletter</p>
+        <nav class="footer-links" aria-label="Footer newsletter">
+          <a href="{{ '/brief' | relative_url }}">Today's Brief</a>
+          <a href="{{ '/glance' | relative_url }}">At a Glance</a>
+          <a href="{{ '/about' | relative_url }}">About SIGNAL</a>
+          <a href="https://buttondown.com/{{ site.buttondown_username }}" target="_blank" rel="noopener">Past issues</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; {{ 'now' | date: '%Y' }} SIGNAL · Built by Ali Husain Sorathiya's AI News Agent</p>
+      <div class="footer-legal">
+        <a href="{{ '/about' | relative_url }}">Privacy</a>
+        <a href="https://github.com/alihusains/ai-latest-news" target="_blank" rel="noopener">Source</a>
+      </div>
+    </div>
   </div>
 </footer>
+<button class="back-to-top" id="back-to-top" aria-label="Back to top">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>

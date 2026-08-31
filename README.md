@@ -81,13 +81,28 @@ an item into a more specific category.
 
 ## Scheduled deployment
 
-`.github/workflows/daily.yml` runs the pipeline every day at **06:00 UTC**,
-commits the generated Markdown, and pushes it back to the repository. It uses
-`GITHUB_TOKEN` for authentication — no manual deploy step.
+`.github/workflows/daily.yml` runs the pipeline every day at **03:00 UTC — 07:00
+Asia/Dubai (GST)** — commits the generated Markdown/JSON, and pushes it back to
+the repository. It uses `GITHUB_TOKEN` for authentication — no manual deploy step.
 
 GitHub Pages serves the result: enable Pages on the repository (branch or
 `docs/` source) as a one-time, separate repo setting. The workflow only
 publishes `content/daily/*.md`.
+
+## Newsletter (Buttondown)
+
+Subscribers are collected and stored in **Buttondown**, not in this repo.
+
+- The site's subscribe form POSTs directly to
+  `https://buttondown.com/api/emails/embed-subscribe/<username>` (native form, so
+  Buttondown's double opt-in / CAPTCHA / GDPR flows work). Set
+  `buttondown_username` in `_config.yml`.
+- After the digest is generated, `push_buttondown.py` stages `newsletter/<date>.html`
+  as a **draft** in Buttondown via the API. Review and **Send** from the dashboard.
+- Required repo secret: `BUTTONDOWN_API_KEY` (optional — the step is skipped if unset).
+- `subscribers.json` and `send_newsletter.py` were removed; `subscribers.json` is
+  git-ignored so a real list can never be committed publicly.
+
 
 ## Notes
 

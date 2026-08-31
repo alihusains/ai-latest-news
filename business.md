@@ -31,8 +31,8 @@ title: Business & Infrastructure
           <h3 class="list-item-title"><a href="#/story/${s.id}">${s.headline}</a></h3>
           <p class="list-item-summary">${s.subheadline || s.summary.slice(0, 180) + '...'}</p>
           <div class="list-item-meta">
-            <span><strong>Who:</strong> ${who || '—'}</span><span>·</span>
-            <span><strong>What:</strong> ${what}</span><span>·</span>
+            <span><strong>Who:</strong> ${who || '—'}</span>
+            <span><strong>What:</strong> ${what}</span>
             <span>${s.reading_time}</span>
           </div>
         </div>

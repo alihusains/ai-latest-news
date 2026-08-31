@@ -30,7 +30,24 @@ The pipeline commits `data/latest.json` daily with the following schema:
   - `data.js` — data layer with caching and helpers
   - `search.js` — command-palette search overlay
   - `story.js` — hash-routed story modal
-  - `main.js` — theme toggle, mobile nav, boot
+  - `main.js` — theme toggle, mobile nav, active-nav highlight, edition date, scroll reveal, back-to-top, boot
+
+## Newsletter & Subscribers
+
+Subscribers are collected and stored **in Buttondown**, never in this repository.
+
+- The subscribe form (`_includes/subscribe.html`, used on Home / About / Brief) is a
+  native HTML `<form>` that POSTs to
+  `https://buttondown.com/api/emails/embed-subscribe/<username>`. Buttondown handles
+  double opt-in, CAPTCHA, GDPR and the unsubscribe link.
+- Set `buttondown_username` in `_config.yml`.
+- Each morning the workflow generates `newsletter/<date>.html` and `push_buttondown.py`
+  stages it as a **draft** in Buttondown (via `POST /v1/emails`, `Authorization: Token …`).
+  You review and click **Send** in the Buttondown dashboard — sending is never fully
+  unattended. The step is skipped when `BUTTONDOWN_API_KEY` is not set.
+- There is intentionally **no `subscribers.json`** and **no `send_newsletter.py`** any more;
+  `subscribers.json` is git-ignored so a real list can never be committed to the public repo.
+
 
 ## Adding a Page
 

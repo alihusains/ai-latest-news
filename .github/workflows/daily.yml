@@ -2,8 +2,8 @@ name: Daily AI News
 
 on:
   schedule:
-    # 06:00 UTC every day
-    - cron: "0 6 * * *"
+    # 03:00 UTC every day = 07:00 Asia/Dubai (GST, UTC+4) every morning
+    - cron: "0 3 * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -44,7 +44,7 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD
 
-      - name: Send newsletter
+      - name: Stage newsletter draft in Buttondown
         env:
-          NEWSLETTER_API_KEY: ${{ secrets.NEWSLETTER_API_KEY }}
-        run: python send_newsletter.py || echo 'Newsletter send skipped.'
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        run: python push_buttondown.py || echo 'Buttondown draft staging skipped.'

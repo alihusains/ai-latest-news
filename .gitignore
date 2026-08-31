@@ -38,3 +38,6 @@ dist/
 
 # Logs
 *.log
+
+# Never commit a subscriber list to the public repo — subscribers live in Buttondown.
+subscribers.json

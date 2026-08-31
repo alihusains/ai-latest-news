@@ -15,12 +15,12 @@ title: Products & Open Source
     <div class="section-header">
       <h2 class="section-title">Filter</h2>
     </div>
-    <div class="filter-tabs" style="display:flex;gap:var(--space-sm);flex-wrap:wrap;margin-bottom:var(--space-lg)">
-      <button class="filter-btn active" data-filter="all" style="padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-text);cursor:pointer;font-weight:600">All</button>
-      <button class="filter-btn" data-filter="open" style="padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-text-secondary);cursor:pointer">Open Source</button>
-      <button class="filter-btn" data-filter="premium" style="padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-text-secondary);cursor:pointer">Premium</button>
-      <button class="filter-btn" data-filter="tool" style="padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-text-secondary);cursor:pointer">Tool of the Day</button>
-      <button class="filter-btn" data-filter="dev" style="padding:var(--space-sm) var(--space-md);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-text-secondary);cursor:pointer">Developer</button>
+    <div class="filter-tabs" role="tablist">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="open">Open Source</button>
+      <button class="filter-btn" data-filter="premium">Premium</button>
+      <button class="filter-btn" data-filter="tool">Tool of the Day</button>
+      <button class="filter-btn" data-filter="dev">Developer</button>
     </div>
   </div>
 
@@ -49,7 +49,7 @@ title: Products & Open Source
           <span class="card-category" data-cat="models">${labels[s.importance] || 'New'}</span>
           <h3 class="card-title"><a href="#/story/${s.id}">${s.headline}</a></h3>
           <p class="card-subtitle">${s.subheadline || ''}</p>
-          <div class="card-meta"><span>${s.reading_time}</span><span>·</span><span>${Data.formatDate(s.published_at)}</span></div>
+          <div class="card-meta"><span>${s.reading_time}</span><span>${Data.formatDate(s.published_at)}</span></div>
         </div>
       </div>`).join('');
     }
@@ -67,7 +67,7 @@ title: Products & Open Source
         <span class="card-category" data-cat="${s.category}">${s.category}</span>
         <h3 class="list-item-title"><a href="#/story/${s.id}">${s.headline}</a></h3>
         <p class="list-item-summary">${s.subheadline || s.summary.slice(0, 180) + '...'}</p>
-        <div class="list-item-meta"><span>${s.reading_time}</span><span>·</span><span>${Data.formatDate(s.published_at)}</span><span>·</span><span>${s.sources.map(x => x.name).join(', ')}</span></div>
+        <div class="list-item-meta"><span>${s.reading_time}</span><span>${Data.formatDate(s.published_at)}</span><span>${s.sources.map(x => x.name).join(', ')}</span></div>
       </div>
     </div>`;
     const feed = document.getElementById('products-feed');
@@ -75,8 +75,8 @@ title: Products & Open Source
     const filterMap = { all: () => true, open: s => (s.tags || []).includes('Open Source'), premium: s => s.tier === 'top' || s.tier === 'major', tool: s => s.is_tool_of_day, dev: s => ['Repository', 'Open Source', 'Developer'].includes(s.story_type) };
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => { b.classList.remove('active'); b.style.background = 'var(--color-surface)'; b.style.color = 'var(--color-text-secondary)'; });
-        btn.classList.add('active'); btn.style.background = 'var(--color-surface-raised)'; btn.style.color = 'var(--color-text)';
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
         const f = btn.dataset.filter;
         const test = filterMap[f] || (() => true);
         feed.querySelectorAll('.list-item').forEach(el => {

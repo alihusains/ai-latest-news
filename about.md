@@ -36,13 +36,5 @@ permalink: /about/
     </p>
   </div>
 
-  <div class="newsletter-box">
-    <h2>Never miss what changed in AI.</h2>
-    <p>Get The AI Daily delivered to your inbox every morning.</p>
-    <form class="newsletter-form" onsubmit="event.preventDefault(); this.querySelector('.newsletter-status').textContent='Delivery coming soon.'">
-      <input type="email" placeholder="you@example.com" required aria-label="Email address">
-      <button type="submit">Get the AI Daily</button>
-    </form>
-    <p class="newsletter-status"></p>
-  </div>
+  {% include subscribe.html %}
 </div>

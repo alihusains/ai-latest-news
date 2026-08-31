@@ -30,7 +30,7 @@ title: Top AI
           <span class="card-category" data-cat="${s.tier}">${label}</span>
           <h3 class="list-item-title"><a href="#/story/${s.id}">${s.headline}</a></h3>
           <p class="list-item-summary">${s.subheadline || s.summary.slice(0, 180) + '...'}</p>
-          <div class="list-item-meta"><span>${s.reading_time}</span><span>·</span><span>${Data.formatDate(s.published_at)}</span><span>·</span><span>${s.sources.map(x => x.name).join(', ')}</span></div>
+          <div class="list-item-meta"><span>${s.reading_time}</span><span>${Data.formatDate(s.published_at)}</span><span>${s.sources.map(x => x.name).join(', ')}</span></div>
         </div>
       </div>`;
     });

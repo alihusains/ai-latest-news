@@ -1,0 +1,20 @@
+{%- comment -%}
+  Buttondown subscribe box. Collects + stores emails in Buttondown (never in this repo).
+  Native HTML form POST — Buttondown handles double opt-in, CAPTCHA and GDPR.
+  Set `buttondown_username` in _config.yml.
+{%- endcomment -%}
+<section class="subscribe" aria-labelledby="subscribe-title">
+  <div class="subscribe-inner">
+    <div class="subscribe-copy">
+      <p class="eyebrow">The AI Daily</p>
+      <h2 id="subscribe-title" class="subscribe-title">Know what changed in AI, every morning.</h2>
+      <p class="subscribe-lede">One email a day. The developments that actually matter, summarized and sourced — read it in five minutes with your coffee.</p>
+    </div>
+    <form class="subscribe-form" action="https://buttondown.com/api/emails/embed-subscribe/{{ site.buttondown_username }}" method="post" target="_blank" rel="noopener">
+      <label class="sr-only" for="bd-email">Email address</label>
+      <input id="bd-email" class="subscribe-input" type="email" name="email" placeholder="you@company.com" autocomplete="email" required aria-label="Email address">
+      <button class="subscribe-btn" type="submit">Subscribe</button>
+    </form>
+    <p class="subscribe-fine">Free. No spam. <a href="https://buttondown.com/{{ site.buttondown_username }}" target="_blank" rel="noopener">Read past issues</a> · Unsubscribe anytime.</p>
+  </div>
+</section>
