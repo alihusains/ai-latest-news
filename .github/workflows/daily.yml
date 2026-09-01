@@ -2,9 +2,19 @@ name: Daily AI News
 
 on:
   schedule:
-    # 03:00 UTC every day = 07:00 Asia/Dubai (GST, UTC+4) every morning
-    - cron: "0 3 * * *"
+    # Primary slot 03:00 UTC (= 07:00 Asia/Dubai) plus hourly backups through
+    # the morning. GitHub's Actions scheduler can delay or silently skip a
+    # single cron slot (observed: runs landing ~8h late or not at all). The
+    # per-day guard below makes the extra slots harmless — they skip once
+    # today's edition exists — but guarantees the edition still appears.
+    - cron: "0 3-12 * * *"
   workflow_dispatch: {}
+
+# Serialize runs so a backup slot never races the primary. Queued runs re-check
+# the guard and skip if the edition was already published in the meantime.
+concurrency:
+  group: daily-news
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -16,20 +26,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Skip if today's edition already published
+        id: guard
+        run: |
+          today=$(date -u +%Y-%m-%d)
+          cur=$(python3 -c "import json;print(json.load(open('data/latest.json')).get('date',''))" 2>/dev/null || echo "")
+          if [ "$cur" = "$today" ] && [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "Edition $today already exists — skipping this backup slot."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Generating edition for $today (current committed: ${cur:-none})."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Set up Python
+        if: steps.guard.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install dependencies
+        if: steps.guard.outputs.skip != 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run aggregator pipeline
+        if: steps.guard.outputs.skip != 'true'
         run: python main.py
 
       - name: Commit generated digest
+        if: steps.guard.outputs.skip != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -45,6 +72,7 @@ jobs:
           git push origin HEAD
 
       - name: Stage newsletter draft in Buttondown
+        if: steps.guard.outputs.skip != 'true'
         env:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
         run: python push_buttondown.py || echo 'Buttondown draft staging skipped.'
