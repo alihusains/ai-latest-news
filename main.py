@@ -19,9 +19,11 @@ import difflib
 import email.utils
 import html
 import json
+import os
 import re
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -50,6 +52,16 @@ USER_AGENT = "AI-News-Aggregator/1.0 (+https://github.com/example/ai-latest-news
 # items; without a window the daily edition shows stale news (e.g. a 31st
 # edition listing 26-Aug stories). Items with no parseable date are kept.
 LOOKBACK_DAYS = 3
+
+# AI summarization via Mistral. After feeds are collected, each story's summary
+# is rewritten in plain English (<=120 chars, no em dashes), tagged, and given a
+# category. Enabled only when MISTRAL_API_KEY is set; otherwise the pipeline
+# falls back to the heuristic summary so CI never hard-fails on AI.
+MISTRAL_BASE = os.environ.get("MISTRAL_BASE", "https://api.mistral.ai/v1")
+MISTRAL_MODEL = os.environ.get("MISTRAL_MODEL", "ministral-8b-latest")
+MISTRAL_BATCH = 10          # stories per API call
+MISTRAL_TIMEOUT = 90        # per-request seconds
+MISTRAL_MAX_CHARS = 120     # hard cap on the rewritten summary
 
 # Canonical output categories.
 CATEGORIES = [
@@ -1194,6 +1206,150 @@ def _pick_early_signal(stories: list[dict], exclude: str | None) -> str | None:
     return max(candidates, key=lambda s: s["importance"])["id"]
 
 
+def _canonical_sort(stories: list[dict]) -> None:
+    """In-place canonical order: grouped by category, real news before community
+    chatter, each newest-first. Two stable sorts preserve reverse-chrono."""
+    order = {c: i for i, c in enumerate(NEW_CATEGORIES)}
+    stories.sort(key=lambda s: s.get("published_at") or "", reverse=True)
+    stories.sort(key=lambda s: (order.get(s["category"], 9), 1 if s.get("is_community") else 0))
+
+
+def _clean_plain(text: str, limit: int = MISTRAL_MAX_CHARS) -> str:
+    """Enforce the plain-English contract: no em/en dashes, single line, and
+    <=limit characters cut on a word boundary (ellipsis only if we trimmed)."""
+    t = _WS_RE.sub(" ", (text or "")).strip()
+    t = t.replace("\u2014", ",").replace("\u2013", "-")  # em dash -> comma, en dash -> hyphen
+    t = re.sub(r"\s+", " ", t).strip()
+    if len(t) > limit:
+        cut = t[:limit].rsplit(" ", 1)[0].rstrip(" ,.:;")
+        t = (cut + "\u2026") if len(cut) > 40 else cut
+        if len(t) > limit:
+            t = t[: limit - 1].rstrip(" ,.:;") + "\u2026"
+    return t
+
+
+def _mistral_chat(api_key: str, system: str, user: str) -> str | None:
+    """One Mistral chat completion returning assistant text, or None on failure.
+    Retries transient errors (429/5xx) with backoff, honoring Retry-After."""
+    payload = {
+        "model": MISTRAL_MODEL,
+        "temperature": 0.2,
+        "max_tokens": 1800,
+        "response_format": {"type": "json_object"},
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+    }
+    data = json.dumps(payload).encode("utf-8")
+    url = MISTRAL_BASE.rstrip("/") + "/chat/completions"
+    for attempt in range(3):
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Authorization": "Bearer " + api_key, "Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=MISTRAL_TIMEOUT) as resp:
+                body = json.loads(resp.read().decode("utf-8", "replace"))
+            return body["choices"][0]["message"]["content"]
+        except urllib.error.HTTPError as exc:
+            ra = exc.headers.get("Retry-After") if exc.headers else None
+            if exc.code in (429, 500, 502, 503, 504) and attempt < 2:
+                time.sleep(float(ra) if (ra or "").isdigit() else 3 * (attempt + 1))
+                continue
+            sys.stderr.write(f"[ai] Mistral HTTP {exc.code}\n")
+            return None
+        except Exception as exc:  # noqa: BLE001 - never fail the pipeline on AI
+            if attempt < 2:
+                time.sleep(2 * (attempt + 1))
+                continue
+            sys.stderr.write(f"[ai] Mistral error: {exc}\n")
+            return None
+    return None
+
+
+_AI_SYSTEM = (
+    "You rewrite AI news so a non-technical adult can understand it. Use simple, "
+    "everyday words. No jargon or unexplained acronyms, and NEVER use em dashes or "
+    "en dashes (use commas or periods instead). Be factual and neutral. Output only "
+    "valid JSON, nothing else."
+)
+
+
+def _ai_batch_prompt(batch: list[dict]) -> str:
+    lines = [
+        "Rewrite each numbered item in plain English.",
+        "'summary': one sentence, 120 characters or fewer, simple words, no em dashes.",
+        "'tags': 3 to 5 short lowercase topic tags.",
+        "'category': exactly one of agents, models, products, business.",
+        'Return JSON shaped like: {"items":[{"i":0,"summary":"...",'
+        '"tags":["..."],"category":"..."}]}',
+        "Include one object per item with the matching integer i.",
+        "",
+        "Items:",
+    ]
+    for i, s in enumerate(batch):
+        lines.append(f"[{i}] HEADLINE: {s.get('headline', '')}")
+        ctx = _truncate(s.get("summary") or "", 280)
+        if ctx:
+            lines.append(f"    CONTEXT: {ctx}")
+    return "\n".join(lines)
+
+
+def apply_ai_summaries(stories: list[dict]) -> bool:
+    """Rewrite summaries and add tags/labels/category via Mistral. Returns True
+    if at least one batch succeeded. No-ops (keeping heuristic text) without a key."""
+    api_key = os.environ.get("MISTRAL_API_KEY", "").strip()
+    if not api_key:
+        sys.stderr.write("[ai] MISTRAL_API_KEY not set; keeping heuristic summaries.\n")
+        return False
+    valid_cats = set(NEW_CATEGORIES)
+    ok_any = False
+    done = 0
+    batches = [stories[i:i + MISTRAL_BATCH] for i in range(0, len(stories), MISTRAL_BATCH)]
+    for bi, batch in enumerate(batches):
+        content = _mistral_chat(api_key, _AI_SYSTEM, _ai_batch_prompt(batch))
+        if not content:
+            continue
+        try:
+            parsed = json.loads(content)
+            items = parsed.get("items") if isinstance(parsed, dict) else parsed
+            if not isinstance(items, list):
+                continue
+        except ValueError:
+            sys.stderr.write(f"[ai] batch {bi} unparseable JSON; skipping.\n")
+            continue
+        by_i = {it["i"]: it for it in items if isinstance(it, dict) and isinstance(it.get("i"), int)}
+        for i, s in enumerate(batch):
+            it = by_i.get(i)
+            if not it:
+                continue
+            summary = _clean_plain(it.get("summary", ""))
+            if not summary:
+                continue
+            s["summary_original"] = s.get("summary", "")
+            s["summary"] = summary
+            s["subheadline"] = summary
+            tags = [str(t).strip().lower() for t in (it.get("tags") or []) if str(t).strip()]
+            if tags:
+                s["tags"] = list(dict.fromkeys(tags))[:5]
+            cat = (it.get("category") or "").strip().lower()
+            if cat in valid_cats:
+                s["category"] = cat
+            # Always carry a label derived from the final category, even if the
+            # model returned an out-of-enum value (we keep the heuristic one).
+            s["labels"] = [s["category"]]
+            ok_any = True
+            done += 1
+        time.sleep(0.4)  # gentle pacing between calls
+    sys.stderr.write(
+        f"[ai] rewrote {done}/{len(stories)} summaries via {MISTRAL_MODEL} (ok={ok_any}).\n"
+    )
+    return ok_any
+
+
 def build_stories(items: list[dict]) -> tuple[list[dict], int, str | None, str | None]:
     """Apply the AI-only gate, cluster into stories, score + tier, pick highlights."""
     kept: list[dict] = []
@@ -1221,6 +1377,10 @@ def build_stories(items: list[dict]) -> tuple[list[dict], int, str | None, str |
         s["is_community"] = bool(srcs) and all(
             "reddit" in (x.get("name", "").lower()) for x in srcs
         )
+        # Strip em/en dashes from headlines too, so all visible news prose is
+        # dash-free (matches the plain-English summaries).
+        s["headline"] = re.sub(r"\s+", " ", s["headline"].replace("\u2014", ",")
+                               .replace("\u2013", "-")).replace(" ,", ",").strip()
 
     # Top-3 by importance are always "top" regardless of raw score.
     top3 = {s["id"] for s in sorted(stories, key=lambda s: s["importance"], reverse=True)[:3]}
@@ -1241,12 +1401,7 @@ def build_stories(items: list[dict]) -> tuple[list[dict], int, str | None, str |
         s["is_tool_freemium"] = s["id"] == tool_fm_id
         s["is_early_signal"] = s["id"] == early_id
 
-    order = {c: i for i, c in enumerate(NEW_CATEGORIES)}
-    # Canonical order: within each category, real news first then community
-    # chatter, each newest-first. Two stable sorts — date desc, then
-    # (category, community) — preserve the reverse-chrono within each group.
-    stories.sort(key=lambda s: s.get("published_at") or "", reverse=True)
-    stories.sort(key=lambda s: (order.get(s["category"], 9), 1 if s.get("is_community") else 0))
+    _canonical_sort(stories)
     return stories, dropped, tool_id, early_id, tool_os_id, tool_fm_id
 
 
@@ -1636,6 +1791,11 @@ def main(argv: list[str] | None = None) -> int:
         help=f"max items per source (default {DEFAULT_PER_SOURCE}; 0 = no limit)",
     )
     parser.add_argument("--check", action="store_true", help="verify source URLs return 200")
+    parser.add_argument(
+        "--no-ai",
+        action="store_true",
+        help="skip Mistral plain-English rewriting (use heuristic summaries)",
+    )
     args = parser.parse_args(argv)
 
     if args.check:
@@ -1664,6 +1824,13 @@ def main(argv: list[str] | None = None) -> int:
 
     # Pipeline v2: AI-only filter, clustering, ranking, JSON, newsletter.
     stories, dropped, tool_id, early_id, tool_os_id, tool_fm_id = build_stories(items)
+
+    # AI pass: plain-English summaries (<=120 chars), tags, labels, category.
+    # Re-sort afterwards because the model may refine a story's category.
+    if not args.no_ai:
+        if apply_ai_summaries(stories):
+            _canonical_sort(stories)
+
     json_path = write_json_output(stories, tool_id, early_id, tool_os_id, tool_fm_id, date.isoformat())
     news_path = write_newsletter(date, stories, tool_id, early_id)
 

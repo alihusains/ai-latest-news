@@ -53,6 +53,8 @@ jobs:
 
       - name: Run aggregator pipeline
         if: steps.guard.outputs.skip != 'true'
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
         run: python main.py
 
       - name: Commit generated digest
