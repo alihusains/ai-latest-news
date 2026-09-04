@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
 """AI Latest News aggregator pipeline.
 
-Fetches news from configured sources (RSS, Reddit, web scrape, X/nitter),
-then runs: fetch -> dedupe -> classify -> clean -> summarize -> render markdown.
+Fetches news from a ranked feed list (see ``ai_news_feeds_ranked.csv``) plus the
+API/discovery sources in ``sources.yaml``, then runs:
+fetch -> dedupe -> classify -> clean -> summarize -> render.
+
+The ranked CSV is the source of truth for RSS feeds; its ``priority`` column
+scales how many items each feed contributes and its ``quality_score`` nudges
+importance. sources.yaml supplies the non-RSS discovery sources (Reddit, HF
+papers/models, Product Hunt, GitHub Trending scrape, GitHub/HN search) that
+power the AI Tool of the Day and New AI Agents sections.
 
 Usage:
     python main.py                     # build today's digest
     python main.py --date 2026-08-28   # force a date
     python main.py --limit 5           # max items per source (quick tests)
-    python main.py --config other.yaml # alternate source config
+    python main.py --config other.yaml # alternate API/discovery config
+    python main.py --feeds other.csv   # alternate ranked feed list
 """
 
 from __future__ import annotations
@@ -864,10 +872,20 @@ SOURCE_WEIGHTS = [
 
 def _source_weight(source_name: str) -> int:
     name = (source_name or "").lower()
+    base = 2
     for prefixes, weight in SOURCE_WEIGHTS:
         if any(p in name for p in prefixes):
-            return weight
-    return 2
+            base = weight
+            break
+    # Ranked-feed bonus: P1 sources are weighted a touch higher, and feeds with a
+    # quality score >= 9 contribute a small extra nudge so the CSV ranking is
+    # felt in the importance/tiering that drives the top of the digest.
+    priority, quality = SOURCE_PRIORITY_BONUS.get(name, ("", 0))
+    if priority == "P1":
+        base += 1
+    if quality >= 9:
+        base += 1
+    return max(1, min(6, base))
 
 
 def _is_trusted_ai_feed(source_name: str, hint: str | None) -> bool:
@@ -1430,6 +1448,24 @@ def write_json_output(stories: list[dict], tool_id, early_id, tool_os_id, tool_f
 
 FOOTER_TEXT = "made by Ali Husain Sorathiya's AI News Agent"
 
+# Apple-inspired email palette + system SF-like font stack (web-safe fallbacks).
+NL_FONT = "-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif"
+NL_INK = "#1d1d1f"
+NL_INK_SOFT = "#6e6e73"
+NL_MUTED = "#86868b"
+NL_ACCENT = "#0071e3"
+NL_ACCENT_HOVER = "#0077ed"
+NL_HAIRLINE = "#e8e8ed"
+NL_HAIRLINE_STRONG = "#d2d2d7"
+NL_BG = "#f5f5f7"
+NL_CARD = "#ffffff"
+
+# A single reusable cell style for the soft "surface" used behind feature blocks.
+_NL_CARD = (
+    f'border:1px solid {NL_HAIRLINE};border-radius:16px;'
+    f'background:{NL_CARD};'
+)
+
 
 def _h(text) -> str:
     return html.escape(text or "")
@@ -1437,11 +1473,19 @@ def _h(text) -> str:
 
 def _section_label(category: str) -> str:
     return {
-        "agents": "AGENTS",
-        "models": "MODELS & RESEARCH",
-        "products": "PRODUCTS & OPEN SOURCE",
-        "business": "BUSINESS & INFRASTRUCTURE",
-    }.get(category, category.upper())
+        "agents": "Agents",
+        "models": "Models & Research",
+        "products": "Products & Open Source",
+        "business": "Business & Infrastructure",
+    }.get(category, category.replace("_", " ").title())
+
+
+def _nl_link(text: str, url: str, weight: int = 600) -> str:
+    """Apple-style inline action link: blue, medium weight, no underline."""
+    return (
+        f'<a href="{_h(url)}" style="color:{NL_ACCENT};text-decoration:none;'
+        f'font-weight:{weight};">{_h(text)}&nbsp;&rarr;</a>'
+    )
 
 
 def _newsletter_image(src: str, alt: str, w: int = 640) -> str:
@@ -1449,7 +1493,7 @@ def _newsletter_image(src: str, alt: str, w: int = 640) -> str:
         return ""
     return (
         f'<img src="{_h(src)}" width="{w}" alt="{_h(alt)}" '
-        f'style="display:block;width:100%;max-width:{w}px;height:auto;border:0;border-radius:12px;">'
+        f'style="display:block;width:100%;max-width:{w}px;height:auto;border:0;border-radius:0;">'
     )
 
 
@@ -1457,31 +1501,31 @@ def _newsletter_caption(text: str) -> str:
     if not text:
         return ""
     return (
-        f'<tr><td style="padding:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;'
-        f'color:#6b7280;font-style:italic;line-height:1.4;">{_h(text)}</td></tr>'
+        f'<tr><td style="padding:10px 0 0 0;font-family:{NL_FONT};font-size:11px;'
+        f'color:{NL_MUTED};line-height:1.4;">{_h(text)}</td></tr>'
     )
 
 
 def _newsletter_story_block(story: dict, show_image: bool = True, numbered: bool = False) -> str:
     img = _newsletter_image(story.get("image", ""), story["headline"]) if show_image else ""
-    img_rows = f'<tr><td style="padding:16px 0 0 0;">{img}</td></tr>' if img else ""
+    img_rows = f'<tr><td style="padding:0 0 14px 0;">{img}</td></tr>' if img else ""
     caption = _newsletter_caption(story.get("headline", "")) if img else ""
     number = f'{story.get("importance", 0)}. ' if numbered else ''
     return (
         f"{img_rows}"
         f"{caption}"
-        f'<tr><td style="padding:12px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#111827;">'
-        f'<strong>{_h(number)}{_h(story["headline"])}</strong></td></tr>'
-        f'<tr><td style="padding:6px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#374151;">'
+        f'<tr><td style="padding:0 0 4px 0;font-family:{NL_FONT};font-size:15px;line-height:1.45;color:{NL_INK};font-weight:600;">'
+        f'{_h(number)}{_h(story["headline"])}</td></tr>'
+        f'<tr><td style="padding:0 0 6px 0;font-family:{NL_FONT};font-size:14px;line-height:1.55;color:{NL_INK_SOFT};">'
         f"{_h(story.get('summary',''))}</td></tr>"
-        f'<tr><td style="padding:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;color:#6b7280;">'
+        f'<tr><td style="padding:0 0 12px 0;font-family:{NL_FONT};font-size:12px;line-height:1.4;color:{NL_MUTED};">'
         f"<strong>Why it matters:</strong> {_h(story.get('why_it_matters',''))}</td></tr>"
-        f'<tr><td style="padding:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;">'
-        f'<a href="{_h(story.get("url", ""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">Read story →</a>'
-        f'<span style="color:#9ca3af;margin:0 6px;">·</span>'
-        f'<span style="color:#6b7280;">{_h(story.get("sources", [{}])[0].get("name", ""))}</span>'
-        f'<span style="color:#9ca3af;margin:0 6px;">·</span>'
-        f'<span style="color:#6b7280;">{_h(story.get("reading_time", ""))}</span></td></tr>'
+        f'<tr><td style="padding:0 0 0 0;font-family:{NL_FONT};font-size:13px;line-height:1.4;">'
+        f'{_nl_link("Read story", story.get("url", ""))}'
+        f'<span style="color:{NL_HAIRLINE_STRONG};margin:0 8px;">&middot;</span>'
+        f'<span style="color:{NL_INK_SOFT};">{_h(story.get("sources", [{}])[0].get("name", ""))}</span>'
+        f'<span style="color:{NL_HAIRLINE_STRONG};margin:0 8px;">&middot;</span>'
+        f'<span style="color:{NL_INK_SOFT};">{_h(story.get("reading_time", ""))}</span></td></tr>'
     )
 
 
@@ -1489,8 +1533,17 @@ def _newsletter_section_label(text: str) -> str:
     # Must be a <div>, not a <tr><td>: every call site embeds this inside an
     # open cell, and a <tr> inside a <td> breaks Gmail's table parser.
     return (
-        f'<div style="margin:0 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;'
-        f'letter-spacing:1.5px;color:#008A37;font-weight:bold;text-transform:uppercase;">{_h(text)}</div>'
+        f'<div style="margin:0 0 12px 0;font-family:{NL_FONT};font-size:12px;'
+        f'letter-spacing:1.4px;color:{NL_ACCENT};font-weight:600;text-transform:uppercase;">{_h(text)}</div>'
+    )
+
+
+def _newsletter_meta_row(s: dict) -> str:
+    return (
+        f'<div style="font-family:{NL_FONT};font-size:12px;line-height:1.4;margin-top:10px;">'
+        f'{_nl_link("Read story", s.get("url", ""))}'
+        f'<span style="color:{NL_HAIRLINE_STRONG};margin:0 8px;">&middot;</span>'
+        f'<span style="color:{NL_MUTED};">{_h(s.get("reading_time",""))}</span></div>'
     )
 
 
@@ -1532,126 +1585,119 @@ def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id)
     a(f'The AI Daily — {date_str}. Your daily briefing on what changed in AI.')
     a('</div>')
 
-    # Top bar
-    a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border-bottom:1px solid #e5e7eb;">')
-    a('<tr><td align="center" style="padding:12px 0;">')
+    # Top bar (translucent-feeling light strip)
+    a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{NL_CARD};border-bottom:1px solid {NL_HAIRLINE};">')
+    a('<tr><td align="center" style="padding:14px 0;">')
     a('<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;">')
-    a('<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#374151;">')
-    a(f'{date_str} &nbsp;&middot;&nbsp; <a href="https://alihusains.github.io/ai-latest-news/" style="color:#146DE9;text-decoration:none;">Read online</a>')
+    a(f'<tr><td style="font-family:{NL_FONT};font-size:13px;color:{NL_INK_SOFT};">')
+    a(f'{date_str} &nbsp;&middot;&nbsp; <a href="https://alihusains.github.io/ai-latest-news/" style="color:{NL_ACCENT};text-decoration:none;font-weight:500;">Read online</a>')
     a('</td></tr></table></td></tr></table>')
 
     # Main container
-    a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;padding:24px 0;">')
+    a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{NL_BG};padding:28px 0;">')
     a('<tr><td align="center">')
-    a('<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;background:#ffffff;border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;">')
+    a('<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;">')
 
     # Masthead
-    a('<tr><td style="padding:28px 24px 20px 24px;border-bottom:1px solid #e5e7eb;">')
-    a('<div style="font-family:Georgia,serif;font-size:28px;font-weight:bold;letter-spacing:2px;color:#111827;">THE AI DAILY</div>')
-    a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6b7280;margin-top:6px;">Know what changed in AI.</div>')
+    a(f'<tr><td style="padding:0 24px 20px 24px;">')
+    a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0">'
+      f'<tr><td style="font-family:{NL_FONT};font-size:26px;font-weight:700;letter-spacing:-0.5px;color:{NL_INK};">'
+      'THE&nbsp;AI&nbsp;DAILY'
+      f'<span style="color:{NL_ACCENT};">.</span></td></tr>'
+      f'<tr><td style="font-family:{NL_FONT};font-size:14px;color:{NL_MUTED};padding-top:4px;">'
+      'Know what changed in AI, in five minutes.</td></tr></table>')
     a('</td></tr>')
 
     # Big story
     if big:
-        a('<tr><td style="padding:24px 24px 0 24px;">')
-        a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;">')
+        a('<tr><td style="padding:0 24px 24px 24px;">')
+        a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
         if big.get("image"):
             a(f'<tr><td style="padding:0;">{_newsletter_image(big.get("image",""), big["headline"], w=640)}</td></tr>')
-        a('<tr><td style="padding:20px 20px 16px 20px;">')
-        a(_newsletter_section_label("THE BIG STORY"))
-        a(f'<div style="font-family:Georgia,serif;font-size:22px;font-weight:bold;line-height:1.25;color:#111827;margin-top:8px;">{_h(big["headline"])}</div>')
-        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#374151;margin-top:10px;">{_h(big.get("summary",""))}</div>')
-        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;color:#6b7280;margin-top:10px;"><strong>Why it matters:</strong> {_h(big.get("why_it_matters",""))}</div>')
-        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.4;margin-top:12px;">')
-        a(f'<a href="{_h(big.get("url",""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">Read the full story →</a>')
-        a(f'<span style="color:#9ca3af;margin:0 8px;">·</span>')
-        a(f'<span style="color:#6b7280;">{_h(big.get("reading_time",""))}</span>')
-        a(f'<span style="color:#9ca3af;margin:0 8px;">·</span>')
-        a(f'<span style="color:#6b7280;">{_h(big.get("sources",[{}])[0].get("name",""))}</span>')
-        a('</div></td></tr></table></td></tr>')
+        a(f'<tr><td style="padding:22px 24px 24px 24px;">')
+        a(_newsletter_section_label("The Big Story"))
+        a(f'<div style="font-family:{NL_FONT};font-size:22px;font-weight:600;line-height:1.2;color:{NL_INK};letter-spacing:-0.3px;margin-bottom:10px;">{_h(big["headline"])}</div>')
+        a(f'<div style="font-family:{NL_FONT};font-size:15px;line-height:1.55;color:{NL_INK_SOFT};margin-bottom:12px;">{_h(big.get("summary",""))}</div>')
+        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.5;color:{NL_MUTED};margin-bottom:14px;"><strong>Why it matters:</strong> {_h(big.get("why_it_matters",""))}</div>')
+        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.4;">{_nl_link("Read the full story", big.get("url",""), 600)}'
+          f'<span style="color:{NL_HAIRLINE_STRONG};margin:0 8px;">&middot;</span>'
+          f'<span style="color:{NL_INK_SOFT};">{_h(big.get("reading_time",""))}</span>'
+          f'<span style="color:{NL_HAIRLINE_STRONG};margin:0 8px;">&middot;</span>'
+          f'<span style="color:{NL_INK_SOFT};">{_h(big.get("sources",[{}])[0].get("name",""))}</span></div>')
+        a('</td></tr></table></td></tr>')
 
     # 5 THINGS
     if top5:
-        a('<tr><td style="padding:24px 24px 0 24px;">')
-        a(_newsletter_section_label("5 THINGS YOU SHOULD KNOW"))
+        a('<tr><td style="padding:0 24px 20px 24px;">')
+        a(_newsletter_section_label("5 Things You Should Know"))
         a('</td></tr>')
         for i, s in enumerate(top5, 1):
-            a('<tr><td style="padding:0 24px;">')
-            a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;margin-bottom:12px;">')
-            a('<tr><td style="padding:16px 20px;">')
-            a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;color:#111827;margin-bottom:6px;">{i}. {_h(s["headline"])}</div>')
-            a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#374151;">{_h(s.get("summary",""))}</div>')
-            a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;margin-top:8px;">')
-            a(f'<a href="{_h(s.get("url",""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">Read story →</a>')
-            a(f'<span style="color:#9ca3af;margin:0 6px;">·</span>')
-            a(f'<span style="color:#6b7280;">{_h(s.get("reading_time",""))}</span>')
-            a('</div></td></tr></table></td></tr>')
+            a('<tr><td style="padding:0 24px 14px 24px;">')
+            a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
+            a('<tr><td style="padding:18px 22px;">')
+            a(f'<div style="font-family:{NL_FONT};font-size:15px;font-weight:600;color:{NL_INK};margin-bottom:6px;">{i}. {_h(s["headline"])}</div>')
+            a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.55;color:{NL_INK_SOFT};">{_h(s.get("summary",""))}</div>')
+            a(_newsletter_meta_row(s))
+            a('</td></tr></table></td></tr>')
 
     # Category highlights
     for cat in NEW_CATEGORIES:
         s = highlights_by_cat.get(cat)
         if not s:
             continue
-        a('<tr><td style="padding:24px 24px 0 24px;">')
+        a('<tr><td style="padding:0 24px 20px 24px;">')
         a(_newsletter_section_label(_section_label(cat)))
         a('</td></tr>')
         a('<tr><td style="padding:0 24px 24px 24px;">')
-        a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;">')
+        a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
         if s.get("image"):
             a(f'<tr><td style="padding:0;">{_newsletter_image(s.get("image",""), s["headline"], w=640)}</td></tr>')
-        a('<tr><td style="padding:16px 20px;">')
-        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#111827;margin-bottom:6px;">{_h(s["headline"])}</div>')
-        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#374151;">{_h(s.get("summary",""))}</div>')
-        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;margin-top:8px;">')
-        a(f'<a href="{_h(s.get("url",""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">Read story →</a>')
-        a(f'<span style="color:#9ca3af;margin:0 6px;">·</span>')
-        a(f'<span style="color:#6b7280;">{_h(s.get("reading_time",""))}</span>')
-        a('</div></td></tr></table></td></tr>')
+        a('<tr><td style="padding:18px 22px 20px 22px;">')
+        a(f'<div style="font-family:{NL_FONT};font-size:16px;font-weight:600;color:{NL_INK};margin-bottom:6px;">{_h(s["headline"])}</div>')
+        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.55;color:{NL_INK_SOFT};">{_h(s.get("summary",""))}</div>')
+        a(_newsletter_meta_row(s))
+        a('</td></tr></table></td></tr>')
 
     # New AI agents
     new_agents = [s for s in ordered if s.get("is_new_agent") and s["id"] not in used][:3]
     if new_agents:
-        a('<tr><td style="padding:24px 24px 0 24px;">')
-        a(_newsletter_section_label("NEW AI AGENTS"))
+        a('<tr><td style="padding:0 24px 20px 24px;">')
+        a(_newsletter_section_label("New AI Agents"))
         a('</td></tr>')
         for s in new_agents:
-            a('<tr><td style="padding:0 24px;">')
-            a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" '
-              'style="border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;margin-bottom:12px;">')
-            a('<tr><td style="padding:14px 20px;">')
-            a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;'
-              f'color:#111827;margin-bottom:4px;">{_h(s["headline"])}</div>')
-            a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;">'
-              f'<a href="{_h(s.get("url",""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">'
-              f'Read story →</a></div>')
+            a('<tr><td style="padding:0 24px 14px 24px;">')
+            a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
+            a('<tr><td style="padding:16px 22px;">')
+            a(f'<div style="font-family:{NL_FONT};font-size:14px;font-weight:600;color:{NL_INK};margin-bottom:4px;">{_h(s["headline"])}</div>')
+            a(f'<div style="font-family:{NL_FONT};font-size:12px;line-height:1.4;">{_nl_link("Read story", s.get("url",""))}</div>')
             a('</td></tr></table></td></tr>')
 
     # Early signal
     if early:
-        a('<tr><td style="padding:24px 24px 0 24px;">')
-        a(_newsletter_section_label("EARLY SIGNAL"))
+        a('<tr><td style="padding:0 24px 20px 24px;">')
+        a(_newsletter_section_label("Early Signal"))
         a('</td></tr>')
         a('<tr><td style="padding:0 24px 24px 24px;">')
-        a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #CFD9DF;border-radius:12px;overflow:hidden;">')
-        a('<tr><td style="padding:16px 20px;">')
-        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#111827;margin-bottom:6px;">{_h(early["headline"])}</div>')
-        a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#374151;">{_h(early.get("why_it_matters",""))}</div>')
+        a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
+        a('<tr><td style="padding:18px 22px;">')
+        a(f'<div style="font-family:{NL_FONT};font-size:15px;font-weight:600;color:{NL_INK};margin-bottom:6px;">{_h(early["headline"])}</div>')
+        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.55;color:{NL_INK_SOFT};">{_h(early.get("why_it_matters",""))}</div>')
         a('</td></tr></table></td></tr>')
 
     # What's next
     if whats_next:
-        a('<tr><td style="padding:24px 24px 0 24px;">')
-        a(_newsletter_section_label("WHAT'S NEXT"))
+        a('<tr><td style="padding:0 24px 20px 24px;">')
+        a(_newsletter_section_label("What's Next"))
         a('</td></tr>')
         for s in whats_next:
-            a('<tr><td style="padding:0 24px 24px 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111827;line-height:1.5;">')
-            a(f'&bull; <a href="{_h(s.get("url",""))}" style="color:#146DE9;text-decoration:none;font-weight:600;">{_h(s["headline"])}</a>')
+            a(f'<tr><td style="padding:0 24px 10px 24px;font-family:{NL_FONT};font-size:14px;color:{NL_INK};line-height:1.5;">')
+            a(f'&bull; <a href="{_h(s.get("url",""))}" style="color:{NL_ACCENT};text-decoration:none;font-weight:600;">{_h(s["headline"])}</a>')
             a('</td></tr>')
 
     # Footer
-    a('<tr><td style="padding:24px 24px 28px 24px;border-top:1px solid #e5e7eb;margin-top:16px;">')
-    a(f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#6b7280;line-height:1.6;">{FOOTER_TEXT}</div>')
-    a('<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#9ca3af;line-height:1.6;margin-top:6px;">')
+    a(f'<tr><td style="padding:8px 24px 0 24px;border-top:1px solid {NL_HAIRLINE};">')
+    a(f'<div style="font-family:{NL_FONT};font-size:11px;color:{NL_INK_SOFT};line-height:1.6;padding-top:20px;">{FOOTER_TEXT}</div>')
+    a(f'<div style="font-family:{NL_FONT};font-size:11px;color:{NL_MUTED};line-height:1.6;margin-top:6px;padding-bottom:28px;">')
     a(f'&copy; {date.year} SIGNAL. All rights reserved.')  # Buttondown's Portal auto-adds the real unsubscribe link
     a('</div></td></tr>')
 
@@ -1663,12 +1709,13 @@ def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id)
 
 
 def _newsletter_button(url: str, label: str = "Read story") -> str:
+    # Apple-style pill button (blue fill, white text, full-radius).
     return (
         '<tr><td style="padding:14px 40px 0 40px;">'
-        f'<table role="presentation" cellspacing="0" cellpadding="0"><tr><td '
-        f'style="border-radius:6px;background:#2563eb;">'
-        f'<a href="{_h(url)}" style="display:inline-block;padding:11px 22px;color:#ffffff;'
-        f'font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;text-decoration:none;">{_h(label)}</a>'
+        '<table role="presentation" cellspacing="0" cellpadding="0"><tr><td '
+        f'style="border-radius:999px;background:{NL_ACCENT};">'
+        f'<a href="{_h(url)}" style="display:inline-block;padding:11px 24px;color:#ffffff;'
+        f'font-family:{NL_FONT};font-size:14px;font-weight:600;text-decoration:none;border-radius:999px;">{_h(label)}</a>'
         f"</td></tr></table></td></tr>"
     )
 
@@ -1699,7 +1746,7 @@ def write_newsletter(date: dt.date, stories: list[dict], tool_id, early_id) -> P
         '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
         '<meta name="x-apple-disable-message-reformatting">'
         '<title>THE AI DAILY</title></head>'
-        f'<body style="margin:0;padding:0;background:#f2f4f7;">{html_str}</body></html>'
+        f'<body style="margin:0;padding:0;background:{NL_BG};">{html_str}</body></html>'
     )
     news_dir = ROOT_DIR / "newsletter"
     news_dir.mkdir(parents=True, exist_ok=True)
@@ -1708,8 +1755,25 @@ def write_newsletter(date: dt.date, stories: list[dict], tool_id, early_id) -> P
     return path
 
 
-def fetch_all(config_path: Path, per_source_limit: int | None) -> list[dict]:
-    sources = load_sources(config_path)
+def _priority_cap(per_source_limit: int, source: dict) -> int | None:
+    """Resolve the per-source item cap for one source.
+
+    ``0`` means "no cap" (return None). Otherwise the base limit is scaled by
+    the ranking priority (P1 full, P2 ~2/3, P3 ~40%) so the ranked feed CSV
+    actively shapes content volume; API/discovery sources keep the base limit.
+    """
+    if per_source_limit == 0:
+        return None
+    base = per_source_limit if per_source_limit else DEFAULT_PER_SOURCE
+    if source.get("csv"):
+        mult = PRIORITY_MULT.get((source.get("priority") or "P2").strip().upper(), 1.0)
+        return max(3, int(base * mult))
+    return base
+
+
+def fetch_all(config_path: Path, per_source_limit: int | None,
+              feeds_csv: Path | None = None) -> list[dict]:
+    sources = load_sources(config_path, feeds_csv or RANKED_FEEDS_CSV)
     items: list[dict] = []
     last_reddit = 0.0
     for source in sources:
@@ -1727,21 +1791,130 @@ def fetch_all(config_path: Path, per_source_limit: int | None) -> list[dict]:
             time.sleep(30)
             last_reddit = time.time()
             fetched = fetch_source(source)
-        if per_source_limit:
-            fetched = fetched[:per_source_limit]
+        cap = _priority_cap(per_source_limit, source)
+        if cap:
+            fetched = fetched[:cap]
         for it in fetched:
             it["category_hint"] = source.get("category_hint")
+            it["feed_priority"] = source.get("priority")
+            it["feed_quality"] = source.get("quality_score")
             items.append(it)
     return items
 
 
 # --------------------------------------------------------------------------- #
-# Entry point
+# Source loading: ranked OPML feed CSV (ai_news_feeds_ranked.csv) + sources.yaml
 # --------------------------------------------------------------------------- #
-def load_sources(config_path: Path) -> list[dict]:
-    data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
-    sources = data.get("sources", [])
-    return [s for s in sources if s.get("active", True)]
+# Canonical config files.
+RANKED_FEEDS_CSV = ROOT_DIR / "ai_news_feeds_ranked.csv"
+
+# OPML group -> category_hint used by the classifier.
+_GROUP_HINTS = {
+    "01_core_labs_and_model_releases": "research",
+    "02_editorial_and_news_aggregators": "news",
+    "03_research_and_papers": "research",
+    "04_medical_and_health_ai": "medical",
+    "05_ai_for_science": "science",
+    "06_incidents_safety_policy": "community",
+    "07_ai_engineer_and_newsletters": "newsletter",
+    "08_devtools_and_github_trending": "open-source",
+}
+
+# Priority -> per-source fetch cap multiplier. P1 feeds are allowed to
+# contribute more items; P3 (niche/specialised) feeds contribute fewer so they
+# cannot flood the digest with low-signal items.
+PRIORITY_MULT = {"P1": 1.0, "P2": 0.65, "P3": 0.4}
+
+# Populated by load_sources_from_csv: source name -> (priority, quality_score).
+# Used by _source_weight so high-priority / high-quality feeds nudge importance.
+SOURCE_PRIORITY_BONUS: dict[str, tuple[str, int]] = {}
+
+
+def _csv_int(value: str | int | float, default: int) -> int:
+    if isinstance(value, (int, float)):
+        try:
+            return int(float(value))
+        except (TypeError, ValueError):
+            return default
+    try:
+        return int(float((value or "").strip()))
+    except (TypeError, ValueError):
+        return default
+
+
+def _register_source_ranking(csv_sources: list[dict]) -> None:
+    """Record CSV priority/quality per source name for downstream weighting."""
+    SOURCE_PRIORITY_BONUS.clear()
+    for s in csv_sources:
+        name = (s.get("name") or "").strip().lower()
+        if not name:
+            continue
+        SOURCE_PRIORITY_BONUS[name] = (
+            (s.get("priority") or "P2").strip().upper(),
+            max(1, min(10, _csv_int(s.get("quality_score"), 7))),
+        )
+
+
+def load_sources_from_csv(csv_path: Path) -> list[dict]:
+    """Build source entries from the ranked OPML feed CSV.
+
+    Every row is a feed URL; they map 1:1 to an RSS source. The rank,
+    quality_score and priority columns are attached so the pipeline can apply
+    priority-based caps and weight importance accordingly.
+    """
+    import csv as _csv
+
+    sources: list[dict] = []
+    text = csv_path.read_text(encoding="utf-8")
+    rows = list(_csv.DictReader(text.splitlines()))
+    for n, row in enumerate(rows, 1):
+        name = (row.get("feed_name") or "").strip() or f"Feed {n}"
+        url = (row.get("feed_url") or "").strip()
+        if not url:
+            continue
+        group = " ".join((row.get("category") or row.get("group") or "").replace("_", " ").lower().split())
+        sources.append({
+            "name": name,
+            "type": "rss",
+            "url": url,
+            "category_hint": _GROUP_HINTS.get(group.replace(" ", "_"), "news"),
+            "priority": (row.get("priority") or "P2").strip().upper(),
+            "quality_score": max(1, min(10, _csv_int(row.get("quality_score"), 7))),
+            "rank": max(1, _csv_int(row.get("rank"), n)),
+            "csv": True,
+            "active": True,
+        })
+    _register_source_ranking(sources)
+    return sources
+
+
+def load_sources(config_path: Path, feeds_csv: Path | None = RANKED_FEEDS_CSV) -> list[dict]:
+    """Merge the ranked OPML feed CSV with the API/web sources in sources.yaml.
+
+    - The CSV is the source of truth for RSS feeds (ranked, priority-weighted).
+    - sources.yaml supplies the non-RSS discovery/API sources (Reddit, HF
+      papers/models, Product Hunt, GitHub Trending scrape, GitHub + HN search)
+      that power the "AI Tool of the Day" and "New AI Agents" sections and are
+      not part of the OPML. Any RSS source in sources.yaml that duplicates a
+      CSV feed URL is dropped (the CSV ranking wins).
+    """
+    yaml_sources: list[dict] = []
+    if config_path.exists():
+        data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+        yaml_sources = [s for s in data.get("sources", []) if s.get("active", True)]
+
+    csv_sources = load_sources_from_csv(feeds_csv) if feeds_csv and feeds_csv.exists() else []
+
+    csv_urls = {canonical_url(s.get("url", "")) for s in csv_sources}
+    merged = list(csv_sources)
+    for s in yaml_sources:
+        if (s.get("type") or "").strip().lower() != "rss":
+            merged.append(s)  # API/discovery sources are always kept
+            continue
+        if canonical_url(s.get("url", "")) in csv_urls:
+            continue  # CSV feed wins for identical RSS URLs
+        merged.append(s)
+    return merged
 
 
 def build_legacy_digest_items(items: list[dict]) -> list[dict]:
@@ -1783,6 +1956,8 @@ def write_digest(items: list[dict], date: dt.date) -> Path:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="AI news aggregator pipeline")
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    parser.add_argument("--feeds", type=Path, default=RANKED_FEEDS_CSV,
+                        help="ranked OPML feed CSV (default: ai_news_feeds_ranked.csv)")
     parser.add_argument("--date", help="override date as YYYY-MM-DD")
     parser.add_argument(
         "--limit",
@@ -1801,7 +1976,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.check:
         total = 0
         ok = 0
-        for source in load_sources(args.config):
+        for source in load_sources(args.config, args.feeds):
             name = source.get("name", "?")
             url = source.get("url", "")
             total += 1
@@ -1815,7 +1990,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.date:
         date = dt.date.fromisoformat(args.date)
 
-    items = fetch_all(args.config, args.limit)
+    items = fetch_all(args.config, args.limit, args.feeds)
 
     # Legacy markdown digest (keep working during transition).
     legacy = build_legacy_digest_items(items)

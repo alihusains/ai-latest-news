@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+<head><title>AI Newsletter Sources</title></head>
+<body>
+  <outline text="01_Core_Labs_and_Model_Releases" title="01_Core_Labs_and_Model_Releases">
+    <outline type="rss" text="OpenAI News" title="OpenAI News" xmlUrl="https://openai.com/news/rss.xml"/>
+    <outline type="rss" text="Google DeepMind Blog" title="Google DeepMind Blog" xmlUrl="https://deepmind.google/blog/feed/basic/"/>
+    <outline type="rss" text="Google AI Blog" title="Google AI Blog" xmlUrl="https://blog.google/technology/ai/rss/"/>
+    <outline type="rss" text="Anthropic News (unofficial mirror)" title="Anthropic News (unofficial mirror)" xmlUrl="https://rsshub.bestblogs.dev/anthropic/news"/>
+    <outline type="rss" text="Microsoft AI Blog" title="Microsoft AI Blog" xmlUrl="https://blogs.microsoft.com/ai/feed/"/>
+    <outline type="rss" text="AWS ML Blog" title="AWS ML Blog" xmlUrl="https://aws.amazon.com/blogs/machine-learning/feed/"/>
+    <outline type="rss" text="Hugging Face Blog" title="Hugging Face Blog" xmlUrl="https://huggingface.co/blog/feed.xml"/>
+    <outline type="rss" text="Meta AI Blog" title="Meta AI Blog" xmlUrl="https://ai.meta.com/blog"/>
+  </outline>
+  <outline text="02_Editorial_and_News_Aggregators" title="02_Editorial_and_News_Aggregators">
+    <outline type="rss" text="MarkTechPost" title="MarkTechPost" xmlUrl="https://www.marktechpost.com/feed/"/>
+    <outline type="rss" text="The Verge AI" title="The Verge AI" xmlUrl="https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"/>
+    <outline type="rss" text="TechCrunch AI" title="TechCrunch AI" xmlUrl="https://techcrunch.com/category/artificial-intelligence/feed/"/>
+    <outline type="rss" text="MIT Technology Review AI" title="MIT Technology Review AI" xmlUrl="https://www.technologyreview.com/topic/artificial-intelligence/feed/"/>
+    <outline type="rss" text="VentureBeat AI" title="VentureBeat AI" xmlUrl="https://venturebeat.com/category/ai/feed/"/>
+    <outline type="rss" text="WIRED AI" title="WIRED AI" xmlUrl="https://www.wired.com/feed/tag/ai/latest"/>
+    <outline type="rss" text="Ars Technica AI" title="Ars Technica AI" xmlUrl="https://arstechnica.com/ai/feed"/>
+  </outline>
+  <outline text="03_Research_and_Papers" title="03_Research_and_Papers">
+    <outline type="rss" text="arXiv cs.AI" title="arXiv cs.AI" xmlUrl="https://rss.arxiv.org/rss/cs.AI"/>
+    <outline type="rss" text="arXiv cs.LG" title="arXiv cs.LG" xmlUrl="https://rss.arxiv.org/rss/cs.LG"/>
+    <outline type="rss" text="arXiv q-bio (bio+discovery)" title="arXiv q-bio (bio+discovery)" xmlUrl="https://rss.arxiv.org/rss/cs.ai+q-bio.QM+q-bio.GN+q-bio.BM+q-bio.MN"/>
+    <outline type="rss" text="The Gradient" title="The Gradient" xmlUrl="https://thegradient.pub/rss/"/>
+    <outline type="rss" text="Ahead of AI (Raschka)" title="Ahead of AI (Raschka)" xmlUrl="https://magazine.sebastianraschka.com/feed"/>
+    <outline type="rss" text="Lilian Weng Blog" title="Lilian Weng Blog" xmlUrl="https://lilianweng.github.io/feed.xml"/>
+  </outline>
+  <outline text="04_Medical_and_Health_AI" title="04_Medical_and_Health_AI">
+    <outline type="rss" text="Nature Machine Intelligence" title="Nature Machine Intelligence" xmlUrl="https://www.nature.com/natmachintell.rss"/>
+    <outline type="rss" text="Radiology: Artificial Intelligence" title="Radiology: Artificial Intelligence" xmlUrl="https://pubs.rsna.org/action/showFeed?type=etoc&amp;feed=rss&amp;jc=ai"/>
+    <outline type="rss" text="JMIR AI (feed via journal)" title="JMIR AI (feed via journal)" xmlUrl="https://ai.jmir.org/feed/atom"/>
+    <outline type="rss" text="PubMed AI+Medicine search" title="PubMed AI+Medicine search" xmlUrl="https://pubmed.ncbi.nlm.nih.gov/rss/?term=(%22artificial+intelligence%22%5BMeSH%5D)"/>
+  </outline>
+  <outline text="05_AI_for_Science" title="05_AI_for_Science">
+    <outline type="rss" text="arXiv q-bio.QM" title="arXiv q-bio.QM" xmlUrl="https://rss.arxiv.org/rss/q-bio.QM"/>
+    <outline type="rss" text="arXiv q-bio.GN" title="arXiv q-bio.GN" xmlUrl="https://rss.arxiv.org/rss/q-bio.GN"/>
+    <outline type="rss" text="BioML Digest" title="BioML Digest" xmlUrl="https://www.biomldigest.com/feed/"/>
+    <outline type="rss" text="Microsoft Research AI for Science" title="Microsoft Research AI for Science" xmlUrl="https://www.microsoft.com/en-us/research/feed/"/>
+  </outline>
+  <outline text="06_Incidents_Safety_Policy" title="06_Incidents_Safety_Policy">
+    <outline type="rss" text="AI Incident Database Blog" title="AI Incident Database Blog" xmlUrl="https://incidentdatabase.ai/blog/index.xml"/>
+    <outline type="rss" text="MIT AI Risk Incident Tracker" title="MIT AI Risk Incident Tracker" xmlUrl="https://airisk.mit.edu/blog/rss.xml"/>
+    <outline type="rss" text="AI for Good (ITU)" title="AI for Good (ITU)" xmlUrl="https://aiforgood.itu.int/feed"/>
+  </outline>
+  <outline text="07_AI_Engineer_and_Newsletters" title="07_AI_Engineer_and_Newsletters">
+    <outline type="rss" text="Simon Willison" title="Simon Willison" xmlUrl="https://simonwillison.net/atom/everything/"/>
+    <outline type="rss" text="Latent.Space (AI Engineer)" title="Latent.Space (AI Engineer)" xmlUrl="https://latent.space/feed"/>
+    <outline type="rss" text="One Useful Thing" title="One Useful Thing" xmlUrl="https://oneusefulthing.org/feed"/>
+    <outline type="rss" text="Last Week in AI" title="Last Week in AI" xmlUrl="https://lastweekin.ai/feed"/>
+    <outline type="rss" text="Interconnects AI" title="Interconnects AI" xmlUrl="https://interconnects.ai/feed"/>
+  </outline>
+  <outline text="08_DevTools_and_GitHub_Trending" title="08_DevTools_and_GitHub_Trending">
+    <outline type="rss" text="GitHub Trending (via RSSHub)" title="GitHub Trending (via RSSHub)" xmlUrl="https://rsshub.app/github/trending"/>
+    <outline type="rss" text="Hugging Face Models (via RSSHub)" title="Hugging Face Models (via RSSHub)" xmlUrl="https://rsshub.app/huggingface/models"/>
+  </outline>
+</body>
+</opml>
