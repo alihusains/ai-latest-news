@@ -61,16 +61,15 @@ title: At a Glance
     const models = Data.getByCategory('models').filter(s => s.tier !== 'top');
     const products = Data.getByCategory('products').filter(s => s.tier !== 'top');
     const business = Data.getByCategory('business').filter(s => s.tier !== 'top');
-    const worth = data.stories.filter(s => s.tier === 'standard');
     let html = '';
     if (top.length) html += `<div class="section"><div class="section-header"><h2 class="section-title">The Biggest Story</h2></div>${render.biggest(top[0])}</div>`;
     html += render.group('What Changed', whatChanged);
-    if (agents.length) html += render.group('Agents', agents);
-    if (models.length) html += render.group('Models & Research', models);
-    if (products.length) html += render.group('Products & Open Source', products);
-    if (business.length) html += render.group('Business & Infrastructure', business);
-    if (worth.length) html += render.group('Worth Knowing', worth);
+    if (agents.length) html += render.group('Agents', agents.slice(0, 6));
+    if (models.length) html += render.group('Models & Research', models.slice(0, 6));
+    if (products.length) html += render.group('Products & Open Source', products.slice(0, 6));
+    if (business.length) html += render.group('Business & Infrastructure', business.slice(0, 6));
     document.getElementById('glance-content').innerHTML = html;
+    if (window.Reveal) window.Reveal.refresh();
   });
 })();
 </script>

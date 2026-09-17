@@ -206,12 +206,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (tabId === 'glance') {
-      window.location.hash = '#glance';
+      history.replaceState(null, '', window.location.pathname + window.location.search);
     } else {
       const panel = panels[parseInt(tabId, 10)];
       if (panel) {
         const slug = panel.category.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        window.location.hash = `#${slug}`;
+        history.replaceState(null, '', `#${slug}`);
       }
     }
   }

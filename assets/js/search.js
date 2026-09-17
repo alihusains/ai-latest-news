@@ -21,6 +21,7 @@ const Search = {
   _onKey(e) {
     if (e.key === 'Escape') this.close();
   },
+  _token: 0,
   async query(q) {
     const data = await Data.fetch();
     if (!data) return [];
@@ -38,6 +39,7 @@ const Search = {
   },
   async render(results, q) {
     if (!this.results) return;
+    if (this._expected && this._token !== this._expected) return; // stale response
     if (!q) { this.results.innerHTML = '<div class="search-empty">Type to search stories...</div>'; return; }
     if (results.length === 0) { this.results.innerHTML = '<div class="search-empty">No results found.</div>'; return; }
     const grouped = {};
@@ -52,6 +54,7 @@ const Search = {
       grouped[cat].forEach(r => {
         html += `<div class="search-result-item" data-id="${r.story.id}">
           <div class="search-result-title">${this.escape(r.story.headline)}</div>
+          ${r.story.subheadline ? `<div class="search-result-snippet">${this.escape(r.story.subheadline)}</div>` : ''}
           <div class="search-result-meta">${r.story.reading_time || ''} · ${Data.formatDate(r.story.published_at)}</div>
         </div>`;
       });
@@ -81,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (input) {
       input.addEventListener('input', e => {
         const q = e.target.value;
+        Search._token = (Search._token || 0) + 1;
+        Search._expected = Search._token;
         Search.query(q).then(results => Search.render(results, q));
       });
     }

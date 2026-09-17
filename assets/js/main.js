@@ -29,16 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (target === here) link.classList.add('active');
   });
 
-  /* ---- Edition date ---- */
-  const edition = document.getElementById('edition-date');
-  if (edition) {
-    edition.textContent = new Date().toLocaleDateString('en-US', {
+  /* ---- Edition date (from the data, not the clock) ---- */
+  Data.fetch().then(data => {
+    const edition = document.getElementById('edition-date');
+    if (!edition || !data) return;
+    const d = new Date(data.date + 'T00:00:00');
+    edition.textContent = d.toLocaleDateString('en-US', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
-  }
+  });
 
-  /* ---- Scroll reveal ---- */
-  const SELECTORS = '.hero, .section, .signal-box, .subscribe, .feature-card';
+  /* ---- Scroll reveal (never hides above-the-fold content) ---- */
+  const SELECTORS = '.section, .signal-box, .subscribe, .feature-card';
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const io = ('IntersectionObserver' in window)
     ? new IntersectionObserver((entries) => {
@@ -51,7 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
   window.Reveal = {
     refresh() {
       if (reduce || !io) return;
+      const fold = window.innerHeight * 0.9;
       document.querySelectorAll(SELECTORS).forEach(el => {
+        if (el.getBoundingClientRect().top < fold) return;
         if (!el.classList.contains('reveal')) el.classList.add('reveal');
         if (!el.classList.contains('in')) io.observe(el);
       });

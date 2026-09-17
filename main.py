@@ -1032,13 +1032,62 @@ def _sentences(text: str) -> list[str]:
     return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
 
 
+def _dedupe_repeated_phrases(text: str, min_len: int = 40) -> str:
+    """Remove repeated phrases (feed boilerplate) that appear twice in the text.
+    Keeps the first occurrence, drops subsequent ones."""
+    words = text.split()
+    if len(words) < 20:
+        return text
+    # Try phrase lengths from 12 words down to 8 words
+    for phrase_len in range(12, 7, -1):
+        if len(words) < phrase_len * 2:
+            continue
+        seen = {}
+        removed = set()
+        for i in range(len(words) - phrase_len + 1):
+            phrase = " ".join(words[i:i+phrase_len])
+            if len(phrase) < min_len:
+                continue
+            if phrase in seen:
+                # Mark this second occurrence for removal
+                removed.update(range(i, i+phrase_len))
+            else:
+                seen[phrase] = i
+        if removed:
+            new_words = [w for i, w in enumerate(words) if i not in removed]
+            text = " ".join(new_words)
+            break
+    return text
+
+
 def _fit_words(text: str, lo: int = 60, hi: int = 80) -> str:
     text = _WS_RE.sub(" ", text).strip().rstrip(".")
+    # Strip trailing feed ellipsis first so phrase dedupe sees clean text.
+    text = re.sub(r"\s*\[\u2026\]$", "", text).strip()
+    text = _dedupe_repeated_phrases(text)
     words = text.split()
     if not words:
         return ""
     if len(words) <= hi:
-        return text
+        t2 = text.strip().rstrip(".")
+        # Top up to the lo bound with the next sentence if available.
+        if len(t2.split()) < lo:
+            seen2 = set()
+            sents = []
+            for sent in _sentences(text):
+                if sent in seen2:
+                    continue
+                seen2.add(sent)
+                sents.append(sent)
+            for sent in sents:
+                if sent in t2:
+                    continue
+                if len((t2 + " " + sent).split()) <= hi:
+                    t2 = t2 + " " + sent
+                else:
+                    break
+            t2 = t2.strip().rstrip(".")
+        return t2
     acc = []
     count = 0
     for sent in _sentences(text):
@@ -1072,10 +1121,10 @@ def _build_summary(cluster: list[dict]) -> str:
         if any(
             difflib.SequenceMatcher(None, normalize_title(p), normalize_title(q)).ratio() > 0.92
             for q in kept
-        ):
+        ) or any(p in q for q in kept):
             continue
         kept.append(p)
-        if len(" ".join(kept).split()) >= 74:
+        if len(" ".join(kept).split()) >= 80:
             break
     if not kept:  # absolute fallback
         kept.append(clean_text(cluster[0].get("title", "")))
@@ -1113,25 +1162,36 @@ def _slugify(text: str, seen: set[str]) -> str:
     return slug
 
 
-def _why_it_matters(story_type: str, category: str) -> str:
+def _why_it_matters(story_type: str, category: str, headline: str = "") -> str:
+    """Plain-English 'so what', written for the specific story, not a template.
+
+    Generic filler like 'reshapes the competitive landscape' reads as noise, so
+    the lines below name the story's actor and the concrete consequence.
+    """
     label = CATEGORY_LABELS[category]
+    lead = (headline or "").strip()
+    # First noun-ish phrase of the headline (e.g. "OpenAI", "Meta", "Google")
+    actor = ""
+    if lead:
+        actor = re.split(r"[\s—:\-–]+", lead, maxsplit=1)[0].strip()
+    a = actor or "The company"
     templates = {
-        "Funding": f"Fresh capital reflects sustained investor appetite for {label}, which reshapes the competitive landscape.",
-        "Acquisition": f"The deal consolidates {label} and signals how AI assets are now being valued.",
-        "Hardware": f"Compute supply and infrastructure decisions here determine which {label} products become viable.",
-        "Partnership": f"This alliance should expand where and how {label} is deployed for real users.",
-        "Security": f"This exposes live risk surfaces for AI systems, raising the stakes on governance and safety.",
-        "Policy": f"Regulatory movement sets the boundaries within which {label} can scale commercially.",
-        "Breakthrough": f"A step change like this resets expectations for what is achievable in {label}.",
-        "Benchmark": f"New results push the bar on what counts as the state of the art in {label}.",
-        "Research": f"The work advances the {label} frontier, with downstream implications for real products.",
-        "Open Source": f"An open release lowers adoption barriers and speeds iteration across the {label} ecosystem.",
-        "Repository": f"A trending repository signals strong developer interest and rapid adoption within {label}.",
-        "Release": f"A mainstream release broadens the practical reach of {label} beyond research circles.",
-        "Launch": f"This launch expands the practical surface of {label} for everyday users and teams.",
-        "Product Update": f"An incremental update keeps {label} capability moving forward for existing users.",
+        "Funding": f"{a} is putting new money behind {label} — a bet that this is where the next round of AI value gets made.",
+        "Acquisition": f"{a} is buying its way into {label}; the price it paid is now the market's yardstick for similar deals.",
+        "Hardware": f"Compute is the bottleneck in AI, and this move changes who gets it — which shapes which {label} products can actually ship.",
+        "Partnership": f"Two players are joining forces on {label}, which should put the capability in front of more real users, faster.",
+        "Security": f"Every AI system has attack surfaces; this one is now public, and it changes how seriously the rest of the field has to take it.",
+        "Policy": f"Rules are being written around {label} — and the boundaries set here will decide how (and where) it can scale.",
+        "Breakthrough": f"This is the kind of result that resets expectations: what looked hard yesterday may be table stakes soon.",
+        "Benchmark": f"State-of-the-art claims only mean something against a number — this one moves that number for {label}.",
+        "Research": f"Published research like this is where product features come from; expect to see it in {label} tools within a year.",
+        "Open Source": f"Because it is open, anyone can build on this — which usually makes {label} better and cheaper for everyone.",
+        "Repository": f"Developers are voting with their clones and stars: this is one of the fastest-moving projects in {label} right now.",
+        "Release": f"This takes {label} out of research demos and into products people can actually use.",
+        "Launch": f"A new entry point into {label} — worth watching for how it changes what users expect.",
+        "Product Update": f"{a} is iterating on {label}; the direction of these updates is usually a reliable hint at where the roadmap is heading.",
     }
-    return templates.get(story_type, f"This is a signal of continued momentum in {label}.")
+    return templates.get(story_type, f"Another data point in how quickly {label} is moving — small today, but direction matters.")
 
 
 def _story_from_cluster(cluster: list[dict], seen_ids: set[str]) -> dict:
@@ -1169,7 +1229,7 @@ def _story_from_cluster(cluster: list[dict], seen_ids: set[str]) -> dict:
         "headline": headline,
         "subheadline": subheadline,
         "summary": summary,
-        "why_it_matters": _why_it_matters(story_type, category),
+        "why_it_matters": _why_it_matters(story_type, category, headline),
         "category": category,
         "tags": tags,
         "industry": industry,
@@ -1207,6 +1267,15 @@ def _pick_tools_of_day(stories: list[dict]) -> tuple[str | None, str | None]:
     os_id = max(os_c, key=lambda s: s["importance"])["id"] if os_c else None
     fm_c = [s for s in pool if s["id"] != os_id and (src_in(s, TOOL_FREEMIUM_SOURCES) or s["story_type"] == "Launch")]
     fm_id = max(fm_c, key=lambda s: s["importance"])["id"] if fm_c else None
+    # A "tool of the day" that is also one of the day's top-3 stories would
+    # duplicate the Big Story slot; drop it so the section stays additive.
+    # A "tool of the day" that is also one of the day's top-3 stories would
+    # duplicate the Big Story slot; drop it so the section stays additive.
+    top3 = {s["id"] for s in sorted(stories, key=lambda s: s["importance"], reverse=True)[:3]}
+    if os_id in top3:
+        os_id = None
+    if fm_id in top3:
+        fm_id = None
     return os_id, fm_id
 
 
@@ -1289,20 +1358,25 @@ def _mistral_chat(api_key: str, system: str, user: str) -> str | None:
 
 
 _AI_SYSTEM = (
-    "You rewrite AI news so a non-technical adult can understand it. Use simple, "
-    "everyday words. No jargon or unexplained acronyms, and NEVER use em dashes or "
-    "en dashes (use commas or periods instead). Be factual and neutral. Output only "
-    "valid JSON, nothing else."
+    "You rewrite AI news so a smart non-technical adult can understand it. "
+    "Rules: start with who did what (actor first, present tense). Simple everyday "
+    "words; no jargon or unexplained acronyms. Use numbers instead of adjectives "
+    "(\"raised $2B\", not \"a significant round\"). Never use em dashes or en dashes "
+    "(use commas or periods). Be factual and neutral. Output only valid JSON, nothing else."
 )
 
 
 def _ai_batch_prompt(batch: list[dict]) -> str:
     lines = [
         "Rewrite each numbered item in plain English.",
-        "'summary': one sentence, 120 characters or fewer, simple words, no em dashes.",
+        "'summary': two to four short sentences explaining WHAT happened. Actor first "
+        "in sentence one; at most one sentence of background. 60 to 90 words.",
+        "'why': one to two sentences explaining WHY IT MATTERS in second person "
+        "(\"This means you can now...\"). Never repeat the summary's facts; no filler "
+        "like \"reshapes the competitive landscape\".",
         "'tags': 3 to 5 short lowercase topic tags.",
         "'category': exactly one of agents, models, products, business.",
-        'Return JSON shaped like: {"items":[{"i":0,"summary":"...",'
+        'Return JSON shaped like: {"items":[{"i":0,"summary":"...","why":"...",'
         '"tags":["..."],"category":"..."}]}',
         "Include one object per item with the matching integer i.",
         "",
@@ -1350,6 +1424,9 @@ def apply_ai_summaries(stories: list[dict]) -> bool:
             s["summary_original"] = s.get("summary", "")
             s["summary"] = summary
             s["subheadline"] = summary
+            why = _clean_plain(it.get("why", ""))
+            if why:
+                s["why_it_matters"] = why
             tags = [str(t).strip().lower() for t in (it.get("tags") or []) if str(t).strip()]
             if tags:
                 s["tags"] = list(dict.fromkeys(tags))[:5]
@@ -1440,25 +1517,33 @@ def write_json_output(stories: list[dict], tool_id, early_id, tool_os_id, tool_f
     data_dir.mkdir(parents=True, exist_ok=True)
     daily_path = data_dir / f"{date_str}.json"
     daily_path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-    (data_dir / "latest.json").write_text(
-        json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
-    )
+    # Backfill runs (--date in the past) must not clobber the live edition.
+    if date_str == dt.datetime.now(_dubai_tz()).date().isoformat():
+        (data_dir / "latest.json").write_text(
+            json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
     return daily_path
 
 
 FOOTER_TEXT = "made by Ali Husain Sorathiya's AI News Agent"
 
-# Apple-inspired email palette + system SF-like font stack (web-safe fallbacks).
+# Editorial email palette: dark masthead footer bookends, serif display
+# headlines over a sans body, a single blue accent, soft tints for callouts.
 NL_FONT = "-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif"
+NL_SERIF = "Georgia,'Times New Roman',serif"
 NL_INK = "#1d1d1f"
-NL_INK_SOFT = "#6e6e73"
+NL_INK_SOFT = "#515154"
 NL_MUTED = "#86868b"
 NL_ACCENT = "#0071e3"
 NL_ACCENT_HOVER = "#0077ed"
+NL_ACCENT_TINT = "#f0f7ff"
 NL_HAIRLINE = "#e8e8ed"
 NL_HAIRLINE_STRONG = "#d2d2d7"
 NL_BG = "#f5f5f7"
 NL_CARD = "#ffffff"
+NL_DARK = "#0a0a0f"
+NL_DARK_TEXT = "#f5f5f7"
+NL_DARK_MUTED = "#a1a1aa"
 
 # A single reusable cell style for the soft "surface" used behind feature blocks.
 _NL_CARD = (
@@ -1491,8 +1576,11 @@ def _nl_link(text: str, url: str, weight: int = 600) -> str:
 def _newsletter_image(src: str, alt: str, w: int = 640) -> str:
     if not src:
         return ""
+    # The image cell carries a neutral background so clients with images off
+    # (Outlook) show a clean block instead of a collapsed row.
     return (
-        f'<img src="{_h(src)}" width="{w}" alt="{_h(alt)}" '
+        f'<td style="background:{NL_BG};padding:0;"><img src="{_h(src)}" width="{w}" '
+        f'alt="{_h(alt[:96])}" '
         f'style="display:block;width:100%;max-width:{w}px;height:auto;border:0;border-radius:0;">'
     )
 
@@ -1503,6 +1591,47 @@ def _newsletter_caption(text: str) -> str:
     return (
         f'<tr><td style="padding:10px 0 0 0;font-family:{NL_FONT};font-size:11px;'
         f'color:{NL_MUTED};line-height:1.4;">{_h(text)}</td></tr>'
+    )
+
+
+def _nl_badge(text: str, accent: bool = False) -> str:
+    """Small uppercase pill for story type / NEW tags (table-safe)."""
+    color = NL_ACCENT if accent else NL_MUTED
+    border = NL_ACCENT if accent else NL_HAIRLINE_STRONG
+    return (
+        f'<span style="display:inline-block;padding:2px 9px;margin:0 6px 6px 0;'
+        f'border-radius:999px;border:1px solid {border};background:{NL_CARD};'
+        f'font-family:{NL_FONT};font-size:10px;font-weight:600;letter-spacing:1px;'
+        f'text-transform:uppercase;color:{color};">{_h(text)}</span>'
+    )
+
+
+def _nl_why_callout(text: str) -> str:
+    """'Why it matters' as an editorial callout with a left accent rule."""
+    if not text:
+        return ""
+    return (
+        f'<td style="padding:10px 14px;border-left:3px solid {NL_ACCENT};'
+        f'background:{NL_ACCENT_TINT};border-radius:0 8px 8px 0;">'
+        f'<div style="font-family:{NL_FONT};font-size:10px;font-weight:600;'
+        f'letter-spacing:1.2px;text-transform:uppercase;color:{NL_ACCENT};margin-bottom:3px;">'
+        f'Why it matters</div>'
+        f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.5;color:{NL_INK_SOFT};">'
+        f'{_h(text)}</div></td>'
+    )
+
+
+def _nl_button(url: str, label: str = "Read story") -> str:
+    """Pill CTA; background lives on the anchor so Outlook's table stripping
+    keeps the fill. mso-padding-alt compensates for Outlook's extra cell padding."""
+    return (
+        '<tr><td align="center" style="padding:14px 40px 0 40px;mso-padding-alt:14px 40px 0 40px;">'
+        '<table role="presentation" cellspacing="0" cellpadding="0"><tr><td align="center" '
+        f'style="border-radius:999px;">'
+        f'<a href="{_h(url)}" style="display:inline-block;padding:11px 26px;color:#ffffff;'
+        f'font-family:{NL_FONT};font-size:14px;font-weight:600;text-decoration:none;'
+        f'border-radius:999px;background-color:{NL_ACCENT};background:{NL_ACCENT};">{_h(label)}</a>'
+        f"</td></tr></table></td></tr>"
     )
 
 
@@ -1547,6 +1676,32 @@ def _newsletter_meta_row(s: dict) -> str:
     )
 
 
+def _nl_plain_terms(story: dict) -> str:
+    """One-plain-sentence 'in plain terms' line for the Big Story."""
+    st = story.get("story_type", "")
+    headline = story.get("headline", "")
+    src = (story.get("sources") or [{}])[0].get("name", "")
+    actor = re.split(r"[\s—:\-–]+", headline, maxsplit=1)[0].strip() if headline else ""
+    a = actor or src or "The company"
+    lines = {
+        "Funding": f"In plain terms: {a} is spending serious money on {story.get('category','AI')} — a sign investors think this area will pay off.",
+        "Acquisition": f"In plain terms: one company bought another to jump ahead in {story.get('category','AI')}.",
+        "Hardware": "In plain terms: AI needs a lot of computing power, and this move changes who can get it.",
+        "Partnership": "In plain terms: two companies are teaming up so their AI features reach more users faster.",
+        "Security": "In plain terms: researchers found a way AI systems can be attacked or tricked — and now everyone has to fix for it.",
+        "Policy": "In plain terms: the rules around AI are changing, and this will shape what companies are allowed to build.",
+        "Breakthrough": "In plain terms: this result did something that was previously thought too hard — expect the rest of the field to follow.",
+        "Benchmark": "In plain terms: this is a standardized test for AI, and the new score sets the bar everyone else is measured against.",
+        "Research": "In plain terms: this is early-stage work that usually becomes a product feature a year or so later.",
+        "Open Source": "In plain terms: anyone can download and use this for free, which usually makes the whole category better and cheaper.",
+        "Repository": "In plain terms: developers are rushing to use this code, which is often an early signal of what will be popular.",
+        "Release": "In plain terms: this AI capability is no longer a demo — people can actually use it.",
+        "Launch": "In plain terms: a new product or tool just entered the market, worth a look if you work in this area.",
+        "Product Update": f"In plain terms: {a} improved an existing AI feature — small step, but it shows where the roadmap is heading.",
+    }
+    return lines.get(st, "In plain terms: this is one of the developments likely to matter beyond the headlines.")
+
+
 def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id) -> str:
     by_id = {s["id"]: s for s in stories}
     ordered = sorted(stories, key=_readability_key)
@@ -1580,65 +1735,69 @@ def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id)
     lines: list[str] = []
     a = lines.append
 
-    # Preheader
+    # Preheader (value prop, distinct from the subject line)
     a('<div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">')
-    a(f'The AI Daily — {date_str}. Your daily briefing on what changed in AI.')
+    a(f'Ranked by what will actually matter. {date_str}: {len(stories)} developments across agents, models, products and business.')
     a('</div>')
 
-    # Top bar (translucent-feeling light strip)
-    a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{NL_CARD};border-bottom:1px solid {NL_HAIRLINE};">')
-    a('<tr><td align="center" style="padding:14px 0;">')
-    a('<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;">')
-    a(f'<tr><td style="font-family:{NL_FONT};font-size:13px;color:{NL_INK_SOFT};">')
-    a(f'{date_str} &nbsp;&middot;&nbsp; <a href="https://alihusains.github.io/ai-latest-news/" style="color:{NL_ACCENT};text-decoration:none;font-weight:500;">Read online</a>')
-    a('</td></tr></table></td></tr></table>')
+    # Dark masthead band
+    a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{NL_DARK};">')
+    a('<tr><td align="center" style="padding:22px 24px 20px 24px;">')
+    a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0">')
+    a(f'<tr><td style="font-family:{NL_SERIF};font-size:26px;font-weight:700;letter-spacing:0.5px;color:{NL_DARK_TEXT};">'
+      'THE&nbsp;AI&nbsp;DAILY<span style="color:#ffb340;">.</span></td>'
+      f'<td align="right" style="font-family:{NL_FONT};font-size:12px;color:{NL_DARK_MUTED};white-space:nowrap;">'
+      f'{date_str} &middot; <a href="https://alihusains.github.io/ai-latest-news/" style="color:{NL_DARK_TEXT};text-decoration:none;font-weight:600;">Read online &rarr;</a></td></tr>'
+      f'<tr><td colspan="2" style="font-family:{NL_FONT};font-size:13px;color:{NL_DARK_MUTED};padding-top:5px;">'
+      'Know what changed in AI, in five minutes.</td></tr></table>')
+    a('</td></tr></table>')
 
     # Main container
     a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{NL_BG};padding:28px 0;">')
     a('<tr><td align="center">')
     a('<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;">')
 
-    # Masthead
-    a(f'<tr><td style="padding:0 24px 20px 24px;">')
-    a('<table role="presentation" width="100%" cellpadding="0" cellspacing="0">'
-      f'<tr><td style="font-family:{NL_FONT};font-size:26px;font-weight:700;letter-spacing:-0.5px;color:{NL_INK};">'
-      'THE&nbsp;AI&nbsp;DAILY'
-      f'<span style="color:{NL_ACCENT};">.</span></td></tr>'
-      f'<tr><td style="font-family:{NL_FONT};font-size:14px;color:{NL_MUTED};padding-top:4px;">'
-      'Know what changed in AI, in five minutes.</td></tr></table>')
-    a('</td></tr>')
-
     # Big story
     if big:
         a('<tr><td style="padding:0 24px 24px 24px;">')
         a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
         if big.get("image"):
-            a(f'<tr><td style="padding:0;">{_newsletter_image(big.get("image",""), big["headline"], w=640)}</td></tr>')
+            a(f'<tr>{_newsletter_image(big.get("image",""), big["headline"], w=640)}</tr>')
         a(f'<tr><td style="padding:22px 24px 24px 24px;">')
         a(_newsletter_section_label("The Big Story"))
-        a(f'<div style="font-family:{NL_FONT};font-size:22px;font-weight:600;line-height:1.2;color:{NL_INK};letter-spacing:-0.3px;margin-bottom:10px;">{_h(big["headline"])}</div>')
-        a(f'<div style="font-family:{NL_FONT};font-size:15px;line-height:1.55;color:{NL_INK_SOFT};margin-bottom:12px;">{_h(big.get("summary",""))}</div>')
-        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.5;color:{NL_MUTED};margin-bottom:14px;"><strong>Why it matters:</strong> {_h(big.get("why_it_matters",""))}</div>')
-        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.4;">{_nl_link("Read the full story", big.get("url",""), 600)}'
-          f'<span style="color:{NL_HAIRLINE_STRONG};margin:0 8px;">&middot;</span>'
-          f'<span style="color:{NL_INK_SOFT};">{_h(big.get("reading_time",""))}</span>'
-          f'<span style="color:{NL_HAIRLINE_STRONG};margin:0 8px;">&middot;</span>'
-          f'<span style="color:{NL_INK_SOFT};">{_h(big.get("sources",[{}])[0].get("name",""))}</span></div>')
+        a(f'<div style="font-family:{NL_SERIF};font-size:25px;font-weight:700;line-height:1.22;color:{NL_INK};letter-spacing:-0.3px;margin-bottom:10px;">{_h(big["headline"])}</div>')
+        a(f'<div style="font-family:{NL_FONT};font-size:14px;line-height:1.55;color:{NL_INK_SOFT};margin-bottom:12px;">{_h(big.get("subheadline",""))}</div>')
+        a(f'<div style="font-family:{NL_FONT};font-size:15px;line-height:1.6;color:{NL_INK_SOFT};margin-bottom:14px;">{_h(big.get("summary",""))}</div>')
+        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.5;font-style:italic;color:{NL_ACCENT};margin-bottom:14px;">{_h(_nl_plain_terms(big))}</div>')
+        a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:14px;">'
+          f'<tr><td width="100%">{_nl_why_callout(big.get("why_it_matters",""))}</td></tr></table>')
+        a(f'<div style="font-family:{NL_FONT};font-size:12px;line-height:1.4;color:{NL_MUTED};margin-bottom:4px;">'
+          f'{_h(big.get("reading_time",""))} &middot; {_h(big.get("sources",[{}])[0].get("name",""))}</div>')
+        a(_nl_button(big.get("url",""), "Read the full story"))
         a('</td></tr></table></td></tr>')
 
-    # 5 THINGS
+    # 5 THINGS — one card, magazine-style numbered list
     if top5:
-        a('<tr><td style="padding:0 24px 20px 24px;">')
+        a('<tr><td style="padding:0 24px 24px 24px;">')
         a(_newsletter_section_label("5 Things You Should Know"))
         a('</td></tr>')
+        a('<tr><td style="padding:0 24px 24px 24px;">')
+        a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
         for i, s in enumerate(top5, 1):
-            a('<tr><td style="padding:0 24px 14px 24px;">')
-            a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
-            a('<tr><td style="padding:18px 22px;">')
-            a(f'<div style="font-family:{NL_FONT};font-size:15px;font-weight:600;color:{NL_INK};margin-bottom:6px;">{i}. {_h(s["headline"])}</div>')
-            a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.55;color:{NL_INK_SOFT};">{_h(s.get("summary",""))}</div>')
-            a(_newsletter_meta_row(s))
-            a('</td></tr></table></td></tr>')
+            border = f'border-bottom:1px solid {NL_HAIRLINE};' if i < len(top5) else ''
+            a('<tr>')
+            a(f'<td width="44" valign="top" style="padding:16px 0 16px 22px;{border}">'
+              f'<span style="font-family:{NL_SERIF};font-size:26px;font-weight:700;color:{NL_ACCENT};line-height:1;">{i}</span></td>')
+            a(f'<td valign="top" style="padding:16px 22px 16px 10px;{border}">')
+            a(f'<div style="font-family:{NL_SERIF};font-size:17px;font-weight:700;line-height:1.3;color:{NL_INK};margin-bottom:4px;">'
+              f'<a href="{_h(s.get("url",""))}" style="color:{NL_INK};text-decoration:none;">{_h(s["headline"])}</a></div>')
+            a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.55;color:{NL_INK_SOFT};margin-bottom:6px;">{_h(s.get("subheadline",""))}</div>')
+            a(f'<div style="font-family:{NL_FONT};font-size:11px;line-height:1.4;color:{NL_MUTED};">'
+              f'{_nl_link("Read story", s.get("url",""))}<span style="margin:0 6px;">&middot;</span>'
+              f'{_h(s.get("reading_time",""))}<span style="margin:0 6px;">&middot;</span>'
+              f'{_h(s.get("sources",[{}])[0].get("name",""))}</div>')
+            a('</td></tr>')
+        a('</table></td></tr>')
 
     # Category highlights
     for cat in NEW_CATEGORIES:
@@ -1651,10 +1810,14 @@ def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id)
         a('<tr><td style="padding:0 24px 24px 24px;">')
         a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
         if s.get("image"):
-            a(f'<tr><td style="padding:0;">{_newsletter_image(s.get("image",""), s["headline"], w=640)}</td></tr>')
-        a('<tr><td style="padding:18px 22px 20px 22px;">')
-        a(f'<div style="font-family:{NL_FONT};font-size:16px;font-weight:600;color:{NL_INK};margin-bottom:6px;">{_h(s["headline"])}</div>')
-        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.55;color:{NL_INK_SOFT};">{_h(s.get("summary",""))}</div>')
+            a(f'<tr>{_newsletter_image(s.get("image",""), s["headline"], w=640)}</tr>')
+            a(f'<tr><td style="padding:8px 22px 0 22px;font-family:{NL_FONT};font-size:11px;color:{NL_MUTED};line-height:1.4;">'
+              f'{_h(s.get("subheadline",""))}</td></tr>')
+        a('<tr><td style="padding:16px 22px 20px 22px;">')
+        a(f'<div style="font-family:{NL_SERIF};font-size:18px;font-weight:700;line-height:1.3;color:{NL_INK};margin-bottom:6px;">{_h(s["headline"])}</div>')
+        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.55;color:{NL_INK_SOFT};margin-bottom:10px;">{_h(s.get("summary",""))}</div>')
+        a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;">'
+          f'<tr><td width="100%">{_nl_why_callout(s.get("why_it_matters",""))}</td></tr></table>')
         a(_newsletter_meta_row(s))
         a('</td></tr></table></td></tr>')
 
@@ -1668,7 +1831,8 @@ def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id)
             a('<tr><td style="padding:0 24px 14px 24px;">')
             a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
             a('<tr><td style="padding:16px 22px;">')
-            a(f'<div style="font-family:{NL_FONT};font-size:14px;font-weight:600;color:{NL_INK};margin-bottom:4px;">{_h(s["headline"])}</div>')
+            a(f'<div style="font-family:{NL_FONT};font-size:14px;font-weight:600;color:{NL_INK};margin-bottom:4px;">'
+              f'{_nl_badge("New", accent=True)}{_h(s["headline"])}</div>')
             a(f'<div style="font-family:{NL_FONT};font-size:12px;line-height:1.4;">{_nl_link("Read story", s.get("url",""))}</div>')
             a('</td></tr></table></td></tr>')
 
@@ -1680,44 +1844,48 @@ def build_newsletter_html(date: dt.date, stories: list[dict], tool_id, early_id)
         a('<tr><td style="padding:0 24px 24px 24px;">')
         a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="{_NL_CARD}">')
         a('<tr><td style="padding:18px 22px;">')
-        a(f'<div style="font-family:{NL_FONT};font-size:15px;font-weight:600;color:{NL_INK};margin-bottom:6px;">{_h(early["headline"])}</div>')
-        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.55;color:{NL_INK_SOFT};">{_h(early.get("why_it_matters",""))}</div>')
+        a(f'<div style="font-family:{NL_SERIF};font-size:16px;font-weight:700;color:{NL_INK};margin-bottom:6px;">{_h(early["headline"])}</div>')
+        a(f'<div style="font-family:{NL_FONT};font-size:13px;line-height:1.55;color:{NL_INK_SOFT};margin-bottom:8px;">{_h(early.get("summary",""))}</div>')
+        a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0">'
+          f'<tr><td width="100%">{_nl_why_callout(early.get("why_it_matters",""))}</td></tr></table>')
         a('</td></tr></table></td></tr>')
 
-    # What's next
+    # What's next — closes the email with a bordered teaser box
     if whats_next:
-        a('<tr><td style="padding:0 24px 20px 24px;">')
-        a(_newsletter_section_label("What's Next"))
-        a('</td></tr>')
+        a('<tr><td style="padding:0 24px 24px 24px;">')
+        a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" '
+          f'style="border:1px solid {NL_HAIRLINE_STRONG};border-radius:16px;background:{NL_CARD};">')
+        a(f'<tr><td style="padding:18px 22px 20px 22px;">')
+        a(f'<div style="font-family:{NL_FONT};font-size:11px;font-weight:600;letter-spacing:1.4px;'
+          f'text-transform:uppercase;color:{NL_ACCENT};margin-bottom:10px;">On the horizon</div>')
         for s in whats_next:
-            a(f'<tr><td style="padding:0 24px 10px 24px;font-family:{NL_FONT};font-size:14px;color:{NL_INK};line-height:1.5;">')
-            a(f'&bull; <a href="{_h(s.get("url",""))}" style="color:{NL_ACCENT};text-decoration:none;font-weight:600;">{_h(s["headline"])}</a>')
-            a('</td></tr>')
+            a(f'<div style="font-family:{NL_FONT};font-size:14px;line-height:1.5;margin-bottom:6px;">'
+              f'<a href="{_h(s.get("url",""))}" style="color:{NL_INK};font-weight:600;text-decoration:none;">{_h(s["headline"])}</a></div>')
+        a('</td></tr></table></td></tr>')
 
-    # Footer
-    a(f'<tr><td style="padding:8px 24px 0 24px;border-top:1px solid {NL_HAIRLINE};">')
-    a(f'<div style="font-family:{NL_FONT};font-size:11px;color:{NL_INK_SOFT};line-height:1.6;padding-top:20px;">{FOOTER_TEXT}</div>')
-    a(f'<div style="font-family:{NL_FONT};font-size:11px;color:{NL_MUTED};line-height:1.6;margin-top:6px;padding-bottom:28px;">')
-    a(f'&copy; {date.year} SIGNAL. All rights reserved.')  # Buttondown's Portal auto-adds the real unsubscribe link
-    a('</div></td></tr>')
+    # Closing CTA
+    a('<tr><td align="center" style="padding:0 24px 28px 24px;">')
+    a(_nl_button("https://alihusains.github.io/ai-latest-news/", "Read the full briefing online"))
+    a('</td></tr>')
 
     a('</table>')
     a('</td></tr>')
     a('</table>')
 
+    # Dark footer band (bookends the masthead)
+    a(f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:{NL_DARK};">')
+    a('<tr><td align="center" style="padding:24px;">')
+    a('<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;">')
+    a(f'<tr><td style="font-family:{NL_FONT};font-size:12px;color:{NL_DARK_MUTED};line-height:1.6;">{FOOTER_TEXT}</td>'
+      f'<td align="right" style="font-family:{NL_FONT};font-size:12px;white-space:nowrap;">'
+      f'<a href="https://alihusains.github.io/ai-latest-news/" style="color:{NL_DARK_TEXT};text-decoration:none;font-weight:600;">View in browser</a>'
+      f'<span style="margin:0 8px;">&middot;</span>'
+      f'<a href="https://buttondown.com/alihusainsorathiya" style="color:{NL_DARK_TEXT};text-decoration:none;font-weight:600;">Past issues</a></td></tr>'
+      f'<tr><td colspan="2" style="font-family:{NL_FONT};font-size:11px;color:#6e6e73;line-height:1.6;padding-top:6px;">'
+      f'&copy; {date.year} SIGNAL. All rights reserved.</td></tr>')
+    a('</table></td></tr></table>')
+
     return "\n".join(lines)
-
-
-def _newsletter_button(url: str, label: str = "Read story") -> str:
-    # Apple-style pill button (blue fill, white text, full-radius).
-    return (
-        '<tr><td style="padding:14px 40px 0 40px;">'
-        '<table role="presentation" cellspacing="0" cellpadding="0"><tr><td '
-        f'style="border-radius:999px;background:{NL_ACCENT};">'
-        f'<a href="{_h(url)}" style="display:inline-block;padding:11px 24px;color:#ffffff;'
-        f'font-family:{NL_FONT};font-size:14px;font-weight:600;text-decoration:none;border-radius:999px;">{_h(label)}</a>'
-        f"</td></tr></table></td></tr>"
-    )
 
 
 def _future_phrases(text: str) -> bool:
@@ -1732,21 +1900,22 @@ def _future_phrases(text: str) -> bool:
 
 
 def _readability_key(s: dict):
-    """Rank for newsletter display: prefer stories with 60-80-word summaries
-    so featured items read well (spec: each featured item is 60-80 words)."""
+    """Rank for newsletter display: importance first, then prefer summaries in
+    the 60-80-word band so featured items read well, then longer summaries."""
     w = len(s.get("summary", "").split())
     band = 0 if 60 <= w <= 80 else (1 if w >= 40 else 2)
-    return (band, -s.get("importance", 0), -w)
+    return (-s.get("importance", 0), band, -w)
 
 
 def write_newsletter(date: dt.date, stories: list[dict], tool_id, early_id) -> Path:
     html_str = build_newsletter_html(date, stories, tool_id, early_id)
     doc = (
-        '<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">'
+        '<!DOCTYPE html>\n<html lang="en" xmlns="http://www.w3.org/1999/xhtml">'
         '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
         '<meta name="x-apple-disable-message-reformatting">'
+        '<meta name="x-apple-data-detectors" content="no">'
         '<title>THE AI DAILY</title></head>'
-        f'<body style="margin:0;padding:0;background:{NL_BG};">{html_str}</body></html>'
+        f'<body style="margin:0;padding:0;background:{NL_BG};-webkit-text-size-adjust:100%;">{html_str}</body></html>'
     )
     news_dir = ROOT_DIR / "newsletter"
     news_dir.mkdir(parents=True, exist_ok=True)
@@ -1953,6 +2122,17 @@ def write_digest(items: list[dict], date: dt.date) -> Path:
     return path
 
 
+# The edition is dated by the reader's morning: Asia/Dubai (UTC+4, no DST).
+# The pipeline runs ~03:00 UTC and the newsletter is scheduled for 05:30 UTC
+# (09:00 Dubai), so "today" must be Dubai's date, not the runner's.
+def _dubai_tz() -> dt.tzinfo:
+    try:
+        from zoneinfo import ZoneInfo
+        return ZoneInfo("Asia/Dubai")
+    except Exception:  # pragma: no cover - zoneinfo ships with 3.9+
+        return dt.timezone(dt.timedelta(hours=4))
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="AI news aggregator pipeline")
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
@@ -1986,7 +2166,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\n{ok}/{total} sources reachable")
         return 0 if ok == total else 1
 
-    date = dt.date.today()
+    date = dt.datetime.now(_dubai_tz()).date()
     if args.date:
         date = dt.date.fromisoformat(args.date)
 
@@ -2006,6 +2186,8 @@ def main(argv: list[str] | None = None) -> int:
         if apply_ai_summaries(stories):
             _canonical_sort(stories)
 
+    if not stories:
+        sys.stderr.write("[warn] pipeline produced ZERO stories; the edition will be empty.\n")
     json_path = write_json_output(stories, tool_id, early_id, tool_os_id, tool_fm_id, date.isoformat())
     news_path = write_newsletter(date, stories, tool_id, early_id)
 

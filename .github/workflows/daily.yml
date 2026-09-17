@@ -2,11 +2,13 @@ name: Daily AI News
 
 on:
   schedule:
-    # Primary slot 03:00 UTC (= 07:00 Asia/Dubai) plus hourly backups through
-    # the morning. GitHub's Actions scheduler can delay or silently skip a
-    # single cron slot (observed: runs landing ~8h late or not at all). The
+    # Primary slot 03:00 UTC (= 07:00 Asia/Dubai), well ahead of the 05:30 UTC
+    # (09:00 Dubai) newsletter send. Hourly backups through midday: GitHub's
+    # Actions scheduler can delay or silently skip a single cron slot, and the
     # per-day guard below makes the extra slots harmless — they skip once
-    # today's edition exists — but guarantees the edition still appears.
+    # today's edition exists — but guarantees the edition still appears. A
+    # backup that lands after 05:30 UTC still sends the email (asap fallback
+    # in push_buttondown.py) rather than losing the day.
     - cron: "0 3-12 * * *"
   workflow_dispatch: {}
 
@@ -29,7 +31,8 @@ jobs:
       - name: Skip if today's edition already published
         id: guard
         run: |
-          today=$(date -u +%Y-%m-%d)
+          # The edition is dated by the reader's morning (Asia/Dubai, UTC+4).
+          today=$(TZ="Asia/Dubai" date +%Y-%m-%d)
           cur=$(python3 -c "import json;print(json.load(open('data/latest.json')).get('date',''))" 2>/dev/null || echo "")
           if [ "$cur" = "$today" ] && [ "${{ github.event_name }}" = "schedule" ]; then
             echo "Edition $today already exists — skipping this backup slot."
@@ -57,6 +60,16 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
         run: python main.py
 
+      - name: Compute newsletter send time (09:00 Dubai = 05:30 UTC)
+        if: steps.guard.outputs.skip != 'true'
+        id: send_at
+        run: |
+          # Target: 05:30 UTC today. If the run started after 05:30 (late backup
+          # slot), push_buttondown.py falls back to "send as soon as possible".
+          at=$(date -u -d "$(date -u +%Y-%m-%d) 05:30:00" +%Y-%m-%dT%H:%M:%SZ)
+          echo "at=$at" >> "$GITHUB_OUTPUT"
+          echo "Scheduling newsletter for $at"
+
       - name: Commit generated digest
         if: steps.guard.outputs.skip != 'true'
         env:
@@ -69,12 +82,13 @@ jobs:
             echo "No new digest to publish."
             exit 0
           fi
-          git commit -m "chore(ai-news): daily digest $(date -u +%Y-%m-%d)"
+          git commit -m "chore(ai-news): daily digest $(TZ='Asia/Dubai' date +%Y-%m-%d)"
           git pull --rebase origin main
           git push origin HEAD
 
-      - name: Stage newsletter draft in Buttondown
+      - name: Schedule newsletter in Buttondown for 09:00 Dubai
         if: steps.guard.outputs.skip != 'true'
         env:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
-        run: python push_buttondown.py || echo 'Buttondown draft staging skipped.'
+          BUTTONDOWN_SEND_AT: ${{ steps.send_at.outputs.at }}
+        run: python push_buttondown.py

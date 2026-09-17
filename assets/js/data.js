@@ -85,6 +85,23 @@ const Data = {
     const d = new Date(iso);
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   },
+  formatRelative(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const diff = Date.now() - d.getTime();
+    const h = Math.floor(diff / 36e5);
+    if (h < 1) return 'just now';
+    if (h < 24) return h + 'h ago';
+    const days = Math.floor(h / 24);
+    if (days === 1) return 'yesterday';
+    if (days < 7) return days + 'd ago';
+    return this.formatDate(iso);
+  },
+  escape(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  },
   formatTime(iso) {
     if (!iso) return '';
     const d = new Date(iso);
